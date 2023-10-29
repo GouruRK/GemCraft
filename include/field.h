@@ -7,9 +7,12 @@
 #define HEIGHT 22
 
 typedef struct {
-    Cell board[HEIGHT][WIDTH];
+    Objects board[HEIGHT][WIDTH];
     Cell nest;
     Cell camp;
 } Field;
+
+// Prototype
+Field create_empty_field(void);
 
 #endif

@@ -5,10 +5,10 @@
 
 typedef enum {
     TOWER,
-    MONSTER,
     NEST,
     CAMP,
-    EMPTY
+    EMPTY,
+    PATH
 } Objects;
 
 
