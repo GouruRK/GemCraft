@@ -3,6 +3,9 @@
 
 #include "gem.h"
 #include "position.h"
+#include "field.h"
+
+#define MAX_TOWER WIDTH*HEIGHT
 
 typedef struct {
     Gem gem;
@@ -10,9 +13,9 @@ typedef struct {
 } Tower;
 
 typedef struct {
-    Tower* lst;
-    int max_size;
+    Tower lst[MAX_TOWER];
     int cur_len;
-} TowerList;
+    int next_tower_coast;
+} TowerArray;
 
 #endif

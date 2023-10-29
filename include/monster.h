@@ -2,21 +2,39 @@
 #define MONSTER_H
 
 #include "position.h"
-#include "gem.h"
+
+#define MAX_WAVE_SIZE 24
+
+typedef enum {
+    NONE,
+    SPLASH,         // Pyro
+    PARASIT,        // Dendro
+    SLOW,           // Hydro
+    SPRAYING,       // Pyro + Hydro
+    BURN,           // Pyro + Dendro
+    PETRIFICUS,     // Dendro + Hydro
+} Status;
+
+typedef enum {
+    NORMAL,
+    CROWD,
+    FAST,
+    BOSS
+} TypeWave;
 
 typedef struct {
     int health;
     float speed;
     int color;
     Position pos;
-    Effect effect;
+    Status status;
     float effect_duration;
 } Monster;
 
 typedef struct {
-    Monster* lst;
-    int max_len;
     int cur_size;
-} MonsterList;
+    TypeWave type;
+    Monster lst[MAX_WAVE_SIZE];
+} MonsterArray;
 
 #endif
