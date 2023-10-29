@@ -4,8 +4,8 @@
 #include "gem.h"
 
 typedef struct {
-    int size;
-    int nb_elements;
+    int cur_size;
+    int max_len;
     Gem* array;
 } ArrayGem;
 

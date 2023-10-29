@@ -16,7 +16,7 @@ typedef struct {
 typedef struct {
     Monster* lst;
     int max_len;
-    int cur_len;
+    int cur_size;
 } MonsterList;
 
 #endif

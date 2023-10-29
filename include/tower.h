@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct {
     Tower* lst;
-    int max_len;
+    int max_size;
     int cur_len;
 } TowerList;
 
