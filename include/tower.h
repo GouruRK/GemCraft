@@ -1,0 +1,18 @@
+#ifndef TOWERS_H
+#define TOWERS_H
+
+#include "gem.h"
+#include "position.h"
+
+typedef struct {
+    Gem gem;
+    Position pos;
+} Tower;
+
+typedef struct {
+    Tower* lst;
+    int max_len;
+    int cur_len;
+} TowerList;
+
+#endif
