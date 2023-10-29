@@ -1,5 +1,5 @@
-#ifndef __INIT_FIELD__
-#define __INIT_FIELD__
+#ifndef FIELD_H
+#define FIELD_H
 
 #include "cell.h"
 
