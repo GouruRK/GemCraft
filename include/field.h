@@ -12,12 +12,12 @@ typedef enum { TOWER, NEST, CAMP, EMPTY, PATH } Objects;
 
 typedef struct {
     int cur_len;
-    Position_int path[MAX_LEN];
+    PositionInt path[MAX_LEN];
 } MonsterPath;
 
 typedef struct {
-    Position_int nest;
-    Position_int camp;
+    PositionInt nest;
+    PositionInt camp;
     Objects board[HEIGHT][WIDTH];
     MonsterPath monster_path;
 } Field;

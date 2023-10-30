@@ -26,7 +26,7 @@ typedef struct {
     int health;
     float speed;
     int color;
-    Position pos;
+    PositionFloat pos;
     Status status;
     float effect_duration;
 } Monster;

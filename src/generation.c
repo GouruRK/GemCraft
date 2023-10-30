@@ -28,14 +28,14 @@ static Direction opposite_direction(Direction dir) { return (dir + 2) % 4; }
  * @param ignore
  * @return int
  */
-static int is_isolated(Field* field, Position_int pos, Direction ignore) {
+static int is_isolated(Field* field, PositionInt pos, Direction ignore) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
     for (int direction = 0; direction < 4; direction++) {
         if (direction != ignore) {
             for (int i = 1; i <= 2; i++) {
-                Position_int check = {pos.x + i * dx[direction],
+                PositionInt check = {pos.x + i * dx[direction],
                                       pos.y + i * dy[direction]};
 
                 if (check.x >= 0 && check.x < WIDTH && check.y >= 0 &&
@@ -47,7 +47,6 @@ static int is_isolated(Field* field, Position_int pos, Direction ignore) {
             }
         }
     }
-
     return 1;
 }
 
@@ -86,13 +85,13 @@ static void generate_nest_pos(Field* field) {
  * @param pos 
  * @param card_expanse Calculated values
  */
-static void calc_card_expanse(Field* field, Position_int pos,
+static void calc_card_expanse(Field* field, PositionInt pos,
                               int card_expanse[4]) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
     for (int direction = 0; direction < 4; direction++) {
-        Position_int check = pos;
+        PositionInt check = pos;
         int count = 0;
         while ((field->board[pos.y + dy[direction]][check.x + dx[direction]] !=
                     PATH &&
@@ -166,7 +165,7 @@ static int nb_cell_to_add(int expanse) {
  * @param pos 
  */
 static void add_line(Field* field, Direction dir, int nb_cell,
-                     Position_int* pos) {
+                     PositionInt* pos) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
@@ -207,7 +206,7 @@ Field generate_field() {
 
         generate_nest_pos(&field);
 
-        Position_int cur_position = field.nest;
+        PositionInt cur_position = field.nest;
 
         calc_card_expanse(&field, cur_position, expanse);
 

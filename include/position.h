@@ -4,20 +4,29 @@
 typedef struct {
     float x;
     float y;
-} Position_float;
+} PositionFloat;
 
 typedef struct {
     int x;
     int y;
-} Position_int;
+} PositionInt;
 
 /**
- * @brief Create a position object
+ * @brief Create a position object of int coordinates
  * 
  * @param x abscissa
  * @param y ordinate
  * @return new position
  */
-Position create_position(int x, int y);
+PositionInt create_int_position(int x, int y);
+
+/**
+ * @brief Create a position object of float coordinates
+ * 
+ * @param x abscissa
+ * @param y ordinate
+ * @return new position
+ */
+PositionFloat create_float_position(float x, float y);
 
 #endif

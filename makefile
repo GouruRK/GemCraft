@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c17 -Wall -Wfatal-errors -pedantic
-PFLAGS = include/
+PFLAGS = include
 LFLAGS = -lMLV
 
 EXEC = GemCraft
@@ -21,10 +21,12 @@ $(EXEC) : $(OBJ_FILES)
 	$(CC) $^ -o $@ $(LFLAGS)
 
 $(BIN)%.o : $(SRC)%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I./$(PFLAGS) -c $< -o $@
 
 # Cleaning
 
 clean : 
 	rm -f $(BIN)*
+
+mrproper: clean
 	rm -f $(EXEC)

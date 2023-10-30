@@ -12,11 +12,7 @@ Gem create_gem(TypeGems type, int level, int color) {
     return gem;
 }
 
-int mana_require_for_level(int level) {
-    return 100 * (1 << level);  // 100 * 2^n
-}
-
-Gem _generate_gem(int level) {
+Gem create_random_gem(int level) {
     int color;
     TypeGems type = random_int(0, 2);
     switch (type) {
@@ -34,30 +30,8 @@ Gem _generate_gem(int level) {
         case HYDRO:
             color = random_int(210, 270);
             break;
+        default:
+            break;
     }
     return create_gem(type, level, color);
-}
-
-int generate_gem(Player* player, int level, Gem* res) {
-    int mana_require = mana_require_for_level(level);
-    if (player->mana < mana_require) {
-        return 1;
-    }
-    *res = _generate_gem(level);
-    player->mana -= mana_require;
-    return 1;
-}
-
-int combine_gem(Player* player, Gem a, Gem b, Gem* res) {
-    if ((player->mana < 100) || (a.level != b.level)) {
-        return 0;
-    }
-    TypeGems type = MIXTE;
-    if (a.type == b.type && a.type != MIXTE) {
-        type = a.type;
-    }
-    int color = (a.color + b.color) / 2;
-    *res = create_gem(type, a.level + 1, color);
-    player->mana -= 100;
-    return 1;
 }

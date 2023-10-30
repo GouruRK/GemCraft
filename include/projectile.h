@@ -7,7 +7,7 @@
 
 typedef struct {
     float speed;
-    Position pos;
+    PositionFloat pos;
     Monster* target;
     Gem source;
 } Projectile;
@@ -25,7 +25,7 @@ typedef struct _node {
  * @param source 
  * @return created projectile
  */
-Projectile create_projectile(Position pos, Monster* target, Gem source);
+Projectile create_projectile(PositionFloat pos, Monster* target, Gem source);
 
 /**
  * @brief Creates an empty node object.

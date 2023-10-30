@@ -1,8 +1,9 @@
 #include <stdlib.h>
 
 #include "../include/projectile.h"
+#include "../include/position.h"
 
-Projectile create_projectile(Position pos, Monster* target, Gem source) {
+Projectile create_projectile(PositionFloat pos, Monster* target, Gem source) {
     Projectile proj;
     proj.pos = pos;
     proj.target = target;
