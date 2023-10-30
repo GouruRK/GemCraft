@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "invetory.h"
+#include "inventory.h"
 
 typedef struct {
     int mana;               // Current quantity of mana
