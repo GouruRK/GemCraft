@@ -4,6 +4,11 @@
 typedef struct {
     float x;
     float y;
-} Position;
+} Position_float;
+
+typedef struct {
+    int x;
+    int y;
+} Position_int;
 
 #endif
