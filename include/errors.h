@@ -7,7 +7,9 @@ typedef enum {
     NOT_ENOUGHT_MANA  = -2,
     DIFFERENT_GEM_LVL = -3,
     TOWER_ARRAY_FULL  = -4,
-    NON_EMPTY_PLACE   = -5
+    NON_EMPTY_PLACE   = -5,
+    NON_EMPTY_TOWER   = -6,
+    EMPTY_TOWER       = -7
 } Error;
 
 #endif

@@ -1,14 +1,15 @@
-#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #include "../include/tower.h"
 #include "../include/gem.h"
 #include "../include/position.h"
 #include "../include/errors.h"
 
-Tower crate_tower(Gem gem, PositionInt pos) {
+Tower crate_tower(PositionInt pos) {
     Tower tower;
-    tower.gem = gem;
     tower.pos = pos;
+    tower.hold_gem = false;
     return tower;
 }
 
@@ -17,6 +18,23 @@ TowerArray create_tower_array(void) {
     array.cur_len = 0;
     array.next_tower_cost = 0;
     return array;
+}
+
+Error add_gem_to_tower(Tower* tower, Gem gem) {
+    if (tower->hold_gem) {
+        return NON_EMPTY_TOWER;
+    }
+    tower->gem = gem;
+    return OK;
+}
+
+Error remove_gem_to_tower(Tower* tower, Gem* gem) {
+    if (!(tower->hold_gem)) {
+        return EMPTY_TOWER;
+    } 
+    *gem = tower->gem;
+    tower->hold_gem = false;
+    return OK;
 }
 
 Error add_tower_array(TowerArray* array, Tower tower) {

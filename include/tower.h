@@ -1,6 +1,8 @@
 #ifndef TOWERS_H
 #define TOWERS_H
 
+#include <stdbool.h>
+
 #include "gem.h"
 #include "position.h"
 #include "errors.h"
@@ -9,6 +11,7 @@
 
 typedef struct {
     Gem gem;
+    bool hold_gem;
     PositionInt pos;
 } Tower;
 
@@ -18,7 +21,11 @@ typedef struct {
     int next_tower_cost;
 } TowerArray;
 
-Tower crate_tower(Gem gem, PositionInt pos);
+Tower crate_tower(PositionInt pos);
+
+Error add_gem_to_tower(Tower* tower, Gem gem);
+
+Error remove_gem_to_tower(Tower* tower, Gem* gem);
 
 TowerArray create_tower_array(void);
 
