@@ -22,4 +22,6 @@ typedef struct {
     MonsterPath monster_path;
 } Field;
 
+Objects get_field(Field field, PositionInt pos);
+
 #endif

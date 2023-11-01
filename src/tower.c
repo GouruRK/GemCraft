@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+#include "../include/tower.h"
+#include "../include/gem.h"
+#include "../include/position.h"
+#include "../include/errors.h"
+
+Tower crate_tower(Gem gem, PositionInt pos) {
+    Tower tower;
+    tower.gem = gem;
+    tower.pos = pos;
+    return tower;
+}
+
+TowerArray create_tower_array(void) {
+    TowerArray array;
+    array.cur_len = 0;
+    array.next_tower_cost = 0;
+    return array;
+}
+
+Error add_tower_array(TowerArray* array, Tower tower) {
+    if (array->cur_len == MAX_TOWER) {
+        return TOWER_ARRAY_FULL;
+    }
+    array->lst[array->cur_len] = tower;
+    
+    if (array->cur_len >= 2) { // first three towers are free
+        if (!(array->next_tower_cost)) {
+            array->next_tower_cost = 100;
+        } else {
+            array->next_tower_cost *= 2;
+        }
+    }
+    array->cur_len++;
+    return OK;
+}
+
+// int main(void) {
+//     TowerArray array = create_tower_array();
+// 
+//     for (int i = 0; i < 5; i++) {
+//         printf("------------ Tower %d : ------------", i + 1);
+//         add_tower_array(&array, crate_tower((Gem){}, (PositionInt){}));
+//         printf("coast : %d\tcurlen : %d\n", array.next_tower_cost, array.cur_len);
+//     }
+// 
+//     return 0;
+// }

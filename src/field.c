@@ -10,3 +10,7 @@ Field create_empty_field(void) {
     }
     return field;
 }
+
+Objects get_field(Field field, PositionInt pos) {
+    return field.board[pos.y][pos.x];
+}
