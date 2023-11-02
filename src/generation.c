@@ -28,19 +28,19 @@ static Direction opposite_direction(Direction dir) { return (dir + 2) % 4; }
  * @param ignore
  * @return int
  */
-static int is_isolated(Field* field, PositionInt pos, Direction ignore) {
+static int is_isolated(Field* field, Position pos, Direction ignore) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
     for (int direction = 0; direction < 4; direction++) {
         if (direction != ignore) {
             for (int i = 1; i <= 2; i++) {
-                PositionInt check = {pos.x + i * dx[direction],
+                Position check = {pos.x + i * dx[direction],
                                       pos.y + i * dy[direction]};
 
                 if (check.x >= 0 && check.x < WIDTH && check.y >= 0 &&
                     check.y < HEIGHT) {
-                    if (field->board[check.y][check.x] != EMPTY) {
+                    if (field->board[(int)check.y][(int)check.x] != EMPTY) {
                         return 0;
                     }
                 }
@@ -85,15 +85,15 @@ static void generate_nest_pos(Field* field) {
  * @param pos 
  * @param card_expanse Calculated values
  */
-static void calc_card_expanse(Field* field, PositionInt pos,
+static void calc_card_expanse(Field* field, Position pos,
                               int card_expanse[4]) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
     for (int direction = 0; direction < 4; direction++) {
-        PositionInt check = pos;
+        Position check = pos;
         int count = 0;
-        while ((field->board[pos.y + dy[direction]][check.x + dx[direction]] !=
+        while ((field->board[(int)pos.y + dy[direction]][(int)check.x + dx[direction]] !=
                     PATH &&
                 check.x > 0 && check.y > 0 && check.x < WIDTH - 1 &&
                 check.y < HEIGHT - 1 &&
@@ -165,7 +165,7 @@ static int nb_cell_to_add(int expanse) {
  * @param pos 
  */
 static void add_line(Field* field, Direction dir, int nb_cell,
-                     PositionInt* pos) {
+                     Position* pos) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
@@ -177,7 +177,7 @@ static void add_line(Field* field, Direction dir, int nb_cell,
         field->monster_path.path[field->monster_path.cur_len].y = pos->y;
         field->monster_path.cur_len++;
 
-        field->board[pos->y][pos->x] = PATH;
+        field->board[(int)pos->y][(int)pos->x] = PATH;
     }
 }
 
@@ -206,7 +206,7 @@ Field generate_field() {
 
         generate_nest_pos(&field);
 
-        PositionInt cur_position = field.nest;
+        Position cur_position = field.nest;
 
         calc_card_expanse(&field, cur_position, expanse);
 
@@ -235,9 +235,11 @@ Field generate_field() {
         }
     }
 
-    field.board[field.monster_path.path[field.monster_path.cur_len - 1].y]
-               [field.monster_path.path[field.monster_path.cur_len - 1].x] =
+    field.camp.x = (int)field.monster_path.path[field.monster_path.cur_len - 1].x;
+    field.camp.y = (int)field.monster_path.path[field.monster_path.cur_len - 1].y;
+    field.board[(int)field.monster_path.path[field.monster_path.cur_len - 1].y]
+               [(int)field.monster_path.path[field.monster_path.cur_len - 1].x] =
         CAMP;
-
+        
     return field;
 }

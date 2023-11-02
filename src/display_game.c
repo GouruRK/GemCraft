@@ -2,6 +2,7 @@
 
 #include "../include/display_game.h"
 #include "../include/field.h"
+#include "../include/monster.h"
 
 // Prototype
 void draw_board(Field field) {
@@ -30,4 +31,9 @@ void draw_board(Field field) {
     for (int x = 0; x < WIDTH; x++) {
         MLV_draw_line(x * CELL_SIZE, 0, x * CELL_SIZE, HEIGHT * CELL_SIZE, MLV_COLOR_BLACK);
     }
+}
+
+// Prototype
+void draw_monster(const Monster m) {
+    MLV_draw_filled_circle((int)(m.pos.x * CELL_SIZE), (int)(m.pos.y * CELL_SIZE), CELL_SIZE / 3, MLV_COLOR_BLUE);
 }

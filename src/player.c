@@ -3,6 +3,17 @@
 #include "../include/util.h"
 #include "../include/errors.h"
 
+Player init_player() {
+    Player p;
+
+    p.mana_lvl = 0;
+    p.mana = 150;
+    p.max_quantity = 150;
+    p.max_lvl = 2000;
+
+    return p;
+}
+
 int mana_require_for_level(int level) {
     return 100 * (1 << level);  // 100 * 2^n
 }
