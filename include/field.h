@@ -1,17 +1,24 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+#include "errors.h"
 #include "monster.h"
+#include "player.h"
 #include "position.h"
 #include "tower.h"
-#include "player.h"
 
 #define WIDTH 28
 #define HEIGHT 22
 
 #define MAX_LEN WIDTH* HEIGHT
 
-typedef enum { TOWER, NEST, CAMP, EMPTY, PATH } Objects;
+typedef enum {
+    TOWER,
+    NEST,
+    CAMP,
+    EMPTY,
+    PATH,
+} Objects;
 
 typedef struct {
     int cur_len;
@@ -27,13 +34,26 @@ typedef struct {
     MonsterPath monster_path;
 } Field;
 
+//-------------------------------Monster related-------------------------------
+
 /**
- * @brief Decrease the mana amount of the player and tp the monster to the nest
+ * @brief Add a monster on the field spawning on the nest
+ *
+ * @param field
+ * @param wave_nb
+ * @param type_wave
+ * @return Error
+ */
+Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave);
+
+/**
+ * @brief Find the next destination for a monster. If he step on the camp the
+ * ban process will occurs
  *
  * @param monster
- * @param player
  * @param field
+ * @param player
  */
-void ban_monster(Monster* monster, Player* player, const Field* field);
+void update_monster_dest(Monster* monster, const Field* field, Player* player);
 
 #endif

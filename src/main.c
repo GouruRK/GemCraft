@@ -33,27 +33,26 @@ int main(int argc, char* argv[]) {
 
     MLV_create_window("Tower Defense", NULL, WIDTH * CELL_SIZE,
                       HEIGHT * CELL_SIZE);
-    Field field = generate_field();
 
-    Monster wenjieFang = init_monster(field.nest, NORMAL, 1, field.camp);
-    Player player = init_player();
+    Game game;
+    init_game(&game);
 
     int terminated = 0;
     int count_frame = 0;
     while (!terminated) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 
-        move_monster(&wenjieFang);
-        if (field.camp.x + 0.4 < wenjieFang.pos.x &&
-            wenjieFang.pos.x < field.camp.x + 0.6 &&
-            field.camp.y - 0.4 < wenjieFang.pos.y &&
-            wenjieFang.pos.y < field.camp.y + 0.6) {
-            ban_monster(&wenjieFang, &player, &field);
-        }
+        update_game(&game);
 
-        draw_board(field);
-        draw_monster(wenjieFang);
+        // Drawing
+        draw_board(game.field);
+        
+        for (int i = 0; i < game.field.monsters.curr_size; i++) {
+            draw_monster(game.field.monsters.lst[i]);
+        }
+        
         MLV_update_window();
+        // End drawing
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
 
@@ -64,9 +63,10 @@ int main(int argc, char* argv[]) {
             MLV_wait_milliseconds((int)(extra_time * 1000));
         }
 
+        // PROTOTYPE just to count some frame for debugging
         count_frame++;
-        if (count_frame % 60 == 0) {
-            fprintf(stderr, "frame : %d\n", count_frame / 60);
+        if (count_frame % FRAMERATE == 0) {
+            fprintf(stderr, "frame : %d\n", count_frame / FRAMERATE);
         }
     }
 

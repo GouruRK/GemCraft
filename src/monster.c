@@ -7,6 +7,8 @@
 #include "../include/position.h"
 #include "../include/util.h"
 
+#define FLOAT_COMPARISON_MARGIN 0.01
+
 Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
                      Position dest) {
     Monster monster;
@@ -17,11 +19,10 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
     monster.health = monster.max_health;
     monster.color = random_int(0, 359);
 
-    monster.pos.x = pos_init.x + 0.5;
-    monster.pos.y = pos_init.y + 0.5;
+    monster.pos = pos_init; 
+    monster.dest = dest;
 
-    monster.dest.x = dest.x + 0.5;
-    monster.dest.y = dest.y + 0.5;
+    monster.index_path = 0;
 
     monster.speed = 1;
     monster.status = NONE;
@@ -50,4 +51,66 @@ void move_monster(Monster* monster) {
 
     monster->pos.x += cos(direction) * (monster->speed / FRAMERATE);
     monster->pos.y += sin(direction) * (monster->speed / FRAMERATE);
+}
+
+int has_reach_dest(Monster* monster) {
+    if (monster->dest.x - FLOAT_COMPARISON_MARGIN < monster->pos.x &&
+        monster->pos.x < monster->dest.x + FLOAT_COMPARISON_MARGIN &&
+        monster->dest.y - FLOAT_COMPARISON_MARGIN < monster->pos.y &&
+        monster->pos.y < monster->dest.y + FLOAT_COMPARISON_MARGIN) {
+        return 1;
+    }
+
+    return 0;
+}
+
+/*---------------------------Monster array related---------------------------*/
+
+Error init_monster_array(MonsterArray* array) {
+    array->curr_size = 0;
+    array->max_size = MAX_WAVE_SIZE;
+    array->lst = (Monster*)malloc(MAX_WAVE_SIZE * sizeof(Monster));
+    if (!array->lst) {
+        return ALLOCATION_ERROR;
+    }
+
+    return OK;
+}
+
+Error realloc_monster_array(MonsterArray* array) {
+    if (array->curr_size == array->max_size) {
+        array->lst = (Monster*)realloc(
+            array->lst, sizeof(Monster) * (array->max_size + MAX_WAVE_SIZE));
+        if (!array->lst) {
+            return ALLOCATION_ERROR;
+        }
+        array->max_size += MAX_WAVE_SIZE;
+
+        return OK;
+    } else if (array->curr_size <= array->max_size - MAX_WAVE_SIZE) {
+        array->lst = (Monster*)realloc(
+            array->lst, sizeof(Monster) * (array->max_size - MAX_WAVE_SIZE));
+        if (!array->lst) {
+            return ALLOCATION_ERROR;
+        }
+        array->max_size -= MAX_WAVE_SIZE;
+
+        return OK;
+    }
+
+    return INCOHERENT_ARRAY_DATA;
+}
+
+Error add_monster_array(MonsterArray* array, Monster monster) {
+    if (array->curr_size == array->max_size) {
+        Error error = realloc_monster_array(array);
+        if (error != OK) {
+            return error;
+        }
+    }
+
+    array->lst[array->curr_size] = monster;
+    array->curr_size++;
+
+    return OK;
 }

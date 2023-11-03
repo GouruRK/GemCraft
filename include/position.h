@@ -24,4 +24,12 @@ Position create_position(float x, float y);
  */
 float calc_direction(Position a, Position b);
 
+/**
+ * @brief Find the center of a cell
+ * 
+ * @param cell 
+ * @return Position
+ */
+Position cell_center(Position cell);
+
 #endif

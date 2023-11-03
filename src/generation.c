@@ -235,8 +235,8 @@ Field generate_field() {
         }
     }
 
-    field.camp.x = (int)field.monster_path.path[field.monster_path.cur_len - 1].x;
-    field.camp.y = (int)field.monster_path.path[field.monster_path.cur_len - 1].y;
+    field.camp.x = field.monster_path.path[field.monster_path.cur_len - 1].x;
+    field.camp.y = field.monster_path.path[field.monster_path.cur_len - 1].y;
     field.board[(int)field.monster_path.path[field.monster_path.cur_len - 1].y]
                [(int)field.monster_path.path[field.monster_path.cur_len - 1].x] =
         CAMP;
