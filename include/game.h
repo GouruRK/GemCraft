@@ -8,7 +8,7 @@
 #include "player.h"
 
 #define FRAMERATE 60
-#define TIMER_WAVE 35  // Max time between each wave
+#define TIMER_WAVE 35  // Max time between each wave in seconds
 
 typedef enum {
     ONGOING,
@@ -16,9 +16,9 @@ typedef enum {
 } GameState;
 
 typedef struct {
-    int wave;                        // number of waves
-    struct timespec time_next_wave;  // time before next wave
-    struct timespec time;            // Time since the befinning of the game
+    int wave;              // number of waves
+    int time_next_wave;    // number of frame before the next wave
+    struct timespec time;  // Time since the befinning of the game
     GameState game_status;
     Field field;    // game board
     Player player;  // player info
@@ -34,9 +34,9 @@ Error init_game(Game* game);
 
 /**
  * @brief Calculate everything to do in one frame
- * 
- * @param game 
- * @return Error 
+ *
+ * @param game
+ * @return Error
  */
 Error update_game(Game* game);
 

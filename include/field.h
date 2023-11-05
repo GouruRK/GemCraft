@@ -1,6 +1,8 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+#include <stdbool.h>
+
 #include "errors.h"
 #include "monster.h"
 #include "player.h"
@@ -26,8 +28,16 @@ typedef struct {
 } MonsterPath;
 
 typedef struct {
-    Position nest;
+    int monster_remaining;
+    int nb_frame_before_next_spawn;
+    int nb_frame_between_spawn;
+    TypeWave type_wave;
+    Position pos;
+} Nest;
+
+typedef struct {
     Position camp;
+    Nest nest;
     TowerArray towers;      // list of towers
     MonsterArray monsters;  // list of monsters
     Objects board[HEIGHT][WIDTH];
@@ -64,6 +74,11 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave);
  */
 void update_monster_dest(Monster* monster, const Field* field, Player* player);
 
-
+/**
+ * @brief Load a new wave in a nest
+ *
+ * @param nest
+ */
+void init_new_wave(Nest* nest, int nb_wave);
 
 #endif
