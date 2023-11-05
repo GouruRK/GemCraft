@@ -1,6 +1,7 @@
 #include "../include/generation.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 
 #include "../include/field.h"
@@ -36,7 +37,7 @@ static int is_isolated(Field* field, Position pos, Direction ignore) {
         if (direction != ignore) {
             for (int i = 1; i <= 2; i++) {
                 Position check = {pos.x + i * dx[direction],
-                                      pos.y + i * dy[direction]};
+                                  pos.y + i * dy[direction]};
 
                 if (check.x >= 0 && check.x < WIDTH && check.y >= 0 &&
                     check.y < HEIGHT) {
@@ -52,8 +53,8 @@ static int is_isolated(Field* field, Position pos, Direction ignore) {
 
 /**
  * @brief Set all the field's cells to EMPTY
- * 
- * @param field 
+ *
+ * @param field
  */
 static void empty_field(Field* field) {
     for (int y = 0; y < HEIGHT; y++) {
@@ -64,37 +65,42 @@ static void empty_field(Field* field) {
 }
 
 /**
- * @brief Generate a nest with a space of minimum 2 cells from the edges of the field
+ * @brief Generate a nest with a space of minimum 2 cells from the edges of the
+ * field
  *
  * @param field
  */
-static void generate_nest_pos(Field* field) {
+static void generate_nest(Field* field) {
     int x = (rand() % (WIDTH - PADDING * 2)) + PADDING;
     int y = (rand() % (HEIGHT - PADDING * 2)) + PADDING;
 
     field->board[y][x] = NEST;
-    field->nest.x = x;
-    field->nest.y = y;
+    field->nest.pos.x = x;
+    field->nest.pos.y = y;
+
+    field->nest.monster_remaining = 0;
+    field->nest.nb_frame_before_next_spawn = -1;
+    field->nest.nb_frame_between_spawn = 35;
+    field->nest.type_wave = NORMAL;
 }
 
 /**
  * @brief Caclulate cardinal expanse for all directions from a
  * given position in the field
- * 
- * @param field 
- * @param pos 
+ *
+ * @param field
+ * @param pos
  * @param card_expanse Calculated values
  */
-static void calc_card_expanse(Field* field, Position pos,
-                              int card_expanse[4]) {
+static void calc_card_expanse(Field* field, Position pos, int card_expanse[4]) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
     for (int direction = 0; direction < 4; direction++) {
         Position check = pos;
         int count = 0;
-        while ((field->board[(int)pos.y + dy[direction]][(int)check.x + dx[direction]] !=
-                    PATH &&
+        while ((field->board[(int)pos.y + dy[direction]]
+                            [(int)check.x + dx[direction]] != PATH &&
                 check.x > 0 && check.y > 0 && check.x < WIDTH - 1 &&
                 check.y < HEIGHT - 1 &&
                 is_isolated(field, check, opposite_direction(direction))) ||
@@ -115,9 +121,9 @@ static void calc_card_expanse(Field* field, Position pos,
  * @brief Choose randomly one direction using Weighted Random Selection
  * Should never return -1
  * By default, if the sum weight is equal to 0, resturn WEST
- * 
- * @param card_expanse 
- * @return Direction 
+ *
+ * @param card_expanse
+ * @return Direction
  */
 static Direction choose_direction(int card_expanse[]) {
     int sum_weight = 0;
@@ -139,11 +145,11 @@ static Direction choose_direction(int card_expanse[]) {
 }
 
 /**
- * @brief Genate a random number of cell to add in a direction following 
+ * @brief Genate a random number of cell to add in a direction following
  * set between 3 and cardinal expanse
- * 
- * @param expanse 
- * @return int 
+ *
+ * @param expanse
+ * @return int
  */
 static int nb_cell_to_add(int expanse) {
     int result = 0;
@@ -158,14 +164,13 @@ static int nb_cell_to_add(int expanse) {
 /**
  * @brief Modify the field to add nb_cell PATH cells in the field from a given
  * position and direction
- * 
- * @param field 
- * @param dir 
+ *
+ * @param field
+ * @param dir
  * @param nb_cell number of cells to add
- * @param pos 
+ * @param pos
  */
-static void add_line(Field* field, Direction dir, int nb_cell,
-                     Position* pos) {
+static void add_line(Field* field, Direction dir, int nb_cell, Position* pos) {
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
 
@@ -183,8 +188,8 @@ static void add_line(Field* field, Direction dir, int nb_cell,
 
 /**
  * @brief Reset all value of expanse to 0
- * 
- * @param expanse 
+ *
+ * @param expanse
  * @param len number of direction, in this project it is 4
  */
 static void reset_expanse(int expanse[], int len) {
@@ -204,9 +209,9 @@ Field generate_field() {
 
         empty_field(&field);
 
-        generate_nest_pos(&field);
+        generate_nest(&field);
 
-        Position cur_position = field.nest;
+        Position cur_position = field.nest.pos;
 
         calc_card_expanse(&field, cur_position, expanse);
 
@@ -237,9 +242,10 @@ Field generate_field() {
 
     field.camp.x = field.monster_path.path[field.monster_path.cur_len - 1].x;
     field.camp.y = field.monster_path.path[field.monster_path.cur_len - 1].y;
-    field.board[(int)field.monster_path.path[field.monster_path.cur_len - 1].y]
-               [(int)field.monster_path.path[field.monster_path.cur_len - 1].x] =
+    field
+        .board[(int)field.monster_path.path[field.monster_path.cur_len - 1].y]
+              [(int)field.monster_path.path[field.monster_path.cur_len - 1].x] =
         CAMP;
-        
+
     return field;
 }

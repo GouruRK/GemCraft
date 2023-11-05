@@ -12,24 +12,22 @@
 #include "../include/monster.h"
 #include "../include/player.h"
 #include "../include/position.h"
-
-struct timespec diff_time(struct timespec start, struct timespec end) {
-    struct timespec diff;
-    if ((end.tv_nsec - start.tv_nsec) < 0) {
-        diff.tv_sec = end.tv_sec - start.tv_sec - 1;
-        diff.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
-    } else {
-        diff.tv_sec = end.tv_sec - start.tv_sec;
-        diff.tv_nsec = end.tv_nsec - start.tv_nsec;
-    }
-
-    return diff;
-}
+#include "../include/util.h"
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
     struct timespec start_time, end_time, time_difference;
     double extra_time;
+
+    // PROTOTYPE events
+
+    // intel on keyboard.
+    MLV_Keyboard_modifier mod;
+    MLV_Keyboard_button sym;
+    MLV_Button_state state;
+
+    // event code.
+    MLV_Event event;
 
     MLV_create_window("Tower Defense", NULL, WIDTH * CELL_SIZE,
                       HEIGHT * CELL_SIZE);
@@ -40,17 +38,41 @@ int main(int argc, char* argv[]) {
     int terminated = 0;
     int count_frame = 0;
     while (!terminated) {
+        // PROTOTYPE Reading event
+        event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, NULL,
+                              &state);
+
+        if (event == MLV_KEY) {
+            switch (sym) {
+                case 'q':  // Quit the game
+                    terminated = 1;
+                    break;
+
+                case 'w': // Summon a wave
+                    if (game.field.nest.monster_remaining == 0) {
+                        fprintf(stderr, "%c\n", sym);
+                        init_new_wave(&(game.field.nest), game.wave);
+                        game.wave++;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // End reading event
+
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 
         update_game(&game);
 
         // Drawing
         draw_board(game.field);
-        
+
         for (int i = 0; i < game.field.monsters.curr_size; i++) {
             draw_monster(game.field.monsters.lst[i]);
         }
-        
+
         MLV_update_window();
         // End drawing
 
@@ -70,7 +92,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    MLV_wait_seconds(5);
     MLV_free_window();
     return 0;
 }
