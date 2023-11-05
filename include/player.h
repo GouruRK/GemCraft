@@ -13,6 +13,14 @@ typedef struct {
 } Player;
 
 /**
+ * @brief PROTOTYPE
+ * Initialize a player with an empty inventory
+ * 
+ * @return Player 
+ */
+Player init_player();
+
+/**
  * @brief Gives the amout of mana require to create a pure gem of 
  *        a given level 
  * 

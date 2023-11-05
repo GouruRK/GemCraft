@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c17 -Wall -Wfatal-errors -pedantic
 PFLAGS = include
-LFLAGS = -lMLV
+LFLAGS = -lMLV -lm
 
 EXEC = GemCraft
 

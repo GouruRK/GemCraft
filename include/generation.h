@@ -1,7 +1,7 @@
 #ifndef GENERATION_H
 #define GENERATION_H
 
-#include "../include/field.h"
+#include "field.h"
 
 /**
  * @brief Generate a field containing a nest, a camp, and a path for monsters 

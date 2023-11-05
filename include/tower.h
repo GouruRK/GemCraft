@@ -3,9 +3,8 @@
 
 #include "gem.h"
 #include "position.h"
-#include "field.h"
 
-#define MAX_TOWER WIDTH*HEIGHT
+#define MAX_TOWER 28*22
 
 typedef struct {
     Gem gem;
