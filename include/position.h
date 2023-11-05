@@ -13,7 +13,7 @@ typedef struct {
  * @param y ordinate
  * @return new position
  */
-Position create_position(float x, float y);
+Position init_position(float x, float y);
 
 /**
  * @brief Calculate the direction in radians between two point a and b

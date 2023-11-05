@@ -5,6 +5,7 @@
 
 typedef struct  {
     // TODO : list structure for gems
+    Gem* gems;
 } ListGems;
 
 #endif

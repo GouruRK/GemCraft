@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-Position create_position(float x, float y) {
+Position init_position(float x, float y) {
     Position pos;
     pos.x = x;
     pos.y = y;

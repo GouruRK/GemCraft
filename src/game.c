@@ -5,6 +5,8 @@
 #include "../include/error.h"
 #include "../include/generation.h"
 #include "../include/player.h"
+#include "../include/field.h"   // needed to test towers
+#include "../include/tower.h"    // needed to test towers 
 
 Error init_game(Game* game) {
     game->wave = 0;
@@ -19,6 +21,13 @@ Error init_game(Game* game) {
     game->field = generate_field();
 
     game->player = init_player();
+
+    // PROTOTYEP adding a tower (first tower, free cost)
+    place_tower(&(game->field), &(game->player), init_tower(init_position(27, 21)));
+    place_tower(&(game->field), &(game->player), init_tower(init_position(27, 20)));
+    place_tower(&(game->field), &(game->player), init_tower(init_position(27, 19)));
+    place_tower(&(game->field), &(game->player), init_tower(init_position(27, 18)));
+    place_tower(&(game->field), &(game->player), init_tower(init_position(27, 17)));
 
     // PROTOTYPE adding a single monster
     spawn_monster_field(&game->field, 0, NORMAL);

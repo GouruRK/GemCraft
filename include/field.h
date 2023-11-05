@@ -34,6 +34,14 @@ typedef struct {
     MonsterPath monster_path;
 } Field;
 
+Objects get_field(Field field, Position pos);
+
+void add_to_field(Field* field, Position pos, Objects object);
+
+//-------------------------------Tower related-------------------------------
+
+Error place_tower(Field* field, Player* player, Tower tower);
+
 //-------------------------------Monster related-------------------------------
 
 /**
@@ -55,5 +63,7 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave);
  * @param player
  */
 void update_monster_dest(Monster* monster, const Field* field, Player* player);
+
+
 
 #endif

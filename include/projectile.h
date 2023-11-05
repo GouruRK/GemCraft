@@ -25,14 +25,14 @@ typedef struct _node {
  * @param source 
  * @return created projectile
  */
-Projectile create_projectile(Position pos, Monster* target, Gem source);
+Projectile init_projectile(Position pos, Monster* target, Gem source);
 
 /**
  * @brief Creates an empty node object.
  * 
  * @return Node* if success, else NULL
  */
-Node* create_node(void);
+Node* init_node(void);
 
 /**
  * @brief Creates a node object with given projectile.
@@ -40,7 +40,7 @@ Node* create_node(void);
  * @param proj projectile
  * @return Node* if success, else NULL
  */
-Node* create_filled_node(Projectile proj);
+Node* init_filled_node(Projectile proj);
 
 /**
  * @brief Creates a array object.

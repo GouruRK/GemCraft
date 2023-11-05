@@ -8,7 +8,6 @@ typedef struct {
     int mana;               // Current quantity of mana
     int mana_lvl;           // Level of the mana pool
     int max_quantity;       // Maximum of mana that can be stored in the pool
-    int max_lvl;            // Maximum reachable (2000 by default)
     Inventory inventory;
 } Player;
 
@@ -18,7 +17,7 @@ typedef struct {
  * 
  * @return Player 
  */
-Player init_player();
+Player init_player(void);
 
 /**
  * @brief Gives the amout of mana require to create a pure gem of 
@@ -27,7 +26,7 @@ Player init_player();
  * @param level wanted level
  * @return amout of mana
  */
-int mana_require_for_level(int level);
+int mana_require_for_gem(int level);
 
 /**
  * @brief Sets a randomly generated pure gem of `level` at `res`, and 

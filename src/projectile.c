@@ -3,7 +3,7 @@
 #include "../include/projectile.h"
 #include "../include/position.h"
 
-Projectile create_projectile(Position pos, Monster* target, Gem source) {
+Projectile init_projectile(Position pos, Monster* target, Gem source) {
     Projectile proj;
     proj.pos = pos;
     proj.target = target;
@@ -12,12 +12,12 @@ Projectile create_projectile(Position pos, Monster* target, Gem source) {
     return proj;
 }
 
-Node* create_node(void) {
+Node* init_node(void) {
     return (Node*)malloc(sizeof(Node));
 }
 
-Node* create_filled_node(Projectile proj) {
-    Node* node = create_node();
+Node* init_filled_node(Projectile proj) {
+    Node* node = init_node();
     if (node) {
         node->proj = proj;
         node->next = NULL;
@@ -25,7 +25,7 @@ Node* create_filled_node(Projectile proj) {
     return node;
 }
 
-ProjectileArray create_array(void) {
+ProjectileArray init_array(void) {
     return NULL;
 }
 
@@ -39,7 +39,7 @@ int add_node(ProjectileArray* array, Node* node) {
 }
 
 int add_projectile(ProjectileArray* array, Projectile proj) {
-    return add_node(array, create_filled_node(proj));
+    return add_node(array, init_filled_node(proj));
 }
 
 Node* pop_node(ProjectileArray* array) {
@@ -62,9 +62,9 @@ void free_array(ProjectileArray* array) {
 
 // Test allocation and free
 // int main(void) {
-//     ProjectileArray array = create_array();
-//     add_projectile(&array, create_projectile((Position){}, NULL, (Gem){}));
-//     add_projectile(&array, create_projectile((Position){}, NULL, (Gem){}));
-//     add_projectile(&array, create_projectile((Position){}, NULL, (Gem){}));
+//     ProjectileArray array = init_array();
+//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
+//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
+//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
 //     free_array(&array);
 // }

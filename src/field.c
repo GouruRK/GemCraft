@@ -6,6 +6,39 @@
 #include "../include/player.h"
 #include "../include/position.h"
 
+
+Objects get_field(Field field, Position pos) {
+    return field.board[(int)pos.y][(int)pos.x];
+}
+
+void add_to_field(Field* field, Position pos, Objects object) {
+    field->board[(int)(pos.y)][(int)(pos.x)] = object;
+}
+
+//-------------------------------Monster related-------------------------------
+
+Error place_tower(Field* field, Player* player, Tower tower) {
+    int cost = field->towers.next_tower_cost;
+    Error err;
+
+    if (player->mana < cost) {
+        return NOT_ENOUGHT_MANA;
+    }
+
+    if (get_field(*field, tower.pos) != EMPTY) {
+        return NON_EMPTY_PLACE;
+    }
+
+    err = add_tower_array(&(field->towers), tower);
+    if (err != OK) {
+        return err;
+    }
+
+    add_to_field(field, tower.pos, TOWER);
+    player->mana -= cost;
+    return OK;
+}
+
 //-------------------------------Monster related-------------------------------
 
 Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave) {
