@@ -34,12 +34,45 @@ typedef struct {
     MonsterPath monster_path;
 } Field;
 
+//-------------------------------General-------------------------------
+
+/**
+ * @brief Check if a given position is inside the field dimensions 
+ * 
+ * @param pos position to check
+ * @return true if the position is inside the field, else false
+ */
+bool in_field(Position pos);
+
+/**
+ * @brief Get the field object at given position
+ * 
+ * @param field field to get the object
+ * @param pos position to check
+ * @return object store at position
+ */
 Objects get_field(Field field, Position pos);
 
+/**
+ * @brief Add an object to field
+ * 
+ * @param field
+ * @param pos
+ * @param object
+ */
 void add_to_field(Field* field, Position pos, Objects object);
 
 //-------------------------------Tower related-------------------------------
 
+/**
+ * @brief Create a tower, remove the required mana from the 
+ *        player and add it to the field if the place is empty
+ * 
+ * @param field 
+ * @param player 
+ * @param tower 
+ * @return
+ */
 Error place_tower(Field* field, Player* player, Tower tower);
 
 //-------------------------------Monster related-------------------------------
@@ -63,7 +96,5 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave);
  * @param player
  */
 void update_monster_dest(Monster* monster, const Field* field, Player* player);
-
-
 
 #endif

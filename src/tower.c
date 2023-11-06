@@ -13,13 +13,6 @@ Tower init_tower(Position pos) {
     return tower;
 }
 
-TowerArray create_tower_array(void) {
-    TowerArray array;
-    array.cur_len = 0;
-    array.next_tower_cost = 0;
-    return array;
-}
-
 Error add_gem_to_tower(Tower* tower, Gem gem) {
     if (tower->hold_gem) {
         return NON_EMPTY_TOWER;
@@ -35,6 +28,13 @@ Error remove_gem_to_tower(Tower* tower, Gem* gem) {
     *gem = tower->gem;
     tower->hold_gem = false;
     return OK;
+}
+
+TowerArray create_tower_array(void) {
+    TowerArray array;
+    array.cur_len = 0;
+    array.next_tower_cost = 0;
+    return array;
 }
 
 Error add_tower_array(TowerArray* array, Tower tower) {

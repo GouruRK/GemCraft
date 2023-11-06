@@ -11,6 +11,7 @@ typedef enum {
     NON_EMPTY_PLACE = -6,
     NON_EMPTY_TOWER = -7,
     EMPTY_TOWER = -8,
+    OUT_OF_FIELD = -9,
 } Error;
 
 #endif
