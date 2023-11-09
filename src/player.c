@@ -69,6 +69,29 @@ Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
     return OK;
 }
 
+Error mix_gem_at(Player* player, int index_a, int index_b) {
+    Gem a, b, res;
+    Error err;
+    Inventory* inv = &(player->inventory);
+
+    if ((err = remove_gem_at(inv, &a, index_a)) != OK) {
+        return err;
+    }
+    if ((err = remove_gem_at(inv, &b, index_b)) != OK) {
+        store_gem_at(inv, a, index_a);
+        return err;
+    }
+
+    if ((err = combine_gem(player, a, b, &res)) != OK) {
+        store_gem_at(inv, a, index_a);
+        store_gem_at(inv, b, index_b);
+        return err;
+    }
+
+    store_gem_at(inv, res, index_a);
+    return OK;
+}
+
 // int main(void) {
 //     #include <stdio.h>
 //     printf("Test de mana_require_for_gem : \n");

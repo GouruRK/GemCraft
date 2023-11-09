@@ -3,19 +3,34 @@
 
 #include <stdbool.h>
 
-#include "list_gem.h"
+#include "gem.h"
+
+#define INVENTORY_SIZE 32
 
 typedef struct {
-    bool free;
-    Gem* gem;
-} Indexes;
+    Gem gem;
+    bool empty;
+} GemNode;
 
-typedef struct  {
-    int max_gem;                // TODO: static array ?
-    Indexes* inventory_place;
-    ListGems* list;
+typedef struct {
+    int nb_gems;
+    GemNode array[INVENTORY_SIZE];
 } Inventory;
 
-int add_inventory(Inventory* inv, Gem gem);
+GemNode init_gem_node(void);
+
+GemNode init_filled_gem_node(Gem gem);
+
+Inventory init_inventory(void);
+
+Error store_gem_at(Inventory* inv, Gem gem, int index);
+
+Error remove_gem_at(Inventory* inv, Gem* gem, int index);
+
+Error next_free_index(Inventory* inv, int* index);
+
+Error get_gem(Inventory* inv, Gem* gem, int index);
+
+Error add_inventory(Inventory* inv, Gem gem);
 
 #endif

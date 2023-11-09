@@ -52,4 +52,6 @@ int generate_gem(Player* player, int level, Gem* res);
  */
 int combine_gem(Player* player, Gem a, Gem b, Gem* res);
 
+Error mix_gem_at(Player* player, int index_a, int index_b);
+
 #endif
