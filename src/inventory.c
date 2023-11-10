@@ -57,14 +57,6 @@ Error next_free_index(Inventory* inv, int* index) {
     return INVENTORY_FULL;
 }
 
-Error get_gem(Inventory* inv, Gem* gem, int index) {
-    if (inv->array[index].empty) {
-        return EMPTY_INVENTORY_PLACE;
-    }
-    *gem = inv->array[index].gem;
-    return OK;
-}
-
 Error add_inventory(Inventory* inv, Gem gem) {
     int index;
     Error err;
