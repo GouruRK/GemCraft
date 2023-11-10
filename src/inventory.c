@@ -66,7 +66,7 @@ Error get_gem(Inventory* inv, Gem* gem, int index) {
 }
 
 Error add_inventory(Inventory* inv, Gem gem) {
-    int* index;
+    int index;
     Error err;
     if ((err = next_free_index(inv, &index)) != OK) {
         return err;

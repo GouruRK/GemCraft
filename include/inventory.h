@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "gem.h"
+#include "errors.h"
 
 #define INVENTORY_SIZE 32
 

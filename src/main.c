@@ -47,10 +47,10 @@ int main(int argc, char* argv[]) {
         // Drawing
         draw_board(game.field);
         
-        for (int i = 0; i < game.field.monsters.curr_size; i++) {
-            draw_monster(game.field.monsters.lst[i]);
-        }
-        
+        draw_gem(init_position(20, 20), MLV_COLOR_GREEN1);
+        draw_gem(init_position(19, 20), MLV_COLOR_BLUE);
+        draw_gem(init_position(18, 20), MLV_COLOR_RED);
+
         MLV_update_window();
         // End drawing
 

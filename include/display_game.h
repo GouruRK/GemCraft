@@ -9,4 +9,6 @@
 void draw_board(Field field);
 void draw_monster(const Monster m);
 
+void draw_gem(Position pos, MLV_Color color);
+
 #endif

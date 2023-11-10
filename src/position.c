@@ -19,6 +19,5 @@ float calc_direction(Position a, Position b) {
 Position cell_center(Position cell) {
     cell.x = (int)cell.x + 0.5;
     cell.y = (int)cell.y + 0.5;
-
     return cell;
 }
