@@ -12,6 +12,7 @@
 #include "../include/monster.h"
 #include "../include/player.h"
 #include "../include/position.h"
+#include "../include/draw_gems.h"
 
 struct timespec diff_time(struct timespec start, struct timespec end) {
     struct timespec diff;
@@ -46,10 +47,22 @@ int main(int argc, char* argv[]) {
 
         // Drawing
         draw_board(game.field);
-        
-        draw_gem(init_position(20, 20), MLV_COLOR_GREEN1);
-        draw_gem(init_position(19, 20), MLV_COLOR_BLUE);
-        draw_gem(init_position(18, 20), MLV_COLOR_RED);
+
+        // testing triangular gems
+        draw_triangle_gem(init_position(20, 21), MLV_COLOR_GREEN1, CELL_SIZE);
+        draw_triangle_gem(init_position(19, 21), MLV_COLOR_BLUE, CELL_SIZE);
+        draw_triangle_gem(init_position(18, 21), MLV_COLOR_RED, CELL_SIZE);
+
+        // testing square gems
+        draw_square_gem(init_position(20, 20), MLV_COLOR_GREEN1, CELL_SIZE);
+        draw_square_gem(init_position(19, 20), MLV_COLOR_BLUE, CELL_SIZE);
+        draw_square_gem(init_position(18, 20), MLV_COLOR_RED, CELL_SIZE);
+
+        // test hexagonal gems
+        draw_hexa_gem(init_position(20, 19), MLV_COLOR_GREEN1, CELL_SIZE);
+        draw_hexa_gem(init_position(19, 19), MLV_COLOR_BLUE, CELL_SIZE);
+        draw_hexa_gem(init_position(18, 19), MLV_COLOR_RED, CELL_SIZE);
+    
 
         MLV_update_window();
         // End drawing
