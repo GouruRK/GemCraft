@@ -46,7 +46,7 @@ void draw_triangle_gem(Position pos, MLV_Color color, int cell_width) {
 
     static float inline_tri[NB_TRIG_VRTX][2] = {
         {-0.2, +0.2},
-        {0,    -0.15},
+        {0,    -0.1},
         {+0.2, +0.2}
     };
 
