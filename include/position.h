@@ -25,6 +25,15 @@ Position init_position(float x, float y);
 float calc_direction(Position a, Position b);
 
 /**
+ * @brief Calculate the distance between two point
+ * 
+ * @param a 
+ * @param b 
+ * @return float 
+ */
+float calc_distance(Position a, Position b);
+
+/**
  * @brief Find the center of a cell
  * 
  * @param cell 

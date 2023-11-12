@@ -1,3 +1,5 @@
+#include "util.h"
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -20,4 +22,8 @@ struct timespec diff_time(struct timespec start, struct timespec end) {
     }
 
     return diff;
+}
+
+color random_color() {
+    return random_int(0, 359);
 }

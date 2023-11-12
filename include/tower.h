@@ -7,7 +7,7 @@
 #include "position.h"
 #include "errors.h"
 
-#define MAX_TOWER 616
+#define MAX_TOWER 616  // 22 * 28 = number of tiles on the field
 
 typedef struct {
     Gem gem;

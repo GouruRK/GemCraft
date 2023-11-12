@@ -5,11 +5,15 @@
 
 #include "errors.h"
 #include "position.h"
+#include "util.h"
 
 #define MAX_WAVE_SIZE 24
 
 typedef enum {
     NONE,
+    PYRO_RESIDUE,
+    DENDRO_RESIDUE,
+    HYDRO_RESIDUE,
     SPLASH,      // Pyro
     PARASIT,     // Dendro
     SLOW,        // Hydro
@@ -28,10 +32,14 @@ typedef enum {
 typedef struct {
     int health;
     int max_health;
-    int color;
-    int index_path; // Position in the path array in a field
+    int index_path;   // Position in the path array in a field
+    int next_damage;  // Amount of damage taken by the effect
+    frame effect_duration;
+    frame damage_timer;
+    frame frame_before_next_damage;
+    color color;
+    float default_speed;
     float speed;  // Number of cases per seconde traveled
-    struct timespec effect_duration;
     Position pos;
     Position dest;
     Status status;
@@ -65,11 +73,30 @@ void move_monster(Monster* monster);
 
 /**
  * @brief Tell if a monster is near enough his destination
- * 
- * @param monster 
- * @return int 
+ *
+ * @param monster
+ * @return int
  */
-int has_reach_dest(Monster* monster);
+int has_reach_dest(const Monster* monster);
+
+/**
+ * @brief Tell if monster health is > 0
+ *
+ * @param monster
+ * @return int
+ */
+int is_alive(const Monster* monster);
+
+// Handle effect on the monster
+typedef void (*update_effect)(Monster* monster);
+
+void update_parasit_effect(Monster* monster);
+
+void update_slow_effect(Monster* monster);
+
+void update_spraying_effect(Monster* monster);
+
+void update_petrificus_effect(Monster* monster);
 
 /*---------------------------Monster array related---------------------------*/
 

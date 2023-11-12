@@ -1,42 +1,44 @@
 #include "../include/monster.h"
 
-#include <game.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-#include "../include/position.h"
-#include "../include/util.h"
-
-#define FLOAT_COMPARISON_MARGIN 0.01
+#include "game.h"
+#include "position.h"
+#include "util.h"
 
 Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
                      Position dest) {
     Monster monster;
 
-    int h = 100;
+    int h = 1000;
 
     monster.max_health = (int)(h * powf(1.2, wave_number));
     monster.health = monster.max_health;
-    monster.color = random_int(0, 359);
+    monster.color = random_color();
 
     monster.pos = pos_init; 
     monster.dest = dest;
 
     monster.index_path = 0;
 
-    monster.speed = 1;
+    monster.default_speed = 1;
+    monster.speed = monster.default_speed;
     monster.status = NONE;
 
-    monster.effect_duration.tv_nsec = 0;
-    monster.effect_duration.tv_sec = 0;
+    monster.effect_duration = 0;
+    monster.damage_timer = 0;
+    monster.next_damage = 0;
 
     switch (type_wave) {
-        case NORMAL:
+        case BOSS:
             monster.health *= 12;
             break;
 
         case FAST:
-            monster.speed = 2;
+            monster.default_speed = 2;
+            monster.speed = monster.default_speed;
             break;
 
         default:
@@ -53,7 +55,7 @@ void move_monster(Monster* monster) {
     monster->pos.y += sin(direction) * (monster->speed / FRAMERATE);
 }
 
-int has_reach_dest(Monster* monster) {
+int has_reach_dest(const Monster* monster) {
     if (monster->dest.x - FLOAT_COMPARISON_MARGIN < monster->pos.x &&
         monster->pos.x < monster->dest.x + FLOAT_COMPARISON_MARGIN &&
         monster->dest.y - FLOAT_COMPARISON_MARGIN < monster->pos.y &&
@@ -62,6 +64,61 @@ int has_reach_dest(Monster* monster) {
     }
 
     return 0;
+}
+
+int is_alive(const Monster* monster) {
+    return monster->health > 0;
+}
+
+// All function to update monster effect
+
+static void reset_status(Monster* monster) {
+    monster->status = NONE;
+    monster->damage_timer = 0;
+    fprintf(stderr, "coucou, %f\n", monster->speed);
+    monster->speed = monster->default_speed;
+    fprintf(stderr, "coucou, %f\n", monster->speed);
+    monster->effect_duration = 0;
+    monster->frame_before_next_damage = 0;
+    monster->next_damage = 0;
+}
+
+void update_parasit_effect(Monster* monster) {
+    if (monster->frame_before_next_damage == 0) {
+        monster->health -= monster->next_damage;
+        monster->frame_before_next_damage = monster->damage_timer;
+    }
+    
+    monster->effect_duration--;
+    monster->frame_before_next_damage--;
+
+    if (monster->effect_duration == 0) {
+        reset_status(monster);
+    }
+}
+
+void update_slow_effect(Monster* monster) {
+    monster->effect_duration--;
+
+    if (monster->effect_duration == 0) {
+        reset_status(monster);
+    }
+}
+
+void update_spraying_effect(Monster* monster) {
+    monster->effect_duration--;
+
+    if (monster->effect_duration == 0) {
+        reset_status(monster);
+    }
+}
+
+void update_petrificus_effect(Monster* monster) {
+    monster->effect_duration--;
+
+    if (monster->effect_duration == 0) {
+        reset_status(monster);
+    }
 }
 
 /*---------------------------Monster array related---------------------------*/

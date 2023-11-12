@@ -3,6 +3,11 @@
 
 #include <time.h>
 
+#define FLOAT_COMPARISON_MARGIN 0.05
+
+typedef int color;  // Color represented with an angle in degrees (0-359)
+typedef int frame;  // Count frame
+
 /**
  * @brief Generate a random float between '0' and '1'.
  * 
@@ -27,5 +32,12 @@ int random_int(int min, int max);
  * @return struct timespec 
  */
 struct timespec diff_time(struct timespec start, struct timespec end);
+
+/**
+ * @brief Generate a random color
+ * 
+ * @return color 
+ */
+color random_color();
 
 #endif

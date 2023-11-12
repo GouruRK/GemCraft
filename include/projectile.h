@@ -6,8 +6,8 @@
 #include "gem.h"
 
 typedef struct {
-    float speed;
     Position pos;
+    float speed;
     Monster* target;
     Gem source;
 } Projectile;
@@ -16,6 +16,8 @@ typedef struct _node {
     struct _node* next;
     Projectile proj;
 } Node, *ProjectileArray;
+
+/*-----------------------------Projectile related-----------------------------*/
 
 /**
  * @brief Creates a projectile object.
@@ -26,6 +28,31 @@ typedef struct _node {
  * @return created projectile
  */
 Projectile init_projectile(Position pos, Monster* target, Gem source);
+
+/**
+ * @brief Check if a projectile has reach his target
+ * 
+ * @param proj 
+ * @return int 
+ */
+int has_reach_target(Projectile* proj);
+
+/**
+ * @brief Deald damage to the target and apply effect
+ * 
+ * @param proj 
+ * @param array
+ */
+void hit_target(Projectile* proj, MonsterArray* array);
+
+/**
+ * @brief Move a projectile toward his target
+ * 
+ * @param proj 
+ */
+void move_projectile(Projectile* proj);
+
+/*-------------------------------Array Related--------------------------------*/
 
 /**
  * @brief Creates an empty node object.

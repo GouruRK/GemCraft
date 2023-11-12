@@ -41,7 +41,7 @@ Error place_tower(Field* field, Player* player, Tower tower) {
     return OK;
 }
 
-//-------------------------------Monster related-------------------------------
+/*-------------------------------Monster related------------------------------*/
 
 Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave) {
     Monster m = init_monster(cell_center(field->nest.pos), type_wave, wave_nb,
@@ -78,6 +78,8 @@ void update_monster_dest(Monster* monster, const Field* field, Player* player) {
             cell_center(field->monster_path.path[monster->index_path]);
     }
 }
+
+/*--------------------------------Wave related--------------------------------*/
 
 /**
  * @brief Generate a random wave type

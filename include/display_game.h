@@ -3,10 +3,13 @@
 
 #include "field.h"
 #include "monster.h"
+#include "projectile.h"
 
 #define CELL_SIZE 32
 
+// PROTOTYPE
 void draw_board(Field field);
-void draw_monster(const Monster m);
+void draw_monster(const Monster* m);
+void draw_projectile(const Projectile* proj);
 
 #endif

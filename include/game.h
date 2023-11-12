@@ -6,6 +6,7 @@
 #include "errors.h"
 #include "field.h"
 #include "player.h"
+#include "projectile.h"
 
 #define FRAMERATE 60
 #define TIMER_WAVE 35  // Max time between each wave in seconds
@@ -39,5 +40,13 @@ Error init_game(Game* game);
  * @return Error
  */
 Error update_game(Game* game);
+
+/**
+ * @brief PROTOTYPE updating one projectile
+ * 
+ * @param proj 
+ * @return Error 
+ */
+Error update_projectile(Projectile* proj, MonsterArray* array);
 
 #endif
