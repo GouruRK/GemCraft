@@ -10,7 +10,15 @@
 #define NB_TRIG_VRTX 3
 #define PADDING 1
 
-void draw_outline(Position pos, float points[][2], int length, int cell_width) {
+/**
+ * @brief Draw outlines of a gem
+ * 
+ * @param pos middle of the gem to draw
+ * @param points array of points that forms the outline
+ * @param length length of the array
+ * @param cell_width cell size (graphic)
+ */
+static void draw_outline(Position pos, float points[][2], int length, int cell_width) {
     for (int i = 0; i < length - 1; i++) {
         MLV_draw_line((pos.x + points[i][0]) * cell_width,
                       (pos.y + points[i][1]) * cell_width, 
@@ -25,7 +33,16 @@ void draw_outline(Position pos, float points[][2], int length, int cell_width) {
                   MLV_COLOR_BLACK);
 }
 
-void draw_connections(Position pos, float inline_p[][2], float outline_p[][2], int length, int cell_width) {
+/**
+ * @brief Draw connections between outer and inner line of a gem
+ * 
+ * @param pos middle of the gem to draw
+ * @param inline_p array of points that forms the inline
+ * @param outline_p array of points that forms the outline
+ * @param length length of both inner and outer points array
+ * @param cell_width cell size (graphic)
+ */
+static void draw_connections(Position pos, float inline_p[][2], float outline_p[][2], int length, int cell_width) {
     for (int i = 0; i < length; i++) {
         MLV_draw_line((pos.x + outline_p[i][0]) * cell_width,
                       (pos.y + outline_p[i][1]) * cell_width, 
