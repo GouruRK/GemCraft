@@ -51,8 +51,11 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
 void move_monster(Monster* monster) {
     float direction = calc_direction(monster->pos, monster->dest);
 
-    monster->pos.x += cos(direction) * (monster->speed / FRAMERATE);
-    monster->pos.y += sin(direction) * (monster->speed / FRAMERATE);
+    float fluctuation = uniform() * 0.2 + 0.9;
+    float step = fluctuation * (monster->speed / FRAMERATE);
+
+    monster->pos.x += cos(direction) * step;
+    monster->pos.y += sin(direction) * step;
 }
 
 int has_reach_dest(const Monster* monster) {
@@ -71,19 +74,18 @@ int is_alive(const Monster* monster) {
 }
 
 // All function to update monster effect
+typedef void (*update_effect)(Monster* monster);
 
 static void reset_status(Monster* monster) {
     monster->status = NONE;
     monster->damage_timer = 0;
-    fprintf(stderr, "coucou, %f\n", monster->speed);
     monster->speed = monster->default_speed;
-    fprintf(stderr, "coucou, %f\n", monster->speed);
     monster->effect_duration = 0;
     monster->frame_before_next_damage = 0;
     monster->next_damage = 0;
 }
 
-void update_parasit_effect(Monster* monster) {
+static void update_parasit_effect(Monster* monster) {
     if (monster->frame_before_next_damage == 0) {
         monster->health -= monster->next_damage;
         monster->frame_before_next_damage = monster->damage_timer;
@@ -97,7 +99,7 @@ void update_parasit_effect(Monster* monster) {
     }
 }
 
-void update_slow_effect(Monster* monster) {
+static void update_slow_effect(Monster* monster) {
     monster->effect_duration--;
 
     if (monster->effect_duration == 0) {
@@ -105,7 +107,7 @@ void update_slow_effect(Monster* monster) {
     }
 }
 
-void update_spraying_effect(Monster* monster) {
+static void update_spraying_effect(Monster* monster) {
     monster->effect_duration--;
 
     if (monster->effect_duration == 0) {
@@ -113,11 +115,25 @@ void update_spraying_effect(Monster* monster) {
     }
 }
 
-void update_petrificus_effect(Monster* monster) {
+static void update_petrificus_effect(Monster* monster) {
     monster->effect_duration--;
 
     if (monster->effect_duration == 0) {
         reset_status(monster);
+    }
+}
+
+void update_effect_monster(Monster* monster) {
+    static update_effect effect[] = {
+        [PARASIT] = update_parasit_effect,
+        [SLOW] = update_slow_effect,
+        [SPRAYING] = update_spraying_effect,
+        [PETRIFICUS] = update_petrificus_effect,
+    };
+
+    if (monster->status == PARASIT || monster->status == SLOW ||
+        monster->status == SPRAYING || monster->status == PETRIFICUS) {
+        effect[monster->status](monster);
     }
 }
 

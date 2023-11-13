@@ -1,8 +1,8 @@
 #include "projectile.h"
 
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "game.h"
 #include "position.h"
@@ -49,11 +49,11 @@ int has_reach_target(Projectile* proj) {
 /* Functions to apply status to a monster */
 typedef void (*apply_effect)(MonsterArray* array, Projectile* proj);
 
-static void apply_pyro_hydro(MonsterArray* array, Projectile* proj){
+static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {
     proj->target->status = SPRAYING;
     for (int i = 0; i < array->curr_size; i++) {
-        if (is_alive(&array->lst[i]) &&
-            calc_distance(proj->pos, array->lst[i].pos) < 3.5) {
+        float dist_proj_monster = calc_distance(proj->pos, array->lst[i].pos);
+        if (is_alive(&array->lst[i]) && dist_proj_monster < 3.5) {
             if (array->lst[i].status == NONE) {
                 array->lst[i].status = SPRAYING;
             }
@@ -94,7 +94,8 @@ static void apply_pyro(MonsterArray* array, Projectile* proj) {
 }
 
 static void apply_dendro(MonsterArray* array, Projectile* proj) {
-    if (proj->target->status == DENDRO_RESIDUE || proj->target->status == PARASIT) {
+    if (proj->target->status == DENDRO_RESIDUE ||
+        proj->target->status == PARASIT) {
         proj->target->status = PARASIT;
         proj->target->damage_timer = FRAMERATE / 2;
         proj->target->next_damage = 2.5 * hit_damage(proj) / 100;

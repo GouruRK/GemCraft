@@ -75,6 +75,7 @@ int main(int argc, char* argv[]) {
 
         update_game(&game);
 
+        // PROTOTYPE
         if (game.field.monsters.curr_size == 1) {
             proj = init_projectile(proj_pos, &game.field.monsters.lst[0], create_gem(HYDRO, 1, 240));
             proj_2 = init_projectile(pos_proj2, &game.field.monsters.lst[0], create_gem(PYRO, 1, 0));

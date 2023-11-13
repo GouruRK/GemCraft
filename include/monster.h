@@ -87,16 +87,12 @@ int has_reach_dest(const Monster* monster);
  */
 int is_alive(const Monster* monster);
 
-// Handle effect on the monster
-typedef void (*update_effect)(Monster* monster);
-
-void update_parasit_effect(Monster* monster);
-
-void update_slow_effect(Monster* monster);
-
-void update_spraying_effect(Monster* monster);
-
-void update_petrificus_effect(Monster* monster);
+/**
+ * @brief Update the effect on the monster
+ * 
+ * @param monster 
+ */
+void update_effect_monster(Monster* monster);
 
 /*---------------------------Monster array related---------------------------*/
 

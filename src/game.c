@@ -38,18 +38,16 @@ Error init_game(Game* game) {
     return OK;
 }
 
+/**
+ * @brief Calculate monster state for the current frame
+ * 
+ * @param monster 
+ * @param field 
+ * @param player 
+ * @return Error 
+ */
 static Error update_monster(Monster* monster, Field* field, Player* player) {
-    static update_effect effect[] = {
-        [PARASIT] = update_parasit_effect,
-        [SLOW] = update_slow_effect,
-        [SPRAYING] = update_spraying_effect,
-        [PETRIFICUS] = update_petrificus_effect,
-    };
-
-    if (monster->status == PARASIT || monster->status == SLOW ||
-        monster->status == SPRAYING || monster->status == PETRIFICUS) {
-        effect[monster->status](monster);
-    }
+    update_effect_monster(monster);
 
     move_monster(monster);
 
