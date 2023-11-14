@@ -62,7 +62,9 @@ int main(int argc, char* argv[]) {
                     }
                     break;
                 case 't': // place a tower
-                    set_interact_tower_placement(&(game.cur_interact), init_tower_at_mouse(CELL_SIZE));
+                    if (game.player.mana > game.field.towers.next_tower_cost) {
+                        set_interact_tower_placement(&(game.cur_interact), init_tower_at_mouse(CELL_SIZE));
+                    }
                     break;
                 default:
                     break;
@@ -70,14 +72,13 @@ int main(int argc, char* argv[]) {
         } else if(event == MLV_MOUSE_BUTTON) {
             switch (mouse_but) {
                 case MLV_BUTTON_LEFT:
-                    switch (game.cur_interact.current_action) {
-                        case PLACING_TOWER:
-                            drop_tower(&(game.cur_interact), &(game.field), &(game.player));
-                            break;
-                        default:
-                            break;
+                    if (game.cur_interact.current_action == PLACING_TOWER) {
+                        drop_tower(&(game.cur_interact), &(game.field), &(game.player));
                     }
-                    
+                    break;
+                case MLV_BUTTON_RIGHT:
+                    cancel_interaction(&(game.cur_interact));
+                    break;
                 default:
                     break;
             }

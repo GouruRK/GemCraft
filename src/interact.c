@@ -30,3 +30,9 @@ Error drop_tower(Interaction* interact, Field* field, Player* player) {
     interact->current_action = NO_ACTION;
     return OK;
 }
+
+void cancel_interaction(Interaction* interact) {
+    if (interact->current_action == PLACING_TOWER) {
+        interact->current_action = NO_ACTION;
+    }
+}

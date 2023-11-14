@@ -36,6 +36,21 @@ Interaction init_interact(void);
  */
 Error set_interact_tower_placement(Interaction* interact, Tower tower);
 
+/**
+ * @brief Place a tower on the current square of the field
+ * 
+ * @param interact 
+ * @param field 
+ * @param player 
+ * @return
+ */
 Error drop_tower(Interaction* interact, Field* field, Player* player);
+
+/**
+ * @brief Cancel current user interaction
+ * 
+ * @param interact 
+ */
+void cancel_interaction(Interaction* interact);
 
 #endif
