@@ -36,14 +36,6 @@ int main(int argc, char* argv[]) {
     Game game;
     init_game(&game);
 
-    // PROTOTYPE Adding a projectile
-    Position proj_pos = {0.5, 0.5};
-    Projectile proj;
-    proj.target = NULL;
-    Position pos_proj2 = {1.5, 1.5};
-    Projectile proj_2;
-    proj_2.target = NULL;
-
     int terminated = 0;
     int count_frame = 0;
     while (!terminated) {
@@ -75,26 +67,12 @@ int main(int argc, char* argv[]) {
 
         update_game(&game);
 
-        // PROTOTYPE
-        if (game.field.monsters.curr_size == 1) {
-            proj = init_projectile(proj_pos, &game.field.monsters.lst[0], create_gem(HYDRO, 1, 240));
-            proj_2 = init_projectile(pos_proj2, &game.field.monsters.lst[0], create_gem(PYRO, 1, 0));
-        }
-
-        // PROTOTYPE update one projectile
-        if (proj.target) {update_projectile(&proj, &(game.field.monsters)); };
-        if (proj_2.target) {update_projectile(&proj_2, &(game.field.monsters));};
-
         // Drawing
         draw_board(game.field);
 
         for (int i = 0; i < game.field.monsters.curr_size; i++) {
             draw_monster(&game.field.monsters.lst[i]);
         }
-
-        // PROTOTYPE draw one projectile
-        if (proj.target) {draw_projectile(&proj);};
-        if (proj_2.target) {draw_projectile(&proj_2);};
 
         MLV_update_window();
         // End drawing

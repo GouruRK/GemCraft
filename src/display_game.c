@@ -61,3 +61,6 @@ void draw_projectile(const Projectile* proj) {
                            (int)(proj->pos.y * CELL_SIZE), CELL_SIZE / 6,
                            MLV_COLOR_DARK_GREEN);
 }
+
+// Prototype
+

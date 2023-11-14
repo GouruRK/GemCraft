@@ -3,23 +3,36 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "../include/monster.h"
-#include "../include/player.h"
-#include "../include/position.h"
-#include "../include/util.h"
-#include "../include/game.h"
+#include "monster.h"
+#include "player.h"
+#include "position.h"
+#include "game.h"
+#include "util.h"
+
+//-------------------------------General------------------------------- 
+
+bool in_field(Position pos) {
+    return (0 <= pos.x && pos.x < WIDTH)
+            && (0 <= pos.y && pos.y < HEIGHT);
+}
 
 Objects get_field(Field field, Position pos) {
     return field.board[(int)pos.y][(int)pos.x];
 }
 
 void add_to_field(Field* field, Position pos, Objects object) {
-    field->board[(int)(pos.y)][(int)(pos.x)] = object;
+    if (!in_field(pos)) {
+        field->board[(int)(pos.y)][(int)(pos.x)] = object;
+    }
 }
 
 //-------------------------------Monster related-------------------------------
 
 Error place_tower(Field* field, Player* player, Tower tower) {
+    if (!in_field(tower.pos)) {
+        return OUT_OF_FIELD;
+    }
+    
     int cost = field->towers.next_tower_cost;
     Error err;
 

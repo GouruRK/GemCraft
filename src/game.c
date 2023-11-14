@@ -23,18 +23,6 @@ Error init_game(Game* game) {
 
     game->player = init_player();
 
-    // PROTOTYEP adding a tower (first tower, free cost)
-    place_tower(&(game->field), &(game->player),
-                init_tower(init_position(27, 21)));
-    place_tower(&(game->field), &(game->player),
-                init_tower(init_position(27, 20)));
-    place_tower(&(game->field), &(game->player),
-                init_tower(init_position(27, 19)));
-    place_tower(&(game->field), &(game->player),
-                init_tower(init_position(27, 18)));
-    place_tower(&(game->field), &(game->player),
-                init_tower(init_position(27, 17)));
-
     return OK;
 }
 
