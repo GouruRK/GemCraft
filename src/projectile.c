@@ -46,7 +46,7 @@ int has_reach_target(Projectile* proj) {
     return 0;
 }
 
-/* Functions to apply status to a monster */
+/* Functions to apply status to the target */
 typedef void (*apply_effect)(MonsterArray* array, Projectile* proj);
 
 static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {

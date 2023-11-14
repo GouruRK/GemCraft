@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <stdio.h>
 
-#include "../include/field.h"
-#include "../include/position.h"
+#include "field.h"
+#include "position.h"
+#include "game.h"
+#include "nest.h"
 
 #define PADDING 2  // Distance between elements
 
@@ -73,15 +76,11 @@ static void empty_field(Field* field) {
 static void generate_nest(Field* field) {
     int x = (rand() % (WIDTH - PADDING * 2)) + PADDING;
     int y = (rand() % (HEIGHT - PADDING * 2)) + PADDING;
+    Position nest_pos = {x, y};
 
     field->board[y][x] = NEST;
-    field->nest.pos.x = x;
-    field->nest.pos.y = y;
-
-    field->nest.monster_remaining = 0;
-    field->nest.nb_frame_before_next_spawn = -1;
-    field->nest.nb_frame_between_spawn = 35;
-    field->nest.type_wave = NORMAL;
+    
+    field->nest = init_nest(nest_pos);
 }
 
 /**
