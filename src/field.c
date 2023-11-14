@@ -21,7 +21,7 @@ Objects get_field(Field field, Position pos) {
 }
 
 void add_to_field(Field* field, Position pos, Objects object) {
-    if (!in_field(pos)) {
+    if (in_field(pos)) {
         field->board[(int)(pos.y)][(int)(pos.x)] = object;
     }
 }

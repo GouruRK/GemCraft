@@ -14,6 +14,8 @@
 #include "position.h"
 #include "util.h"
 #include "projectile.h"
+#include "interact.h"
+#include "tower_placement.h"
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
@@ -26,6 +28,9 @@ int main(int argc, char* argv[]) {
     MLV_Keyboard_modifier mod;
     MLV_Keyboard_button sym;
     MLV_Button_state state;
+
+    // intel on mouse
+    MLV_Mouse_button mouse_but;
 
     // event code
     MLV_Event event;
@@ -40,7 +45,7 @@ int main(int argc, char* argv[]) {
     int count_frame = 0;
     while (!terminated) {
         // PROTOTYPE Reading event
-        event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, NULL,
+        event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
                               &state);
 
         if (event == MLV_KEY) {
@@ -56,6 +61,23 @@ int main(int argc, char* argv[]) {
                         game.wave++;
                     }
                     break;
+                case 't': // place a tower
+                    set_interact_tower_placement(&(game.cur_interact), init_tower_at_mouse(CELL_SIZE));
+                    break;
+                default:
+                    break;
+            }
+        } else if(event == MLV_MOUSE_BUTTON) {
+            switch (mouse_but) {
+                case MLV_BUTTON_LEFT:
+                    switch (game.cur_interact.current_action) {
+                        case PLACING_TOWER:
+                            drop_tower(&(game.cur_interact), &(game.field), &(game.player));
+                            break;
+                        default:
+                            break;
+                    }
+                    
                 default:
                     break;
             }
@@ -73,6 +95,13 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < game.field.monsters.curr_size; i++) {
             draw_monster(&game.field.monsters.lst[i]);
         }
+
+        // Prototype
+        if (game.cur_interact.current_action == PLACING_TOWER) {
+            update_tower_placement(&(game.cur_interact.selected_tower), CELL_SIZE);
+            draw_tower(game.cur_interact.selected_tower);
+        }
+
 
         MLV_update_window();
         // End drawing

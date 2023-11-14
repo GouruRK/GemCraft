@@ -55,7 +55,7 @@ void draw_monster(const Monster* m) {
                            MLV_COLOR_BLUE);
 }
 
-// PROTOTYPE
+// Prototype
 void draw_projectile(const Projectile* proj) {
     MLV_draw_filled_circle((int)(proj->pos.x * CELL_SIZE),
                            (int)(proj->pos.y * CELL_SIZE), CELL_SIZE / 6,
@@ -63,4 +63,11 @@ void draw_projectile(const Projectile* proj) {
 }
 
 // Prototype
+void draw_tower(const Tower tower) {
+    Position center = cell_center(tower.pos);
 
+    MLV_draw_filled_circle((int)(center.x * CELL_SIZE),
+                           (int)(center.y * CELL_SIZE),
+                           CELL_SIZE / 3, 
+                           MLV_COLOR_PINK1);
+}

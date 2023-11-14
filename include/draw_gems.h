@@ -1,4 +1,5 @@
 #ifndef DRAW_GEMS_H
+
 #define DRAW_GEMS_H
 
 #include <MLV/MLV_all.h>

@@ -3,6 +3,8 @@
 
 #include "tower.h"
 
-void update_tower_placement(Tower* tower, int cell_width);
+Tower init_tower_at_mouse(int width);
+
+void update_tower_placement(Tower* tower, int width);
 
 #endif

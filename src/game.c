@@ -8,7 +8,10 @@
 #include "generation.h"
 #include "player.h"
 #include "projectile.h"
-#include "tower.h"  // needed to test towers
+#include "interact.h"
+#include "tower.h"  // needed to test towers"
+#include "interact.h"
+#include "tower_placement.h"
 
 Error init_game(Game* game) {
     game->wave = 0;
@@ -22,6 +25,7 @@ Error init_game(Game* game) {
     game->field = generate_field();
 
     game->player = init_player();
+    game->cur_interact = init_interact();
 
     return OK;
 }

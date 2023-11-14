@@ -11,5 +11,5 @@
 void draw_board(Field field);
 void draw_monster(const Monster* m);
 void draw_projectile(const Projectile* proj);
-
+void draw_tower(const Tower tower);
 #endif
