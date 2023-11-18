@@ -130,8 +130,8 @@ void init_new_wave(Nest* nest, int nb_wave) {
     nest->type_wave = generate_random_wave(nb_wave);
 
     nest->monster_remaining = 12;
-    nest->nb_frame_between_spawn = FRAMERATE;
-    nest->nb_frame_before_next_spawn = 0;
+
+    nest->spawn_clock = init_clock(1, -1);
 
     switch (nest->type_wave) {
         case CROWD:
@@ -139,7 +139,7 @@ void init_new_wave(Nest* nest, int nb_wave) {
             break;
 
         case FAST:
-            nest->nb_frame_between_spawn = FRAMERATE / 2;
+            nest->spawn_clock.interval = FRAMERATE / 2;
             break;
 
         case BOSS:

@@ -8,6 +8,7 @@
 #include "player.h"
 #include "position.h"
 #include "tower.h"
+#include "nest.h"
 
 #define WIDTH 28
 #define HEIGHT 22
@@ -26,14 +27,6 @@ typedef struct {
     int cur_len;
     Position path[MAX_LEN];
 } MonsterPath;
-
-typedef struct {
-    int monster_remaining;
-    int nb_frame_before_next_spawn;
-    int nb_frame_between_spawn;
-    TypeWave type_wave;
-    Position pos;
-} Nest;
 
 typedef struct {
     Position camp;
