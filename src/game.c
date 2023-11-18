@@ -46,6 +46,29 @@ static Error update_monster(Monster* monster, Field* field, Player* player) {
 }
 
 /**
+ * @brief Spawn monsters
+ * 
+ * @param game 
+ */
+static void update_nest(Game* game) {
+    if (game->field.nest.monster_remaining > 0 &&
+        game->field.nest.spawn_clock.next_interval == 0) {
+        spawn_monster_field(&(game->field), game->wave,
+                            game->field.nest.type_wave);
+        if (game->field.nest.monster_remaining == 1) {
+            game->field.nest.spawn_clock = init_clock(TIMER_WAVE, -1);
+        }
+        game->field.nest.monster_remaining--;
+        game->field.nest.spawn_clock.next_interval =
+            game->field.nest.spawn_clock.interval;
+    } else if (game->wave >= 1 &&
+               game->field.nest.spawn_clock.next_interval == 0) {
+        init_new_wave(&(game->field.nest), game->wave);
+        game->wave++;
+    }
+}
+
+/**
  * @brief Update all clocks in the game
  *
  * @param game
@@ -63,21 +86,7 @@ Error update_game(Game* game) {
         }
     }
 
-    if (game->field.nest.monster_remaining > 0 &&
-        game->field.nest.spawn_clock.next_interval == 0) {
-        spawn_monster_field(&(game->field), game->wave,
-                            game->field.nest.type_wave);
-        if (game->field.nest.monster_remaining == 1) {
-            game->field.nest.spawn_clock = init_clock(TIMER_WAVE, -1);
-        }
-        game->field.nest.monster_remaining--;
-        game->field.nest.spawn_clock.next_interval =
-            game->field.nest.spawn_clock.interval;
-    } else if (game->wave >= 1 &&
-               game->field.nest.spawn_clock.next_interval == 0) {
-        init_new_wave(&(game->field.nest), game->wave);
-        game->wave++;
-    }
+    update_nest(game);
 
     // Update timer of objects
     update_clocks(game);

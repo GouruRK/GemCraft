@@ -8,8 +8,6 @@
 typedef struct {
     int monster_remaining;  // Number of monster to spawn
     Clock spawn_clock;
-    // int nb_frame_before_next_spawn;
-    // int nb_frame_between_spawn;
     TypeWave type_wave;
     Position pos;
 } Nest;

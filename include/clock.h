@@ -11,17 +11,19 @@ typedef struct {
 
 /**
  * @brief Initialize a clock. Convert seconds to frame
- * 
- * @param interval Seconds between two actions
- * @param remaining_time Seconds before the timer end
- * @return Clock 
+ *
+ * @param interval Seconds between two actions.
+ * Negative value mean it is only a chronometer
+ * @param remaining_time Seconds before the timer end.
+ * Negative value for remaining_time mean infinite clock
+ * @return Clock
  */
 Clock init_clock(int interval, int remaining_time);
 
 /**
  * @brief Update the clock's timers.
- * 
- * @param clock 
+ *
+ * @param clock
  */
 void decrease_clock(Clock* clock);
 

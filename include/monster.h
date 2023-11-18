@@ -6,21 +6,9 @@
 #include "errors.h"
 #include "position.h"
 #include "util.h"
+#include "effect.h"
 
 #define MAX_WAVE_SIZE 24
-
-typedef enum {
-    NONE,
-    PYRO_RESIDUE,
-    DENDRO_RESIDUE,
-    HYDRO_RESIDUE,
-    SPLASH,      // Pyro
-    PARASIT,     // Dendro
-    SLOW,        // Hydro
-    SPRAYING,    // Pyro + Hydro
-    BURN,        // Pyro + Dendro
-    PETRIFICUS,  // Dendro + Hydro
-} Status;
 
 typedef enum {
     NORMAL,
@@ -33,16 +21,12 @@ typedef struct {
     int health;
     int max_health;
     int index_path;   // Position in the path array in a field
-    int next_damage;  // Amount of damage taken by the effect
-    frame effect_duration;
-    frame damage_timer;
-    frame frame_before_next_damage;
+    Effect status[STACKABLE_STATUS];  // The second status is spraying residue
     color color;
     float default_speed;
     float speed;  // Number of cases per seconde traveled
     Position pos;
     Position dest;
-    Status status;
 } Monster;
 
 typedef struct {
@@ -86,6 +70,14 @@ int has_reach_dest(const Monster* monster);
  * @return int
  */
 int is_alive(const Monster* monster);
+
+/**
+ * @brief Add an effect to a monster
+ * 
+ * @param monster 
+ * @param effect 
+ */
+void add_effect_monster(Monster* monster, Effect effect);
 
 /**
  * @brief Update the effect on the monster
