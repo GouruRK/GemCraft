@@ -18,7 +18,7 @@ typedef struct {
  * Negative value for remaining_time mean infinite clock
  * @return Clock
  */
-Clock init_clock(int interval, int remaining_time);
+Clock init_clock(float interval, float remaining_time);
 
 /**
  * @brief Update the clock's timers.

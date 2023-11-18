@@ -27,8 +27,7 @@ typedef struct {
 /**
  * @brief Initialize an effect to NONE and set timers to 0
  * 
- * @param effect 
  */
-Effect init_effect(Status status);
+Effect init_effect();
 
 #endif

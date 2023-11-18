@@ -1,19 +1,34 @@
 #include "clock.h"
 
+#include <stdio.h>
+
 #include "game.h"
 
-Clock init_clock(int interval, int remaining_time) {
+Clock init_clock(float interval, float remaining_time) {
     Clock res;
-    res.interval = interval * FRAMERATE;
-    res.next_interval = 0;
-    res.remaining_time = remaining_time * FRAMERATE;
+
+    if (interval < 0) {
+        res.interval = -1;
+        res.next_interval = -1;
+    } else {
+        res.interval = interval * FRAMERATE;
+        res.next_interval = 0;
+    }
+
+    if (remaining_time < 0) {
+        res.remaining_time = -1;
+    } else {
+        res.remaining_time = remaining_time * FRAMERATE;
+    }
+
+
 
     return res;
 }
 
 void decrease_clock(Clock* clock) {
-    if (clock->remaining_time == 0) {
-        return;
+    if (clock->remaining_time > 0) {
+        clock->remaining_time--;
     }
 
     if (clock->next_interval > 0) {
@@ -22,5 +37,5 @@ void decrease_clock(Clock* clock) {
         clock->next_interval = clock->interval;
     }
 
-    clock->remaining_time--;
+    
 }

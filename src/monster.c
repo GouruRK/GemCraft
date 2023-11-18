@@ -78,13 +78,14 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
 
 void move_monster(Monster* monster) {
     float direction = calc_direction(monster->pos, monster->dest);
+    float frame_speed = monster->speed;
 
     for (int i = 0; i < STACKABLE_STATUS; i++) {
         if (monster->status[i].status == SLOW) {
-            monster->speed /= 1.5;
+            frame_speed /= 1.5;
         }
         if (monster->status[i].status == SPRAYING) {
-            monster->speed /= 1.25;
+            frame_speed /= 1.25;
         }
         if (monster->status[i].status == PETRIFICUS) {
             return ;
@@ -92,7 +93,7 @@ void move_monster(Monster* monster) {
     }
 
     float fluctuation = uniform() * 0.2 + 0.9;
-    float step = fluctuation * (monster->speed / FRAMERATE);
+    float step = fluctuation * (frame_speed / FRAMERATE);
 
     monster->pos.x += cos(direction) * step;
     monster->pos.y += sin(direction) * step;
@@ -117,8 +118,8 @@ typedef void (*update_effect)(Monster* monster);
 static void decrease_status_clock(Monster* monster) {
     for (int i = 0; i < STACKABLE_STATUS; i++) {
         decrease_clock(&monster->status[i].clock);
-        if (monster->status->clock.remaining_time == 0) {
-            monster->status[i] = init_effect(NONE);
+        if (monster->status[i].clock.remaining_time == 0) {
+            monster->status[i] = init_effect();
         }
     }
 }

@@ -62,6 +62,7 @@ static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {
     for (int i = 0; i < array->curr_size; i++) {
         float dist_proj_monster = calc_distance(proj->pos, array->lst[i].pos);
         if (is_alive(&array->lst[i]) && dist_proj_monster < 3.5) {
+            proj->target = &array->lst[i];
             array->lst[i].status[1].status = SPRAYING;
             array->lst[i].health -= (5 * hit_damage(proj) / 100);
             array->lst[i].status[1].clock = init_clock(-1, 5);
@@ -84,6 +85,7 @@ static void apply_pyro(MonsterArray* array, Projectile* proj) {
         for (int i = 0; i < array->curr_size; i++) {
             if (is_alive(&array->lst[i]) &&
                 calc_distance(proj->pos, array->lst[i].pos) < 2) {
+                proj->target = &array->lst[i];
                 array->lst[i].health -= (15 * hit_damage(proj) / 100);
             }
         }
@@ -127,13 +129,16 @@ static void apply_hydro(MonsterArray* array, Projectile* proj) {
 }
 
 void hit_target(Projectile* proj, MonsterArray* array) {
+    proj->target->health -= hit_damage(proj);
     static apply_effect apply[] = {
         [PYRO] = apply_pyro,
         [DENDRO] = apply_dendro,
         [HYDRO] = apply_hydro,
+
     };
-    apply[proj->source.type](array, proj);
-    proj->target->health -= hit_damage(proj);
+    if (proj->source.type != MIXTE) {
+        apply[proj->source.type](array, proj);
+    }
 }
 
 void move_projectile(Projectile* proj) {
