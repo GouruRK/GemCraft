@@ -79,9 +79,6 @@ static void ban_monster(Monster* monster, Player* player, const Field* field) {
     monster->index_path = 0;
     monster->dest = cell_center(field->monster_path.path[0]);
     monster->pos = cell_center(field->nest.pos);
-
-    //PROTOTYPE
-    monster->health = 0;
 }
 
 void update_monster_dest(Monster* monster, const Field* field, Player* player) {
