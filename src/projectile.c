@@ -21,9 +21,9 @@ Projectile init_projectile(Position pos, Monster* target, Gem source) {
 
 /**
  * @brief Return the damage produce by a projectile on an enemy
- * 
- * @param proj 
- * @return int 
+ *
+ * @param proj
+ * @return int
  */
 static int hit_damage(const Projectile* proj) {
     int d = 100;
@@ -59,13 +59,13 @@ typedef void (*apply_effect)(MonsterArray* array, Projectile* proj);
 static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {
     proj->target->status[1].status = SPRAYING;
     proj->target->status[0].status = NONE;
-    for (int i = 0; i < array->curr_size; i++) {
-        float dist_proj_monster = calc_distance(proj->pos, array->lst[i].pos);
-        if (is_alive(&array->lst[i]) && dist_proj_monster < 3.5) {
-            proj->target = &array->lst[i];
-            array->lst[i].status[1].status = SPRAYING;
-            array->lst[i].health -= (5 * hit_damage(proj) / 100);
-            array->lst[i].status[1].clock = init_clock(-1, 5);
+    for (int i = 0; i < array->array_size; i++) {
+        float dist_proj_monster = calc_distance(proj->pos, array->array[i].pos);
+        if (is_alive(&array->array[i]) && dist_proj_monster < 3.5) {
+            proj->target = &array->array[i];
+            array->array[i].status[1].status = SPRAYING;
+            array->array[i].health -= (5 * hit_damage(proj) / 100);
+            array->array[i].status[1].clock = init_clock(-1, 5);
         }
     }
 }
@@ -82,11 +82,11 @@ static void apply_hydro_dendro(Projectile* proj) {
 
 static void apply_pyro(MonsterArray* array, Projectile* proj) {
     if (proj->target->status[0].status == PYRO_RESIDUE) {
-        for (int i = 0; i < array->curr_size; i++) {
-            if (is_alive(&array->lst[i]) &&
-                calc_distance(proj->pos, array->lst[i].pos) < 2) {
-                proj->target = &array->lst[i];
-                array->lst[i].health -= (15 * hit_damage(proj) / 100);
+        for (int i = 0; i < array->array_size; i++) {
+            if (is_alive(&array->array[i]) &&
+                calc_distance(proj->pos, array->array[i].pos) < 2) {
+                proj->target = &array->array[i];
+                array->array[i].health -= (15 * hit_damage(proj) / 100);
             }
         }
         proj->target->status[0].status = NONE;

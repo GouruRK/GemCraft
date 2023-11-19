@@ -3,12 +3,13 @@
 
 #include <time.h>
 
+#include "effect.h"
 #include "errors.h"
 #include "position.h"
 #include "util.h"
-#include "effect.h"
 
 #define MAX_WAVE_SIZE 24
+#define MAX_MONSTERS 500
 
 typedef enum {
     NORMAL,
@@ -20,7 +21,7 @@ typedef enum {
 typedef struct {
     int health;
     int max_health;
-    int index_path;   // Position in the path array in a field
+    int index_path;                   // Position in the path array in a field
     Effect status[STACKABLE_STATUS];  // The second status is spraying residue
     color color;
     float default_speed;
@@ -30,9 +31,9 @@ typedef struct {
 } Monster;
 
 typedef struct {
-    int curr_size;
-    int max_size;
-    Monster* lst;  // List of monster
+    int next_index_write;         // Index to write the next monster
+    int array_size;               // Number of monsters in the array
+    Monster array[MAX_MONSTERS];  // List of monster
 } MonsterArray;
 
 /**
@@ -73,16 +74,16 @@ int is_alive(const Monster* monster);
 
 /**
  * @brief Add an effect to a monster
- * 
- * @param monster 
- * @param effect 
+ *
+ * @param monster
+ * @param effect
  */
 void add_effect_monster(Monster* monster, Effect effect);
 
 /**
  * @brief Update the effect on the monster
- * 
- * @param monster 
+ *
+ * @param monster
  */
 void update_effect_monster(Monster* monster);
 
