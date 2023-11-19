@@ -152,50 +152,33 @@ void add_effect_monster(Monster* monster, Effect effect) {
 /*---------------------------Monster array related---------------------------*/
 
 Error init_monster_array(MonsterArray* array) {
-    array->curr_size = 0;
-    array->max_size = MAX_WAVE_SIZE;
-    array->lst = (Monster*)malloc(MAX_WAVE_SIZE * sizeof(Monster));
-    if (!array->lst) {
-        return ALLOCATION_ERROR;
-    }
-
+    array->next_index_write = 0;
+    array->array_size = 0;
+    
     return OK;
 }
 
-Error realloc_monster_array(MonsterArray* array) {
-    if (array->curr_size == array->max_size) {
-        array->lst = (Monster*)realloc(
-            array->lst, sizeof(Monster) * (array->max_size + MAX_WAVE_SIZE));
-        if (!array->lst) {
-            return ALLOCATION_ERROR;
-        }
-        array->max_size += MAX_WAVE_SIZE;
-
-        return OK;
-    } else if (array->curr_size <= array->max_size - MAX_WAVE_SIZE) {
-        array->lst = (Monster*)realloc(
-            array->lst, sizeof(Monster) * (array->max_size - MAX_WAVE_SIZE));
-        if (!array->lst) {
-            return ALLOCATION_ERROR;
-        }
-        array->max_size -= MAX_WAVE_SIZE;
-
-        return OK;
-    }
-
-    return INCOHERENT_ARRAY_DATA;
-}
-
 Error add_monster_array(MonsterArray* array, Monster monster) {
-    if (array->curr_size == array->max_size) {
-        Error error = realloc_monster_array(array);
-        if (error != OK) {
-            return error;
+    if (array->array_size == MAX_MONSTERS) {
+        return MONSTER_ARRAY_IS_FULL;
+    }
+
+    int is_rewriting = 0;  // Tell if we will rewrite on a dead monster or not
+    for (int i = 0; i < array->array_size && is_rewriting == 0; i++) {
+        if (!is_alive(&array->array[i])) {
+            array->next_index_write = i;
+            is_rewriting = 1;
         }
     }
 
-    array->lst[array->curr_size] = monster;
-    array->curr_size++;
+
+    array->array[array->next_index_write] = monster;
+    
+    if (!is_rewriting) {
+        array->array_size++;
+    }
+
+    array->next_index_write = array->array_size;
 
     return OK;
 }

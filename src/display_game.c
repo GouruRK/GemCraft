@@ -42,14 +42,17 @@ void draw_monster(const Monster* m) {
     if (!is_alive(m)) {
         return;
     };
+
+    // Draw health bar
     MLV_draw_filled_rectangle((int)(m->pos.x * CELL_SIZE) - 10,
                               (int)(m->pos.y * CELL_SIZE) - CELL_SIZE / 2, 20,
                               4, MLV_COLOR_RED);
-
     int health_remaining = m->health * 20 / m->max_health;
     MLV_draw_filled_rectangle((int)(m->pos.x * CELL_SIZE) - 10,
                               (int)(m->pos.y * CELL_SIZE) - CELL_SIZE / 2,
                               health_remaining, 4, MLV_COLOR_GREEN);
+    
+    // Draw the monster
     MLV_draw_filled_circle((int)(m->pos.x * CELL_SIZE),
                            (int)(m->pos.y * CELL_SIZE), CELL_SIZE / 3,
                            MLV_COLOR_BLUE);

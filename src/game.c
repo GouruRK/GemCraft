@@ -79,9 +79,9 @@ static void update_clocks(Game* game) {
 
 Error update_game(Game* game) {
     // Update the monsters
-    for (int i = 0; i < game->field.monsters.curr_size; i++) {
-        if (is_alive(&(game->field.monsters.lst[i]))) {
-            update_monster(&(game->field.monsters.lst[i]), &(game->field),
+    for (int i = 0; i < game->field.monsters.array_size; i++) {
+        if (is_alive(&(game->field.monsters.array[i]))) {
+            update_monster(&(game->field.monsters.array[i]), &(game->field),
                            &(game->player));
         }
     }
