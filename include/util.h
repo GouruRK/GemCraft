@@ -5,7 +5,7 @@
 
 #define FLOAT_COMPARISON_MARGIN 0.05
 
-typedef int color;  // Color represented with an angle in degrees (0-359)
+typedef unsigned int color;  // Color represented with an angle in degrees (0-359)
 typedef int frame;  // Count frame
 
 /**

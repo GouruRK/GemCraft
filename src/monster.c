@@ -1,58 +1,99 @@
 #include "../include/monster.h"
 
 #include <math.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "game.h"
 #include "position.h"
 #include "util.h"
 
+/**
+ * @brief Initialize the monster health
+ *
+ * @param monster
+ * @param wave_number
+ */
+static void init_monster_health(Monster* monster, int wave_number) {
+    int h = 1000;
+    monster->max_health = (int)(h * powf(1.2, wave_number));
+    monster->health = monster->max_health;
+}
+
+/**
+ * @brief Modify monster caracteristic if the monster is in specific wave
+ *
+ * @param monster
+ * @param type_wave
+ */
+static void modify_monster_type(Monster* monster, TypeWave type_wave) {
+    switch (type_wave) {
+        case BOSS:
+            monster->health *= 12;
+            break;
+
+        case FAST:
+            monster->default_speed = 2;
+            monster->speed = monster->default_speed;
+            break;
+
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief Set all monster status to NONE and set timers to 0
+ *
+ * @param monster
+ */
+static void init_all_monster_status(Monster* monster) {
+    for (int i = 0; i < STACKABLE_STATUS; i++) {
+        monster->status[i] = init_effect(NONE);
+    }
+}
+
 Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
                      Position dest) {
     Monster monster;
 
-    int h = 1000;
+    init_monster_health(&monster, wave_number);
 
-    monster.max_health = (int)(h * powf(1.2, wave_number));
-    monster.health = monster.max_health;
     monster.color = random_color();
 
-    monster.pos = pos_init; 
+    monster.pos = pos_init;
     monster.dest = dest;
 
     monster.index_path = 0;
 
     monster.default_speed = 1;
     monster.speed = monster.default_speed;
-    monster.status = NONE;
 
-    monster.effect_duration = 0;
-    monster.damage_timer = 0;
-    monster.next_damage = 0;
+    init_all_monster_status(&monster);
 
-    switch (type_wave) {
-        case BOSS:
-            monster.health *= 12;
-            break;
-
-        case FAST:
-            monster.default_speed = 2;
-            monster.speed = monster.default_speed;
-            break;
-
-        default:
-            break;
-    }
+    modify_monster_type(&monster, type_wave);
 
     return monster;
 }
 
 void move_monster(Monster* monster) {
     float direction = calc_direction(monster->pos, monster->dest);
+    float frame_speed = monster->speed;
+
+    for (int i = 0; i < STACKABLE_STATUS; i++) {
+        if (monster->status[i].status == SLOW) {
+            frame_speed /= 1.5;
+        }
+        if (monster->status[i].status == SPRAYING) {
+            frame_speed /= 1.25;
+        }
+        if (monster->status[i].status == PETRIFICUS) {
+            return ;
+        }
+    }
 
     float fluctuation = uniform() * 0.2 + 0.9;
-    float step = fluctuation * (monster->speed / FRAMERATE);
+    float step = fluctuation * (frame_speed / FRAMERATE);
 
     monster->pos.x += cos(direction) * step;
     monster->pos.y += sin(direction) * step;
@@ -69,121 +110,75 @@ int has_reach_dest(const Monster* monster) {
     return 0;
 }
 
-int is_alive(const Monster* monster) {
-    return monster->health > 0;
-}
+int is_alive(const Monster* monster) { return monster->health > 0; }
 
 // All function to update monster effect
 typedef void (*update_effect)(Monster* monster);
 
-static void reset_status(Monster* monster) {
-    monster->status = NONE;
-    monster->damage_timer = 0;
-    monster->speed = monster->default_speed;
-    monster->effect_duration = 0;
-    monster->frame_before_next_damage = 0;
-    monster->next_damage = 0;
-}
-
-static void update_parasit_effect(Monster* monster) {
-    if (monster->frame_before_next_damage == 0) {
-        monster->health -= monster->next_damage;
-        monster->frame_before_next_damage = monster->damage_timer;
-    }
-    
-    monster->effect_duration--;
-    monster->frame_before_next_damage--;
-
-    if (monster->effect_duration == 0) {
-        reset_status(monster);
+static void decrease_status_clock(Monster* monster) {
+    for (int i = 0; i < STACKABLE_STATUS; i++) {
+        decrease_clock(&monster->status[i].clock);
+        if (monster->status[i].clock.remaining_time == 0) {
+            monster->status[i] = init_effect();
+        }
     }
 }
 
-static void update_slow_effect(Monster* monster) {
-    monster->effect_duration--;
-
-    if (monster->effect_duration == 0) {
-        reset_status(monster);
-    }
-}
-
-static void update_spraying_effect(Monster* monster) {
-    monster->effect_duration--;
-
-    if (monster->effect_duration == 0) {
-        reset_status(monster);
-    }
-}
-
-static void update_petrificus_effect(Monster* monster) {
-    monster->effect_duration--;
-
-    if (monster->effect_duration == 0) {
-        reset_status(monster);
+static void update_parasit(Monster* monster) {
+    if (monster->status->clock.next_interval == 0) {
+        monster->health -= monster->status->next_damage;
     }
 }
 
 void update_effect_monster(Monster* monster) {
     static update_effect effect[] = {
-        [PARASIT] = update_parasit_effect,
-        [SLOW] = update_slow_effect,
-        [SPRAYING] = update_spraying_effect,
-        [PETRIFICUS] = update_petrificus_effect,
+        [PARASIT] = update_parasit,
     };
 
-    if (monster->status == PARASIT || monster->status == SLOW ||
-        monster->status == SPRAYING || monster->status == PETRIFICUS) {
-        effect[monster->status](monster);
+    if (monster->status->status == PARASIT) {
+        effect[monster->status->status](monster);
+    }
+    decrease_status_clock(monster);
+}
+
+void add_effect_monster(Monster* monster, Effect effect) {
+    for (int i = 0; i < STACKABLE_STATUS; i++) {
+        if (monster->status[i].status == NONE) {
+            monster->status[i] = effect;
+        }
     }
 }
 
 /*---------------------------Monster array related---------------------------*/
 
 Error init_monster_array(MonsterArray* array) {
-    array->curr_size = 0;
-    array->max_size = MAX_WAVE_SIZE;
-    array->lst = (Monster*)malloc(MAX_WAVE_SIZE * sizeof(Monster));
-    if (!array->lst) {
-        return ALLOCATION_ERROR;
-    }
-
+    array->next_index_write = 0;
+    array->array_size = 0;
+    
     return OK;
 }
 
-Error realloc_monster_array(MonsterArray* array) {
-    if (array->curr_size == array->max_size) {
-        array->lst = (Monster*)realloc(
-            array->lst, sizeof(Monster) * (array->max_size + MAX_WAVE_SIZE));
-        if (!array->lst) {
-            return ALLOCATION_ERROR;
-        }
-        array->max_size += MAX_WAVE_SIZE;
-
-        return OK;
-    } else if (array->curr_size <= array->max_size - MAX_WAVE_SIZE) {
-        array->lst = (Monster*)realloc(
-            array->lst, sizeof(Monster) * (array->max_size - MAX_WAVE_SIZE));
-        if (!array->lst) {
-            return ALLOCATION_ERROR;
-        }
-        array->max_size -= MAX_WAVE_SIZE;
-
-        return OK;
-    }
-
-    return INCOHERENT_ARRAY_DATA;
-}
-
 Error add_monster_array(MonsterArray* array, Monster monster) {
-    if (array->curr_size == array->max_size) {
-        Error error = realloc_monster_array(array);
-        if (error != OK) {
-            return error;
+    if (array->array_size == MAX_MONSTERS) {
+        return MONSTER_ARRAY_IS_FULL;
+    }
+
+    int is_rewriting = 0;  // Tell if we will rewrite on a dead monster or not
+    for (int i = 0; i < array->array_size && is_rewriting == 0; i++) {
+        if (!is_alive(&array->array[i])) {
+            array->next_index_write = i;
+            is_rewriting = 1;
         }
     }
 
-    array->lst[array->curr_size] = monster;
-    array->curr_size++;
+
+    array->array[array->next_index_write] = monster;
+    
+    if (!is_rewriting) {
+        array->array_size++;
+    }
+
+    array->next_index_write = array->array_size;
 
     return OK;
 }

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "clock.h"
 #include "error.h"
 #include "field.h"  // needed to test towers
 #include "generation.h"
@@ -15,8 +16,6 @@
 
 Error init_game(Game* game) {
     game->wave = 0;
-
-    game->time_next_wave = TIMER_WAVE * FRAMERATE;
 
     game->time.tv_sec = 0;
     game->time.tv_nsec = 0;
@@ -32,11 +31,11 @@ Error init_game(Game* game) {
 
 /**
  * @brief Calculate monster state for the current frame
- * 
- * @param monster 
- * @param field 
- * @param player 
- * @return Error 
+ *
+ * @param monster
+ * @param field
+ * @param player
+ * @return Error
  */
 static Error update_monster(Monster* monster, Field* field, Player* player) {
     update_effect_monster(monster);
@@ -50,31 +49,51 @@ static Error update_monster(Monster* monster, Field* field, Player* player) {
     return OK;
 }
 
+/**
+ * @brief Spawn monsters
+ * 
+ * @param game 
+ */
+static void update_nest(Game* game) {
+    if (game->field.nest.monster_remaining > 0 &&
+        game->field.nest.spawn_clock.next_interval == 0) {
+        spawn_monster_field(&(game->field), game->wave,
+                            game->field.nest.type_wave);
+        if (game->field.nest.monster_remaining == 1) {
+            game->field.nest.spawn_clock = init_clock(TIMER_WAVE, -1);
+        }
+        game->field.nest.monster_remaining--;
+        game->field.nest.spawn_clock.next_interval =
+            game->field.nest.spawn_clock.interval;
+    } else if (game->wave >= 1 &&
+               game->field.nest.spawn_clock.next_interval == 0) {
+        init_new_wave(&(game->field.nest), game->wave);
+        game->wave++;
+    }
+}
+
+/**
+ * @brief Update all clocks in the game
+ *
+ * @param game
+ */
+static void update_clocks(Game* game) {
+    decrease_clock(&game->field.nest.spawn_clock);
+}
+
 Error update_game(Game* game) {
     // Update the monsters
-    for (int i = 0; i < game->field.monsters.curr_size; i++) {
-        if (is_alive(&(game->field.monsters.lst[i]))) {
-            update_monster(&(game->field.monsters.lst[i]), &(game->field),
+    for (int i = 0; i < game->field.monsters.array_size; i++) {
+        if (is_alive(&(game->field.monsters.array[i]))) {
+            update_monster(&(game->field.monsters.array[i]), &(game->field),
                            &(game->player));
         }
     }
 
-    if (game->field.nest.monster_remaining > 0 &&
-        game->field.nest.nb_frame_before_next_spawn == 0) {
-        spawn_monster_field(&(game->field), game->wave,
-                            game->field.nest.type_wave);
-        game->field.nest.monster_remaining--;
-        game->field.nest.nb_frame_before_next_spawn =
-            game->field.nest.nb_frame_between_spawn;
-    }
+    update_nest(game);
 
     // Update timer of objects
-    if (game->field.nest.nb_frame_before_next_spawn > 0) {
-        game->field.nest.nb_frame_before_next_spawn--;
-    }
-    if (game->time_next_wave > 0) {
-        game->time_next_wave--;
-    }
+    update_clocks(game);
 
     return OK;
 }

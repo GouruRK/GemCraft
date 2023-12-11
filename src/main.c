@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
         // Drawing
         draw_board(game.field);
 
-        for (int i = 0; i < game.field.monsters.curr_size; i++) {
-            draw_monster(&game.field.monsters.lst[i]);
+        for (int i = 0; i < game.field.monsters.array_size; i++) {
+            draw_monster(&game.field.monsters.array[i]);
         }
 
         // Prototype
@@ -106,6 +106,7 @@ int main(int argc, char* argv[]) {
 
         MLV_update_window();
         // End drawing
+
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);
 
@@ -124,7 +125,6 @@ int main(int argc, char* argv[]) {
     }
 
     MLV_free_window();
-    free(game.field.monsters.lst);
 
     return 0;
 }
