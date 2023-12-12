@@ -4,12 +4,11 @@
 #include "game_engine/field.h"
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
+#include "game_engine/game.h"
 
 #define CELL_SIZE 32
 
 // PROTOTYPE
-void draw_board(Field field);
-void draw_monster(const Monster* m);
-void draw_projectile(const Projectile* proj);
-void draw_tower(const Tower tower);
+void draw_game(Game* game);
+
 #endif

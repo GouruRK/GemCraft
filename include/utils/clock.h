@@ -3,10 +3,16 @@
 
 #include "utils/util.h"
 
+/**
+ * @brief Act as a metronome during a defined time.
+ * Negative interval means the metronome doesn't count interval
+ * Negative remainint_time means the metronome should never stop
+ * 
+ */
 typedef struct {
     frame interval;
     frame next_interval;
-    frame remaining_time;  // Negative value mean infinite clock
+    frame remaining_time;
 } Clock;
 
 /**

@@ -5,9 +5,11 @@
 #include "game_engine/field.h"
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
+#include "game_engine/game.h"
+#include "user_event/tower_placement.h"
 
 // Prototype
-void draw_board(Field field) {
+static void draw_board(Field field) {
     MLV_Color objects_color[6] = {
         MLV_COLOR_BROWN4,  // Tower
         MLV_COLOR_RED,     // Nest
@@ -38,7 +40,7 @@ void draw_board(Field field) {
 }
 
 // Prototype
-void draw_monster(const Monster* m) {
+static void draw_monster(const Monster* m) {
     if (!is_alive(m)) {
         return;
     };
@@ -59,18 +61,37 @@ void draw_monster(const Monster* m) {
 }
 
 // Prototype
-void draw_projectile(const Projectile* proj) {
+static void draw_projectile(const Projectile* proj) {
     MLV_draw_filled_circle((int)(proj->pos.x * CELL_SIZE),
                            (int)(proj->pos.y * CELL_SIZE), CELL_SIZE / 6,
                            MLV_COLOR_DARK_GREEN);
 }
 
 // Prototype
-void draw_tower(const Tower tower) {
+static void draw_tower(const Tower tower) {
     Position center = cell_center(tower.pos);
 
     MLV_draw_filled_circle((int)(center.x * CELL_SIZE),
                            (int)(center.y * CELL_SIZE),
                            CELL_SIZE / 3, 
                            MLV_COLOR_PINK1);
+}
+
+// Prototype
+void draw_game(Game* game) {
+    draw_board(game->field);
+
+    // Draw all monsters
+    for (int i = 0; i < game->field.monsters.array_size; i++) {
+        draw_monster(&(game->field.monsters.array[i]));
+    }
+
+    // Prototype
+    if (game->cur_interact.current_action == PLACING_TOWER) {
+        update_tower_placement(&(game->cur_interact.selected_tower), CELL_SIZE);
+        draw_tower(game->cur_interact.selected_tower);
+    }
+
+
+    MLV_update_window();
 }
