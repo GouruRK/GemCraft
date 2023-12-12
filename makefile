@@ -9,10 +9,12 @@ EXEC = GemCraft
 
 SRC = src/
 BIN = bin/
+INCLUDES = $(BIN)display $(BIN)game_engine $(BIN)user_event $(BIN)utils
 
 # ----------- Files to compile -----------
 
-SRC_FILES = $(wildcard $(SRC)*.c)
+
+SRC_FILES = $(wildcard $(SRC)*/*.c) $(SRC)main.c
 OBJ_FILES = $(patsubst $(SRC)%.c, $(BIN)%.o, $(SRC_FILES))
 
 # Generic rule
@@ -21,12 +23,13 @@ $(EXEC) : $(OBJ_FILES)
 	$(CC) $^ -o $@ $(LFLAGS)
 
 $(BIN)%.o : $(SRC)%.c
+	@mkdir --parents $(INCLUDES)
 	$(CC) $(CFLAGS) -I./$(PFLAGS) -c $< -o $@
 
 # Cleaning
 
 clean : 
-	rm -f $(BIN)*
+	rm -fr $(BIN)*
 
 mrproper: clean
-	rm -f $(EXEC)
+	rm -fr $(EXEC)

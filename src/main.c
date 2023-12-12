@@ -5,17 +5,17 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "display_game.h"
-#include "field.h"
-#include "game.h"
-#include "generation.h"
-#include "monster.h"
-#include "player.h"
-#include "position.h"
-#include "util.h"
-#include "projectile.h"
-#include "interact.h"
-#include "tower_placement.h"
+#include "display/display_game.h"
+#include "game_engine/field.h"
+#include "game_engine/game.h"
+#include "game_engine/generation.h"
+#include "game_engine/monster.h"
+#include "game_engine/player.h"
+#include "utils/position.h"
+#include "utils/util.h"
+#include "game_engine/projectile.h"
+#include "user_event/interact.h"
+#include "user_event/tower_placement.h"
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
