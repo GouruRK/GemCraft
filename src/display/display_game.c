@@ -7,6 +7,7 @@
 #include "game_engine/projectile.h"
 #include "game_engine/game.h"
 #include "user_event/tower_placement.h"
+#include "display/draw_mana_gauge.h"
 
 // Prototype
 static void draw_board(Field field) {
@@ -92,6 +93,7 @@ void draw_game(Game* game) {
         draw_tower(game->cur_interact.selected_tower);
     }
 
+    draw_gauge(game->player, game->sections.inventory_section);
 
     MLV_update_window();
 }

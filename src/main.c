@@ -22,12 +22,13 @@ int main(int argc, char* argv[]) {
     srand(time(NULL));
     struct timespec start_time, end_time, time_difference;
     double extra_time;
-
-    MLV_create_window("Tower Defense", NULL, WIDTH * CELL_SIZE,
-                      HEIGHT * CELL_SIZE);
-
     Game game;
     init_game(&game);
+
+    MLV_create_window("Tower Defense", NULL, 
+        game.sections.field_section.width + game.sections.inventory_section.width,
+        game.sections.field_section.height);
+
 
     int terminated = 0;
     int count_frame = 0;

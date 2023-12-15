@@ -8,6 +8,7 @@
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
 #include "user_event/interact.h"
+#include "display/game_section.h"
 
 #define FRAMERATE 60
 #define TIMER_WAVE 35  // Max time between each wave in seconds
@@ -18,13 +19,14 @@ typedef enum {
 } GameState;
 
 typedef struct {
-    int wave;               // number of waves
-    int time_next_wave;     // number of frame before the next wave
-    struct timespec time;   // Time since the befinning of the game
+    int wave;                   // number of waves
+    int time_next_wave;         // number of frame before the next wave
+    struct timespec time;       // Time since the befinning of the game
     GameState game_status;
-    Field field;            // game board
-    Player player;          // player info
-    Interaction cur_interact; // current player interaction
+    Field field;                // game board
+    Player player;              // player info
+    Interaction cur_interact;   // current player interaction
+    GameSection sections;       // differencies window's section for inventory and field
 } Game;
 
 /**

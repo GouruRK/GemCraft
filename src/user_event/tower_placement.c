@@ -2,7 +2,6 @@
 
 #include "utils/position.h"
 #include "game_engine/tower.h"
-#include "game_engine/field.h"
 
 Tower init_tower_at_mouse(int width) {
     int x, y;
