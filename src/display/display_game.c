@@ -89,7 +89,11 @@ void draw_game(Game* game) {
 
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
-        update_tower_placement(&(game->cur_interact.selected_tower), CELL_SIZE);
+        int x, y;
+        MLV_get_mouse_position(&x, &y);
+        if (!is_coord_in_sector(game->sections.inventory_section, x, y)) {
+            update_tower_placement(&(game->cur_interact.selected_tower), CELL_SIZE);
+        }
         draw_tower(game->cur_interact.selected_tower);
     }
 
