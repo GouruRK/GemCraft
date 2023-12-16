@@ -178,3 +178,13 @@ void draw_hexa_gem(Position pos, MLV_Color color, int cell_width) {
     draw_connections(mid, inline_hexa, outline_hexa, NB_HEXA_VRTX, cell_width);
     
 }
+
+void draw_gem(Position pos, MLV_Color color, int cell_width, int level) {
+    if (TRIANGLE_LEVEL <= level && level < SQUARE_LEVEL) {
+        draw_triangle_gem(pos, color, cell_width); 
+    } else if (SQUARE_LEVEL <= level && level < HEXA_LEVEL) {
+        draw_square_gem(pos, color, cell_width);
+    } else {
+        draw_hexa_gem(pos, color, cell_width);
+    }
+}

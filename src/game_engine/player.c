@@ -49,7 +49,7 @@ static Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
     }
     
     int color = (a.color + b.color) / 2;
-    *res = create_gem(type, a.level + 1, color);
+    *res = init_gem(type, a.level + 1, color);
     player->mana -= 100;
     return OK;
 }
@@ -59,6 +59,16 @@ Player init_player(void) {
     player.mana = 150;          // the mana pool store 150 mana by default
     player.mana_lvl = 0;        // mana pool's level is 0 by default
     player.max_quantity = 2000; // a mana pool of level 0 can store 2000 mana
+    player.inventory = init_inventory();
+    
+    player.inventory.array[0].empty = false;
+    player.inventory.array[0].gem = init_gem(HYDRO, 1, 0);
+
+    player.inventory.array[1].empty = false;
+    player.inventory.array[1].gem = init_gem(HYDRO, 5, 0);
+
+    player.inventory.array[2].empty = false;
+    player.inventory.array[2].gem = init_gem(HYDRO, 10, 0);
     return player;
 }
 
@@ -80,7 +90,7 @@ Error generate_gem(Player* player, int level, Gem* res) {
     if (player->mana < mana_require) {
         return NOT_ENOUGHT_MANA;
     }
-    *res = create_random_gem(level);
+    *res = init_random_gem(level);
     player->mana -= mana_require;
     return OK;
 }

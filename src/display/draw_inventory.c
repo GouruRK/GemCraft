@@ -1,17 +1,27 @@
+#include "display/draw_inventory.h"
+
 #include <MLV/MLV_all.h>
 #include <stdio.h>
 
 #include "game_engine/inventory.h"
 #include "utils/sector.h"
 #include "display/display_game.h"
+#include "game_engine/inventory.h"
+#include "display/draw_gems.h"
+#include "utils/position.h"
+#include "game_engine/gem.h"
+
+static void transform_coords(int index, int* x, int* y) {
+    *x = index % 2; // % 2 because inventory contains to columns
+    *y = index / 2;
+}
 
 void draw_inventory_layout(Sector info) {
-    int height = INVENTORY_SIZE / 2 * CELL_SIZE;
-    int top_y = info.bottom_right.y - height;
+    int top_y = info.bottom_right.y - INVENTORY_HEIGHT;
     MLV_draw_filled_rectangle(info.top_left.x, 
                               top_y,
                               info.width,
-                              height,
+                              INVENTORY_HEIGHT,
                               MLV_COLOR_DARKSLATEGREY);
     
     // horizontal
@@ -26,4 +36,18 @@ void draw_inventory_layout(Sector info) {
 
 }
 
+void draw_inventory(Inventory inventory, Sector info) {
+    draw_inventory_layout(info);
+    int x, y;
+    Gem gem;
+    
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        if (!inventory.array[i].empty) {
+            gem = inventory.array[i].gem;
+            transform_coords(i, &x, &y);
 
+            // TODO : convert gem.color to MLV_Color
+            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), MLV_COLOR_GREEN, CELL_SIZE, gem.level);
+        }
+    }
+}

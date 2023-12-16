@@ -6,6 +6,10 @@
 
 #include "utils/position.h"
 
+#define TRIANGLE_LEVEL 0
+#define SQUARE_LEVEL 5
+#define HEXA_LEVEL 10
+
 /**
  * @brief Draw hexagonal representation of gems
  * 
@@ -32,5 +36,7 @@ void draw_square_gem(Position pos, MLV_Color color, int cell_width);
  * @param cell_width cell size in the window view
  */
 void draw_triangle_gem(Position pos, MLV_Color color, int cell_width);
+
+void draw_gem(Position pos, MLV_Color color, int cell_width, int level);
 
 #endif

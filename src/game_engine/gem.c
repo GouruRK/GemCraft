@@ -3,7 +3,7 @@
 #include "utils/util.h"
 #include "game_engine/inventory.h"
 
-Gem create_gem(TypeGems type, int level, int color) {
+Gem init_gem(TypeGems type, int level, int color) {
     Gem gem;
     gem.type = type;
     gem.level = level;
@@ -12,7 +12,7 @@ Gem create_gem(TypeGems type, int level, int color) {
     return gem;
 }
 
-Gem create_random_gem(int level) {
+Gem init_random_gem(int level) {
     int color;
     TypeGems type = random_int(0, 2);
     switch (type) {
@@ -33,5 +33,5 @@ Gem create_random_gem(int level) {
         default:
             break;
     }
-    return create_gem(type, level, color);
+    return init_gem(type, level, color);
 }

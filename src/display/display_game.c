@@ -99,7 +99,7 @@ void draw_game(Game* game) {
     }
 
     draw_gauge(game->player, game->sections.inventory_section);
-    draw_inventory_layout(game->sections.inventory_section);
+    draw_inventory(game->player.inventory, game->sections.inventory_section);
 
     MLV_update_window();
 }

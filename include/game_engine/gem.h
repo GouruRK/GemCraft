@@ -23,8 +23,8 @@ typedef struct {
  * @param color gem color
  * @return created gem
  */
-Gem create_gem(TypeGems type, int level, int color);
+Gem init_gem(TypeGems type, int level, int color);
 
-Gem create_random_gem(int level);
+Gem init_random_gem(int level);
 
 #endif
