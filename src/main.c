@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
     }
 
     MLV_free_window();
+    printf("w: %d, h: %d\n", game.sections.field_section.width + game.sections.inventory_section.width, game.sections.field_section.height);
 
     return 0;
 }

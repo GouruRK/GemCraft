@@ -8,6 +8,7 @@
 #include "game_engine/game.h"
 #include "user_event/tower_placement.h"
 #include "display/draw_mana_gauge.h"
+#include "display/draw_inventory.h"
 
 // Prototype
 static void draw_board(Field field) {
@@ -98,6 +99,7 @@ void draw_game(Game* game) {
     }
 
     draw_gauge(game->player, game->sections.inventory_section);
+    draw_inventory_layout(game->sections.inventory_section);
 
     MLV_update_window();
 }
