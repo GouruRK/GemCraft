@@ -60,15 +60,6 @@ Player init_player(void) {
     player.mana_lvl = 0;        // mana pool's level is 0 by default
     player.max_quantity = 2000; // a mana pool of level 0 can store 2000 mana
     player.inventory = init_inventory();
-    
-    player.inventory.array[0].empty = false;
-    player.inventory.array[0].gem = init_gem(HYDRO, 1, 0);
-
-    player.inventory.array[1].empty = false;
-    player.inventory.array[1].gem = init_gem(HYDRO, 5, 0);
-
-    player.inventory.array[2].empty = false;
-    player.inventory.array[2].gem = init_gem(HYDRO, 10, 0);
     return player;
 }
 

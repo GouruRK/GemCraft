@@ -10,6 +10,7 @@
 #include "display/draw_gems.h"
 #include "utils/position.h"
 #include "game_engine/gem.h"
+#include "display/color.h"
 
 static void transform_coords(int index, int* x, int* y) {
     *x = index % 2; // % 2 because inventory contains to columns
@@ -46,8 +47,7 @@ void draw_inventory(Inventory inventory, Sector info) {
             gem = inventory.array[i].gem;
             transform_coords(i, &x, &y);
 
-            // TODO : convert gem.color to MLV_Color
-            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), MLV_COLOR_GREEN, CELL_SIZE, gem.level);
+            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), transform_color(gem.color), CELL_SIZE, gem.level);
         }
     }
 }

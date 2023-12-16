@@ -5,6 +5,9 @@
 #include "game_engine/gem.h"
 #include "utils/errors.h"
 
+// Prototype - niveaux aléatoires
+#include "utils/util.h"
+
 GemNode init_gem_node(void) {
     GemNode node;
     node.empty = true;
@@ -24,6 +27,11 @@ Inventory init_inventory(void) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         inv.array[i] = init_gem_node();
     }
+
+    for (int i = 0; i < INVENTORY_SIZE; i++) {
+        add_inventory(&inv, init_random_gem(random_int(1, 20)));
+    }
+
     return inv;
 }
 
