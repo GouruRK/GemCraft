@@ -15,7 +15,24 @@ typedef enum {
     QUIT
 } Event;
 
+void exit_function(void* data);
+
+/**
+ * @brief Get the current event
+ * 
+ * @param interaction current player interaction
+ * @return current event
+ */
 Event get_event(Interaction interaction);
+
+/**
+ * @brief Get the current event and process it by updating the current 
+ *        player interaction
+ * 
+ * @param game  
+ * @return 'true' if the player wants to quit,
+ *         else 'false'
+ */
 bool process_event(Game* game);
 
 #endif

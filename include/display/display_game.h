@@ -6,9 +6,7 @@
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
 
-#define CELL_SIZE 32
-
 // PROTOTYPE
-void draw_game(Game* game);
+void draw_game(const Game* game);
 
 #endif

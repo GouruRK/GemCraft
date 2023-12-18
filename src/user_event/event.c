@@ -7,6 +7,11 @@
 #include "game_engine/game.h"
 #include "display/display_game.h"
 
+void exit_function(void* data) {
+    int* stop = (int*)data;
+    *stop = 1;
+}
+
 Event get_event(Interaction interaction) {
     // intel on keyboard
     MLV_Keyboard_modifier mod;
@@ -60,7 +65,7 @@ bool process_event(Game* game) {
             return false;
         case SUMMON_TOWER:
             if (game->player.mana > game->field.towers.next_tower_cost) {
-                set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(CELL_SIZE));
+                set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse());
             }
             return false;
         case PLACE_TOWER:
@@ -70,7 +75,15 @@ bool process_event(Game* game) {
             cancel_interaction(&(game->cur_interact));
             return false;
         default:
-            return false;
+            break;
     }
 
+    if (game->cur_interact.current_action == PLACING_TOWER) {
+        int x, y;
+        MLV_get_mouse_position(&x, &y);
+        if (!is_coord_in_sector(game->sections.inventory_section, x, y)) {
+            update_tower_placement(&(game->cur_interact.selected_tower));
+        }
+    }
+    return false;
 }

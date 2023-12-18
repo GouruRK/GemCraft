@@ -6,6 +6,12 @@
 
 #define GAUGE_HEIGHT 120
 
+/**
+ * @brief Draw mana reserve
+ * 
+ * @param player Mana data of the player
+ * @param info sector where to draw the gauge
+ */
 void draw_gauge(Player player, Sector info);
 
 #endif

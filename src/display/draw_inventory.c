@@ -4,20 +4,24 @@
 #include <stdio.h>
 
 #include "game_engine/inventory.h"
-#include "utils/sector.h"
-#include "display/display_game.h"
-#include "game_engine/inventory.h"
-#include "display/draw_gems.h"
-#include "utils/position.h"
 #include "game_engine/gem.h"
+#include "display/draw_gems.h"
 #include "display/color.h"
+#include "display/display_const.h"
+#include "utils/sector.h"
+#include "utils/position.h"
 
 static void transform_coords(int index, int* x, int* y) {
-    *x = index % 2; // % 2 because inventory contains to columns
+    *x = index % 2; // 2 because inventory contains to columns
     *y = index / 2;
 }
 
-void draw_inventory_layout(Sector info) {
+/**
+ * @brief Draw inventory layout
+ * 
+ * @param inventory sector where inventory is placed
+ */
+static void draw_inventory_layout(Sector info) {
     int top_y = info.bottom_right.y - INVENTORY_HEIGHT;
     MLV_draw_filled_rectangle(info.top_left.x, 
                               top_y,
@@ -47,7 +51,7 @@ void draw_inventory(Inventory inventory, Sector info) {
             gem = inventory.array[i].gem;
             transform_coords(i, &x, &y);
 
-            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), gem, CELL_SIZE);
+            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), gem);
         }
     }
 }

@@ -7,7 +7,12 @@
 
 #define INVENTORY_HEIGHT (INVENTORY_SIZE / 2 * CELL_SIZE)
 
-void draw_inventory_layout(Sector inventory);
+/**
+ * @brief Draw inventory layout and its content
+ * 
+ * @param inventory inventory to draw
+ * @param info sector where inventory is placed
+ */
 void draw_inventory(Inventory inventory, Sector info);
 
 #endif

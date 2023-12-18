@@ -1,6 +1,6 @@
 #include "display/game_section.h"
 
-#include "display/display_game.h"
+#include "display/display_const.h"
 #include "utils/position.h"
 #include "utils/sector.h"
 

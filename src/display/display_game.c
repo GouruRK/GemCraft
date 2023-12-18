@@ -6,12 +6,12 @@
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
 #include "game_engine/game.h"
-#include "user_event/tower_placement.h"
 #include "display/draw_mana_gauge.h"
 #include "display/draw_inventory.h"
+#include "display/display_const.h"
 
 // Prototype
-static void draw_board(Field field) {
+static void draw_board(const Field field) {
     MLV_Color objects_color[6] = {
         MLV_COLOR_BROWN4,  // Tower
         MLV_COLOR_RED,     // Nest
@@ -80,7 +80,7 @@ static void draw_tower(const Tower tower) {
 }
 
 // Prototype
-void draw_game(Game* game) {
+void draw_game(const Game* game) {
     draw_board(game->field);
 
     // Draw all monsters
@@ -90,11 +90,6 @@ void draw_game(Game* game) {
 
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
-        int x, y;
-        MLV_get_mouse_position(&x, &y);
-        if (!is_coord_in_sector(game->sections.inventory_section, x, y)) {
-            update_tower_placement(&(game->cur_interact.selected_tower), CELL_SIZE);
-        }
         draw_tower(game->cur_interact.selected_tower);
     }
 

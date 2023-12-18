@@ -23,14 +23,19 @@ int main(int argc, char* argv[]) {
     struct timespec start_time, end_time, time_difference;
     double extra_time;
     Game game;
+    int terminated = 0;
     init_game(&game);
+
+    // set terminated to '1' whenever the exit button of MLV is trigger
+    // Allows to properly exit the main loop for memory liberation
+    // Without this instruction, exit button exit the program 
+    MLV_execute_at_exit(exit_function, &terminated);
 
     MLV_create_window("Tower Defense", NULL, 
         game.sections.field_section.width + game.sections.inventory_section.width,
         game.sections.field_section.height);
 
 
-    int terminated = 0;
     int count_frame = 0;
     while (!terminated) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
