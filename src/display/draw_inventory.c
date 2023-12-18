@@ -47,7 +47,7 @@ void draw_inventory(Inventory inventory, Sector info) {
             gem = inventory.array[i].gem;
             transform_coords(i, &x, &y);
 
-            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), transform_color(gem.color), CELL_SIZE, gem.level);
+            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), gem, CELL_SIZE);
         }
     }
 }

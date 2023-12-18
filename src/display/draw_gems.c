@@ -3,7 +3,7 @@
 #include <MLV/MLV_all.h>
 
 #include "utils/position.h"
-
+#include "display/color.h"
 
 #define NB_HEXA_VRTX 6
 #define NB_SQ_VRTX   4
@@ -179,10 +179,11 @@ void draw_hexa_gem(Position pos, MLV_Color color, int cell_width) {
     
 }
 
-void draw_gem(Position pos, MLV_Color color, int cell_width, int level) {
-    if (TRIANGLE_LEVEL <= level && level < SQUARE_LEVEL) {
+void draw_gem(Position pos, Gem gem, int cell_width) {
+    MLV_Color color = transform_color(gem.color);
+    if (TRIANGLE_LEVEL <= gem.level && gem.level < SQUARE_LEVEL) {
         draw_triangle_gem(pos, color, cell_width); 
-    } else if (SQUARE_LEVEL <= level && level < HEXA_LEVEL) {
+    } else if (SQUARE_LEVEL <= gem.level && gem.level < HEXA_LEVEL) {
         draw_square_gem(pos, color, cell_width);
     } else {
         draw_hexa_gem(pos, color, cell_width);

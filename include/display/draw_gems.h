@@ -5,6 +5,7 @@
 #include <MLV/MLV_all.h>
 
 #include "utils/position.h"
+#include "game_engine/gem.h"
 
 #define TRIANGLE_LEVEL 0
 #define SQUARE_LEVEL 5
@@ -37,6 +38,6 @@ void draw_square_gem(Position pos, MLV_Color color, int cell_width);
  */
 void draw_triangle_gem(Position pos, MLV_Color color, int cell_width);
 
-void draw_gem(Position pos, MLV_Color color, int cell_width, int level);
+void draw_gem(Position pos, Gem gem, int cell_width);
 
 #endif
