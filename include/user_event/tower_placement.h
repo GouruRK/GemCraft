@@ -2,9 +2,10 @@
 #define TOWER_PLACEMENT_H
 
 #include "game_engine/tower.h"
+#include "utils/sector.h"
 
-Tower init_tower_at_mouse(void);
+Tower init_tower_at_mouse(Sector panel);
 
-void update_tower_placement(Tower* tower);
+void update_tower_placement(Sector panel, Tower* tower);
 
 #endif

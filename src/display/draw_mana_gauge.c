@@ -5,6 +5,7 @@
 
 #include "game_engine/player.h"
 #include "utils/sector.h"
+#include "display/display_const.h"
 
 static int get_height(int max_quantity, int mana) {
     return mana * GAUGE_HEIGHT / max_quantity;

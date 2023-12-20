@@ -8,7 +8,7 @@
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
 #include "user_event/interact.h"
-#include "display/game_section.h"
+#include "display/game_sectors.h"
 
 #define FRAMERATE 60
 #define TIMER_WAVE 35  // Max time between each wave in seconds
@@ -26,7 +26,7 @@ typedef struct {
     Field field;                // game board
     Player player;              // player info
     Interaction cur_interact;   // current player interaction
-    GameSection sections;       // differencies window's section for inventory and field
+    GameSectors sectors;       // differencies window's section for inventory and field
 } Game;
 
 /**

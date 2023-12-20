@@ -93,8 +93,8 @@ void draw_game(const Game* game) {
         draw_tower(game->cur_interact.selected_tower);
     }
 
-    draw_gauge(game->player, game->sections.inventory_section);
-    draw_inventory(game->player.inventory, game->sections.inventory_section);
+    draw_gauge(game->player, game->sectors.panel);
+    draw_inventory(game->player.inventory, game->sectors.panel);
 
     MLV_update_window();
 }

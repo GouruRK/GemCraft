@@ -5,8 +5,6 @@
 #include "display/display_game.h"
 #include "utils/sector.h"
 
-#define INVENTORY_HEIGHT (INVENTORY_SIZE / 2 * CELL_SIZE)
-
 /**
  * @brief Draw inventory layout and its content
  * 

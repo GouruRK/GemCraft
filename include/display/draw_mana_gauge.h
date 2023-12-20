@@ -4,8 +4,6 @@
 #include "game_engine/player.h"
 #include "utils/sector.h"
 
-#define GAUGE_HEIGHT 120
-
 /**
  * @brief Draw mana reserve
  * 

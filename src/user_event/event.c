@@ -31,7 +31,10 @@ Event get_event(Interaction interaction) {
             case 'w': // Summon a wave
                 return SUMMON_WAVE;
             case 't': // place a tower
-                return SUMMON_TOWER;
+                if (interaction.current_action == NO_ACTION) {
+                    return SUMMON_TOWER;
+                }
+                return NO_EVENT;
             default:
                 break;
             }
@@ -65,7 +68,7 @@ bool process_event(Game* game) {
             return false;
         case SUMMON_TOWER:
             if (game->player.mana > game->field.towers.next_tower_cost) {
-                set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse());
+                set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
             }
             return false;
         case PLACE_TOWER:
@@ -79,11 +82,7 @@ bool process_event(Game* game) {
     }
 
     if (game->cur_interact.current_action == PLACING_TOWER) {
-        int x, y;
-        MLV_get_mouse_position(&x, &y);
-        if (!is_coord_in_sector(game->sections.inventory_section, x, y)) {
-            update_tower_placement(&(game->cur_interact.selected_tower));
-        }
+        update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
     }
     return false;
 }

@@ -31,9 +31,7 @@ int main(int argc, char* argv[]) {
     // Without this instruction, exit button exit the program 
     MLV_execute_at_exit(exit_function, &terminated);
 
-    MLV_create_window("Tower Defense", NULL, 
-        game.sections.field_section.width + game.sections.inventory_section.width,
-        game.sections.field_section.height);
+    MLV_create_window("Tower Defense", NULL, game.sectors.window.width, game.sectors.window.height);
 
 
     int count_frame = 0;

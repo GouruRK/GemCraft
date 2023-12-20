@@ -9,9 +9,10 @@
 #include "game_engine/generation.h"
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
-#include "user_event/interact.h"
 #include "game_engine/tower.h"  // needed to test towers"
+#include "user_event/interact.h"
 #include "user_event/tower_placement.h"
+#include "display/game_sectors.h"
 
 Error init_game(Game* game) {
     game->wave = 0;
@@ -24,7 +25,7 @@ Error init_game(Game* game) {
 
     game->player = init_player();
     game->cur_interact = init_interact();
-    game->sections = init_game_section(WIDTH, HEIGHT);
+    game->sectors = init_game_sectors(WIDTH, HEIGHT);
     return OK;
 }
 
