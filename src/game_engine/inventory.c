@@ -28,7 +28,7 @@ Inventory init_inventory(void) {
         inv.array[i] = init_gem_node();
     }
 
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
+    for (int i = 0; i < 1; i++) {
         add_inventory(&inv, init_random_gem(random_int(1, 20)));
     }
 

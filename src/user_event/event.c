@@ -4,15 +4,17 @@
 #include "user_event/event.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
+#include "user_event/gem_placement.h"
 #include "game_engine/game.h"
 #include "display/display_game.h"
+#include "display/game_sectors.h"
 
 void exit_function(void* data) {
     int* stop = (int*)data;
     *stop = 1;
 }
 
-Event get_event(Interaction interaction) {
+Event get_event(Interaction interaction, const GameSectors* sectors) {
     // intel on keyboard
     MLV_Keyboard_modifier mod;
     MLV_Keyboard_button sym;
@@ -39,11 +41,20 @@ Event get_event(Interaction interaction) {
                 break;
             }
     } else if(event == MLV_MOUSE_BUTTON) {
+        int x, y;
+        MLV_get_mouse_position(&x, &y);
+
         switch (mouse_but) {
             case MLV_BUTTON_LEFT:
-                if (interaction.current_action == PLACING_TOWER) {
+                if (interaction.current_action == PLACING_TOWER && is_coord_in_sector(sectors->field, x, y)) {
                     return PLACE_TOWER;
                 }
+                if (interaction.current_action == MOVING_GEM) {
+                    return PLACE_GEM;
+                }
+                // TODO : check on button first before checking for gems movement
+                // Gem can be moved from anywhere (field to inventory, inventory to inventory, inventory to fields)
+                return MOVE_GEM;
             case MLV_BUTTON_RIGHT:
                 if (interaction.current_action == PLACING_TOWER) {
                     return CANCEL_PLACING_TOWER;
@@ -56,7 +67,8 @@ Event get_event(Interaction interaction) {
 }
 
 bool process_event(Game* game) {
-    switch (get_event(game->cur_interact)) {
+    int x, y;
+    switch (get_event(game->cur_interact, &(game->sectors))) {
         case QUIT:
             return true;
         case SUMMON_WAVE:
@@ -76,6 +88,15 @@ bool process_event(Game* game) {
             return false;
         case CANCEL_PLACING_TOWER:
             cancel_interaction(&(game->cur_interact));
+            return false;
+        case MOVE_GEM:
+            MLV_get_mouse_position(&x, &y);
+            if (is_coord_in_sector(game->sectors.field, x, y)) { // if gem is picked up from the field
+                break;
+            } else if (is_coord_in_sector(game->sectors.inventory, x, y)) { // if gem is picked up from the inventory
+
+                printf("%d\n", from_coord_to_index(&(game->sectors), x, y));
+            }
             return false;
         default:
             break;
