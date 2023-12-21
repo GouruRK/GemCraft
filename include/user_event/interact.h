@@ -57,4 +57,6 @@ Error drop_tower(Interaction* interact, Field* field, Player* player);
  */
 void cancel_interaction(Interaction* interact);
 
+void reset_interaction(Interaction* interact);
+
 #endif

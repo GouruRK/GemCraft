@@ -46,3 +46,7 @@ void cancel_interaction(Interaction* interact) {
         interact->current_action = NO_ACTION;
     }
 }
+
+void reset_interaction(Interaction* interact) {
+    interact->current_action = NO_ACTION;
+}

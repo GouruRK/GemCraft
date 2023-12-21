@@ -19,12 +19,18 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     MLV_Keyboard_modifier mod;
     MLV_Keyboard_button sym;
     MLV_Button_state state;
+    static MLV_Button_state prev_state;
 
     // intel on mouse
     MLV_Mouse_button mouse_but;
 
     MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
                               &state);
+
+    if (state == prev_state) { // to prevent placing a gem right after picking it
+        return NO_EVENT;
+    } 
+    prev_state = state;
 
     if (event == MLV_KEY) {
         switch (sym) {
@@ -54,7 +60,9 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
                 }
                 // TODO : check on button first before checking for gems movement
                 // Gem can be moved from anywhere (field to inventory, inventory to inventory, inventory to fields)
-                return MOVE_GEM;
+                if (interaction.current_action == NO_ACTION) {
+                    return MOVE_GEM;
+                }
             case MLV_BUTTON_RIGHT:
                 if (interaction.current_action == PLACING_TOWER) {
                     return CANCEL_PLACING_TOWER;
@@ -68,6 +76,7 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
 
 bool process_event(Game* game) {
     int x, y, inventory_index;
+    MLV_get_mouse_position(&x, &y);
     Gem gem;
     switch (get_event(game->cur_interact, &(game->sectors))) {
         case QUIT:
@@ -91,7 +100,6 @@ bool process_event(Game* game) {
             cancel_interaction(&(game->cur_interact));
             return false;
         case MOVE_GEM:
-            MLV_get_mouse_position(&x, &y);
             if (is_coord_in_sector(game->sectors.field, x, y)) { // if gem is picked up from the field
                 break;
             } else if (is_coord_in_sector(game->sectors.inventory, x, y)) { // if gem is picked up from the inventory
@@ -102,6 +110,15 @@ bool process_event(Game* game) {
                 }
             }
             break;
+        case PLACE_GEM:
+            if (is_coord_in_sector(game->sectors.inventory, x, y)) { // placing the gem in the inventory
+                inventory_index = from_coord_to_index(&(game->sectors), x, y);
+                if (game->player.inventory.array[inventory_index].empty) {
+                    store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem, inventory_index);
+                    reset_interaction(&(game->cur_interact));
+                }
+            }
+            return false;
         default:
             break;
     }
