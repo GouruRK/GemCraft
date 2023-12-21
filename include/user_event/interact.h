@@ -5,6 +5,7 @@
 #include "game_engine/gem.h"
 #include "game_engine/field.h"
 #include "game_engine/player.h"
+#include "utils/position.h"
 
 typedef enum {
     NO_ACTION,
@@ -18,6 +19,7 @@ typedef struct {
         Tower selected_tower;
         Gem selected_gem;
     };
+    Position object_pos;
 } Interaction;
 
 /**
@@ -35,6 +37,8 @@ Interaction init_interact(void);
  * @return
  */
 Error set_interact_tower_placement(Interaction* interact, Tower tower);
+
+Error set_interact_gem_movement(Interaction* interact, Gem gem);
 
 /**
  * @brief Place a tower on the current square of the field

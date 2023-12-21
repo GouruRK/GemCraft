@@ -9,6 +9,7 @@
 #include "display/draw_mana_gauge.h"
 #include "display/draw_inventory.h"
 #include "display/display_const.h"
+#include "display/draw_gems.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -88,13 +89,16 @@ void draw_game(const Game* game) {
         draw_monster(&(game->field.monsters.array[i]));
     }
 
-    // Prototype
-    if (game->cur_interact.current_action == PLACING_TOWER) {
-        draw_tower(game->cur_interact.selected_tower);
-    }
 
     draw_gauge(game->player, game->sectors.panel);
     draw_inventory(game->player.inventory, game->sectors.panel);
 
+    // Prototype
+    if (game->cur_interact.current_action == PLACING_TOWER) {
+        draw_tower(game->cur_interact.selected_tower);
+    } else if (game->cur_interact.current_action == MOVING_GEM) {
+        draw_gem(game->cur_interact.object_pos, game->cur_interact.selected_gem);
+    }
+    
     MLV_update_window();
 }

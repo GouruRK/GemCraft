@@ -45,7 +45,7 @@ Error store_gem_at(Inventory* inv, Gem gem, int index) {
 }
 
 Error remove_gem_at(Inventory* inv, Gem* gem, int index) {
-    if (!inv->array[index].empty) {
+    if (inv->array[index].empty) {
         return EMPTY_INVENTORY_PLACE;
     }
     *gem = inv->array[index].gem;

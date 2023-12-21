@@ -67,7 +67,8 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
 }
 
 bool process_event(Game* game) {
-    int x, y;
+    int x, y, inventory_index;
+    Gem gem;
     switch (get_event(game->cur_interact, &(game->sectors))) {
         case QUIT:
             return true;
@@ -94,16 +95,21 @@ bool process_event(Game* game) {
             if (is_coord_in_sector(game->sectors.field, x, y)) { // if gem is picked up from the field
                 break;
             } else if (is_coord_in_sector(game->sectors.inventory, x, y)) { // if gem is picked up from the inventory
-
-                printf("%d\n", from_coord_to_index(&(game->sectors), x, y));
+                inventory_index = from_coord_to_index(&(game->sectors), x, y);
+                if (!game->player.inventory.array[inventory_index].empty) {
+                    remove_gem_at(&(game->player.inventory), &gem, inventory_index);
+                    set_interact_gem_movement(&(game->cur_interact), gem);
+                }
             }
-            return false;
+            break;
         default:
             break;
     }
 
     if (game->cur_interact.current_action == PLACING_TOWER) {
         update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
+    } else if (game->cur_interact.current_action == MOVING_GEM) {
+        update_gem_movement(&(game->cur_interact));
     }
     return false;
 }
