@@ -77,7 +77,7 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
 bool process_event(Game* game) {
     int x, y, inventory_index;
     MLV_get_mouse_position(&x, &y);
-    Gem gem;
+    Gem gem, res;
     switch (get_event(game->cur_interact, &(game->sectors))) {
         case QUIT:
             return true;
@@ -111,11 +111,19 @@ bool process_event(Game* game) {
             }
             break;
         case PLACE_GEM:
+            inventory_index = from_coord_to_index(&(game->sectors), x, y);
             if (is_coord_in_sector(game->sectors.inventory, x, y)) { // placing the gem in the inventory
-                inventory_index = from_coord_to_index(&(game->sectors), x, y);
-                if (game->player.inventory.array[inventory_index].empty) {
+                if (game->player.inventory.array[inventory_index].empty) { // place the gem at an empty inventory place
                     store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem, inventory_index);
                     reset_interaction(&(game->cur_interact));
+                } else { // mix the gem with the one currenty store at the index
+                    remove_gem_at(&(game->player.inventory), &gem, inventory_index);
+                    if (combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res) != OK) { // cant combine gem
+                        store_gem_at(&(game->player.inventory), gem, inventory_index);
+                    } else {
+                        store_gem_at(&(game->player.inventory), res, inventory_index);
+                        reset_interaction(&(game->cur_interact));
+                    }
                 }
             }
             return false;

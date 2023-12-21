@@ -31,6 +31,19 @@ Player init_player(void);
 int generate_gem(Player* player, int level, Gem* res);
 
 /**
+ * @brief Combines two gems of same level and create a gem with a level + 1.
+ *        Remove the mana require to combine them.
+ *        Set the new gem in `res`.
+ * 
+ * @param player player information of mana
+ * @param a first gem to combine
+ * @param b second gem to combine
+ * @param res set the created gem
+ * @return 1 in case of success, else 0
+ */
+Error combine_gem(Player* player, Gem a, Gem b, Gem* res);
+
+/**
  * @brief Combines two gems store at indexes `index_a` and `index_b` of the inventory.
  * 
  * @param player 

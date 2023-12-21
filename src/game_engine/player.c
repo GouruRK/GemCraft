@@ -24,18 +24,7 @@ static int mana_require_for_gem(int level) {
     return 100 * (1 << level);  // 100 * 2^n
 }
 
-/**
- * @brief Combines two gems of same level and create a gem with a level + 1.
- *        Remove the mana require to combine them.
- *        Set the new gem in `res`.
- * 
- * @param player player information of mana
- * @param a first gem to combine
- * @param b second gem to combine
- * @param res set the created gem
- * @return 1 in case of success, else 0
- */
-static Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
+Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
     if ((player->mana < 100)) {
         return NOT_ENOUGHT_MANA;
     }
