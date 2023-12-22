@@ -5,6 +5,7 @@
 
 #include "game_engine/monster.h"
 #include "game_engine/player.h"
+#include "game_engine/field.h"
 #include "utils/position.h"
 #include "game_engine/game.h"
 #include "utils/util.h"
@@ -16,14 +17,28 @@ bool in_field(Position pos) {
             && (0 <= pos.y && pos.y < HEIGHT);
 }
 
-Objects get_field(Field field, Position pos) {
-    return field.board[(int)pos.y][(int)pos.x];
+Objects get_field(Field* field, Position pos) {
+    return field->board[(int)pos.y][(int)pos.x];
 }
 
 void add_to_field(Field* field, Position pos, Objects object) {
     if (in_field(pos)) {
         field->board[(int)(pos.y)][(int)(pos.x)] = object;
     }
+}
+
+Error get_tower(Field* field, Tower** tower, Position pos) {
+    if (!in_field(pos)) { 
+        return OUT_OF_FIELD;
+    }
+
+    for (int i = 0; i < field->towers.cur_len; i++) {
+        if (compare_pos(field->towers.lst[i].pos, pos)) {
+            *tower = &(field->towers.lst[i]);
+            return OK;
+        }
+    }
+    return NO_TOWER_FOUND;
 }
 
 //-------------------------------Monster related-------------------------------
@@ -40,7 +55,7 @@ Error place_tower(Field* field, Player* player, Tower tower) {
         return NOT_ENOUGHT_MANA;
     }
 
-    if (get_field(*field, tower.pos) != EMPTY) {
+    if (get_field(field, tower.pos) != EMPTY) {
         return NON_EMPTY_PLACE;
     }
 
@@ -51,6 +66,23 @@ Error place_tower(Field* field, Player* player, Tower tower) {
 
     add_to_field(field, tower.pos, TOWER);
     player->mana -= cost;
+    return OK;
+}
+
+Error load_gem(Field* field, Gem gem, Position pos) {
+    Tower* tower;
+    
+    if (!in_field(pos)) {
+        return OUT_OF_FIELD;
+    }
+    
+    if (get_tower(field, &tower, pos) != OK) {
+        return NO_TOWER_FOUND;
+    }
+    
+    if (add_gem_to_tower(tower, gem) != OK) {
+        return NON_EMPTY_TOWER;
+    }
     return OK;
 }
 

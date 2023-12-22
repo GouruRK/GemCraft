@@ -8,6 +8,7 @@
 #include "game_engine/game.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
+#include "display/display_const.h"
 
 void exit_function(void* data) {
     int* stop = (int*)data;
@@ -124,6 +125,12 @@ bool process_event(Game* game) {
                         store_gem_at(&(game->player.inventory), res, inventory_index);
                         reset_interaction(&(game->cur_interact));
                     }
+                }
+            } else if (is_coord_in_sector(game->sectors.field, x, y)) { // place the tower in field
+                x /= CELL_SIZE;
+                y /= CELL_SIZE;
+                if (load_gem(&(game->field), game->cur_interact.selected_gem, init_position(x, y)) == OK) {
+                    reset_interaction(&(game->cur_interact));
                 }
             }
             return false;

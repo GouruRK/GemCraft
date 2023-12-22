@@ -54,7 +54,7 @@ bool in_field(Position pos);
  * @param pos position to check
  * @return object store at position
  */
-Objects get_field(Field field, Position pos);
+Objects get_field(Field* field, Position pos);
 
 /**
  * @brief Add an object to field
@@ -77,6 +77,8 @@ void add_to_field(Field* field, Position pos, Objects object);
  * @return
  */
 Error place_tower(Field* field, Player* player, Tower tower);
+
+Error load_gem(Field* field, Gem gem, Position pos);
 
 //-------------------------------Monster related-------------------------------
 

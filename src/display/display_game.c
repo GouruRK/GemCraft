@@ -99,6 +99,13 @@ void draw_game(const Game* game) {
     } else if (game->cur_interact.current_action == MOVING_GEM) {
         draw_gem(game->cur_interact.object_pos, game->cur_interact.selected_gem);
     }
+
+    // Prototype
+    for (int i = 0; i < game->field.towers.cur_len; i++) {
+        if (game->field.towers.lst[i].hold_gem) {
+            draw_gem(game->field.towers.lst[i].pos, game->field.towers.lst[i].gem);
+        }
+    }
     
     MLV_update_window();
 }

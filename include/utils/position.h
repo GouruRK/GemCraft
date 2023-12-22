@@ -1,6 +1,8 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+#include <stdbool.h>
+
 typedef struct {
     float x;
     float y;
@@ -40,5 +42,7 @@ float calc_distance(Position a, Position b);
  * @return Position
  */
 Position cell_center(Position cell);
+
+bool compare_pos(Position a, Position b);
 
 #endif

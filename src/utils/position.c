@@ -1,6 +1,7 @@
 #include "utils/position.h"
 
 #include <math.h>
+#include <stdbool.h>
 
 Position init_position(float x, float y) {
     Position pos;
@@ -24,4 +25,8 @@ Position cell_center(Position cell) {
     cell.x = (int)cell.x + 0.5;
     cell.y = (int)cell.y + 0.5;
     return cell;
+}
+
+bool compare_pos(Position a, Position b) {
+    return (((int)a.x) == ((int)b.x)) && (((int)a.y) == ((int)b.y));
 }

@@ -18,6 +18,7 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
         return NON_EMPTY_TOWER;
     }
     tower->gem = gem;
+    tower->hold_gem = true;
     return OK;
 }
 

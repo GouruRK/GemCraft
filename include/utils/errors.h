@@ -16,7 +16,9 @@ typedef enum {
     EMPTY_INVENTORY_PLACE = -11,
     INVENTORY_FULL = -12,
     ACTION_ALREADY_IN_PROGRESS = -13,
-    INVALID_ACTION = -14
+    INVALID_ACTION = -14,
+    INVALID_TILE = -15,
+    NO_TOWER_FOUND = -16,
 } Error;
 
 #endif
