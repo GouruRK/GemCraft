@@ -50,7 +50,6 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     } else if(event == MLV_MOUSE_BUTTON) {
         int x, y;
         MLV_get_mouse_position(&x, &y);
-
         switch (mouse_but) {
             case MLV_BUTTON_LEFT:
                 if (interaction.current_action == PLACING_TOWER && is_coord_in_sector(sectors->field, x, y)) {
@@ -102,7 +101,11 @@ bool process_event(Game* game) {
             return false;
         case MOVE_GEM:
             if (is_coord_in_sector(game->sectors.field, x, y)) { // if gem is picked up from the field
-                break;
+                x /= CELL_SIZE;
+                y /= CELL_SIZE;
+                if (unload_gem(&(game->field), &gem, init_position(x, y)) == OK) {
+                    set_interact_gem_movement(&(game->cur_interact), gem);
+                }
             } else if (is_coord_in_sector(game->sectors.inventory, x, y)) { // if gem is picked up from the inventory
                 inventory_index = from_coord_to_index(&(game->sectors), x, y);
                 if (!game->player.inventory.array[inventory_index].empty) {

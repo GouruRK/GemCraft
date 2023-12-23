@@ -86,6 +86,24 @@ Error load_gem(Field* field, Gem gem, Position pos) {
     return OK;
 }
 
+
+Error unload_gem(Field* field, Gem* gem, Position pos) {
+    Tower* tower;
+    
+    if (!in_field(pos)) {
+        return OUT_OF_FIELD;
+    }
+    
+    if (get_tower(field, &tower, pos) != OK) {
+        return NO_TOWER_FOUND;
+    }
+    
+    if (remove_gem_from_tower(tower, gem) != OK) {
+        return NON_EMPTY_TOWER;
+    }
+    return OK;
+}
+
 /*-------------------------------Monster related------------------------------*/
 
 Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave) {

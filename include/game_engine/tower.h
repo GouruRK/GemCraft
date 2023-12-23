@@ -49,7 +49,7 @@ Error add_gem_to_tower(Tower* tower, Gem gem);
  * @return EMPTY_TOWER if the tower does not contains a gem
  *         else OK
  */
-Error remove_gem_to_tower(Tower* tower, Gem* gem);
+Error remove_gem_from_tower(Tower* tower, Gem* gem);
 
 //-------------------------------Tower Array related-------------------------------
 

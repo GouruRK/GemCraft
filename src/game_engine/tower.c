@@ -22,7 +22,7 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
     return OK;
 }
 
-Error remove_gem_to_tower(Tower* tower, Gem* gem) {
+Error remove_gem_from_tower(Tower* tower, Gem* gem) {
     if (!(tower->hold_gem)) {
         return EMPTY_TOWER;
     } 

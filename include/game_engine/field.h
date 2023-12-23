@@ -80,6 +80,8 @@ Error place_tower(Field* field, Player* player, Tower tower);
 
 Error load_gem(Field* field, Gem gem, Position pos);
 
+Error unload_gem(Field* field, Gem* gem, Position pos);
+
 //-------------------------------Monster related-------------------------------
 
 /**
