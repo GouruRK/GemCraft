@@ -3,10 +3,19 @@
 #include <math.h>
 #include <stdbool.h>
 
+#include "display/display_const.h"
+
 Position init_position(float x, float y) {
     Position pos;
     pos.x = x;
     pos.y = y;
+    return pos;
+}
+
+Position init_scaled_position(float x, float y) {
+    Position pos;
+    pos.x = x / CELL_SIZE;
+    pos.y = y / CELL_SIZE;
     return pos;
 }
 

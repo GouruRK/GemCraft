@@ -15,7 +15,13 @@ void exit_function(void* data) {
     *stop = 1;
 }
 
-Event get_event(Interaction interaction, const GameSectors* sectors) {
+/**
+ * @brief Get the current event
+ * 
+ * @param interaction current player interaction
+ * @return current event
+ */
+static Event get_event(Interaction interaction, const GameSectors* sectors) {
     // intel on keyboard
     MLV_Keyboard_modifier mod;
     MLV_Keyboard_button sym;
@@ -74,16 +80,92 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     return NO_EVENT;
 }
 
-bool process_event(Game* game) {
-    int x, y, inventory_index;
-    MLV_get_mouse_position(&x, &y);
+/**
+ * @brief Set interaction to select a gem from a tower.
+ *        Tower coordinates on screen are (x, y)
+ *        where the player clicked
+ * 
+ * @param game 
+ * @param x mouse abscissa
+ * @param y mouse ordinate
+ */
+static void pick_up_gem_from_field(Game* game, int x, int y) {
+    Gem gem;
+    if (unload_gem(&(game->field), &gem, init_scaled_position(x, y)) == OK) {
+        set_interact_gem_movement(&(game->cur_interact), gem);
+    }
+}
+
+/**
+ * @brief Set interaction to select a gem from the inventory.
+ *        Selected gem coordinates on screen are (x, y) 
+ *        where the player clicked
+ * 
+ * @param game 
+ * @param x mouse abscissa
+ * @param y mouse ordinate
+ */
+static void pick_up_gem_from_inventory(Game* game, int x, int y) {
+    Gem gem;
+    int inventory_index = from_coord_to_index(&(game->sectors), x, y);
+
+    if (!game->player.inventory.array[inventory_index].empty) {
+        remove_gem_at(&(game->player.inventory), &gem, inventory_index);
+        set_interact_gem_movement(&(game->cur_interact), gem);
+    }
+}
+
+/**
+ * @brief Drop the selected gem on the inventory square at coordinates (x, y).
+ *        Store the gem if the inventory is empty, else mix.
+ * 
+ * @param game 
+ * @param x mouse abscissa
+ * @param y mouse ordinate
+ */
+static void drop_gem_on_inventory(Game* game, int x, int y) {
     Gem gem, res;
+    int inventory_index = from_coord_to_index(&(game->sectors), x, y);
+
+    if (game->player.inventory.array[inventory_index].empty) { 
+        // if this inventory place is empty, juste place the gem 
+        store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem, inventory_index);
+        reset_interaction(&(game->cur_interact));
+    } else {
+        // if this inventory place isn't empty, mix the selected gem with the one currently store
+        remove_gem_at(&(game->player.inventory), &gem, inventory_index);
+        if (combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res) != OK) {
+            // if gems cannot be combined, store the stored gem in the inventory again
+            store_gem_at(&(game->player.inventory), gem, inventory_index);
+        } else {
+            // store the result of gem mixing
+            store_gem_at(&(game->player.inventory), res, inventory_index);
+            reset_interaction(&(game->cur_interact));
+        }
+    }
+}
+
+/**
+ * @brief Drop the selected gem on a tower of coordinates on screen (x, y).
+ * 
+ * @param game 
+ * @param x mouse abscissa
+ * @param y mouse ordinate
+ */
+static void drop_gem_on_field(Game* game, int x, int y) {
+    if (load_gem(&(game->field), game->cur_interact.selected_gem, init_scaled_position(x, y)) == OK) {
+        reset_interaction(&(game->cur_interact));
+    }
+}
+
+bool process_event(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
     switch (get_event(game->cur_interact, &(game->sectors))) {
         case QUIT:
             return true;
         case SUMMON_WAVE:
             if (game->field.nest.monster_remaining == 0) {
-                fprintf(stderr, "SUMMON_WAVE\n");
                 init_new_wave(&(game->field.nest), game->wave);
                 game->wave++;
             }
@@ -100,41 +182,17 @@ bool process_event(Game* game) {
             cancel_interaction(&(game->cur_interact));
             return false;
         case MOVE_GEM:
-            if (is_coord_in_sector(game->sectors.field, x, y)) { // if gem is picked up from the field
-                x /= CELL_SIZE;
-                y /= CELL_SIZE;
-                if (unload_gem(&(game->field), &gem, init_position(x, y)) == OK) {
-                    set_interact_gem_movement(&(game->cur_interact), gem);
-                }
-            } else if (is_coord_in_sector(game->sectors.inventory, x, y)) { // if gem is picked up from the inventory
-                inventory_index = from_coord_to_index(&(game->sectors), x, y);
-                if (!game->player.inventory.array[inventory_index].empty) {
-                    remove_gem_at(&(game->player.inventory), &gem, inventory_index);
-                    set_interact_gem_movement(&(game->cur_interact), gem);
-                }
+            if (is_coord_in_sector(game->sectors.field, x, y)) {
+                pick_up_gem_from_field(game, x, y);    
+            } else if (is_coord_in_sector(game->sectors.inventory, x, y)) {
+                pick_up_gem_from_inventory(game, x, y);
             }
-            break;
+            break; // here break to update the selected object position
         case PLACE_GEM:
-            inventory_index = from_coord_to_index(&(game->sectors), x, y);
-            if (is_coord_in_sector(game->sectors.inventory, x, y)) { // placing the gem in the inventory
-                if (game->player.inventory.array[inventory_index].empty) { // place the gem at an empty inventory place
-                    store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem, inventory_index);
-                    reset_interaction(&(game->cur_interact));
-                } else { // mix the gem with the one currenty store at the index
-                    remove_gem_at(&(game->player.inventory), &gem, inventory_index);
-                    if (combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res) != OK) { // cant combine gem
-                        store_gem_at(&(game->player.inventory), gem, inventory_index);
-                    } else {
-                        store_gem_at(&(game->player.inventory), res, inventory_index);
-                        reset_interaction(&(game->cur_interact));
-                    }
-                }
-            } else if (is_coord_in_sector(game->sectors.field, x, y)) { // place the tower in field
-                x /= CELL_SIZE;
-                y /= CELL_SIZE;
-                if (load_gem(&(game->field), game->cur_interact.selected_gem, init_position(x, y)) == OK) {
-                    reset_interaction(&(game->cur_interact));
-                }
+            if (is_coord_in_sector(game->sectors.inventory, x, y)) {
+                drop_gem_on_inventory(game, x, y);
+            } else if (is_coord_in_sector(game->sectors.field, x, y)) {
+                drop_gem_on_field(game, x, y);
             }
             return false;
         default:

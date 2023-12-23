@@ -9,13 +9,23 @@ typedef struct {
 } Position;
 
 /**
- * @brief Create a position object of float coordinates
+ * @brief Create a position object
  * 
  * @param x abscissa
  * @param y ordinate
  * @return new position
  */
 Position init_position(float x, float y);
+
+/**
+ * @brief Create a position object and scale its coordinates down
+ *        according to CELL_SIZE declared in 'display/display_const.h'
+ * 
+ * @param x 
+ * @param y 
+ * @return
+ */
+Position init_scaled_position(float x, float y);
 
 /**
  * @brief Calculate the direction in radians between two point a and b

@@ -43,14 +43,4 @@ int generate_gem(Player* player, int level, Gem* res);
  */
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res);
 
-/**
- * @brief Combines two gems store at indexes `index_a` and `index_b` of the inventory.
- * 
- * @param player 
- * @param index_a 
- * @param index_b 
- * @return
- */
-Error mix_gem_at(Player* player, int index_a, int index_b);
-
 #endif

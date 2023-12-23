@@ -78,8 +78,28 @@ void add_to_field(Field* field, Position pos, Objects object);
  */
 Error place_tower(Field* field, Player* player, Tower tower);
 
+/**
+ * @brief Load a gem at a tower of given position.
+ *        Do nothing if there is no tower at the position,
+ *        or the tower isn't empty
+ * 
+ * @param field 
+ * @param gem 
+ * @param pos 
+ * @return
+ */
 Error load_gem(Field* field, Gem gem, Position pos);
 
+/**
+ * @brief Unload a gem at a tower of given position.
+ *        Do nothing if there is no tower at the position,
+ *        or the tower is empty
+ * 
+ * @param field 
+ * @param gem 
+ * @param pos 
+ * @return
+ */
 Error unload_gem(Field* field, Gem* gem, Position pos);
 
 //-------------------------------Monster related-------------------------------

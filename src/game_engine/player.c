@@ -74,26 +74,3 @@ Error generate_gem(Player* player, int level, Gem* res) {
     player->mana -= mana_require;
     return OK;
 }
-
-Error mix_gem_at(Player* player, int index_a, int index_b) {
-    Gem a, b, res;
-    Error err;
-    Inventory* inv = &(player->inventory);
-
-    if ((err = remove_gem_at(inv, &a, index_a)) != OK) {
-        return err;
-    }
-    if ((err = remove_gem_at(inv, &b, index_b)) != OK) {
-        store_gem_at(inv, a, index_a);
-        return err;
-    }
-
-    if ((err = combine_gem(player, a, b, &res)) != OK) {
-        store_gem_at(inv, a, index_a);
-        store_gem_at(inv, b, index_b);
-        return err;
-    }
-
-    store_gem_at(inv, res, index_a);
-    return OK;
-}

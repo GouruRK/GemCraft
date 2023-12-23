@@ -21,14 +21,6 @@ typedef enum {
 void exit_function(void* data);
 
 /**
- * @brief Get the current event
- * 
- * @param interaction current player interaction
- * @return current event
- */
-Event get_event(Interaction interaction, const GameSectors* sectors);
-
-/**
  * @brief Get the current event and process it by updating the current 
  *        player interaction
  * 
