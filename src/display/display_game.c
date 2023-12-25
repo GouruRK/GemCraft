@@ -8,6 +8,7 @@
 #include "game_engine/game.h"
 #include "display/draw_mana_gauge.h"
 #include "display/draw_inventory.h"
+#include "display/draw_button.h"
 #include "display/display_const.h"
 #include "display/draw_gems.h"
 
@@ -92,6 +93,7 @@ void draw_game(const Game* game) {
 
     draw_gauge(game->player, game->sectors.panel);
     draw_inventory(game->player.inventory, game->sectors.panel);
+    draw_button(game->sectors.gem_button);
 
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {

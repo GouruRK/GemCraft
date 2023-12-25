@@ -5,7 +5,9 @@
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "user_event/gem_placement.h"
+#include "game_engine/gem.h"
 #include "game_engine/game.h"
+#include "game_engine/inventory.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
@@ -63,6 +65,9 @@ static Event get_event(Interaction interaction, const GameSectors* sectors) {
                 }
                 if (interaction.current_action == MOVING_GEM) {
                     return PLACE_GEM;
+                }
+                if (is_pos_in_sector(sectors->gem_button, init_position(x, y))) {
+                    return SUMMON_GEM;
                 }
                 // TODO : check on button first before checking for gems movement
                 // Gem can be moved from anywhere (field to inventory, inventory to inventory, inventory to fields)
@@ -158,6 +163,17 @@ static void drop_gem_on_field(Game* game, int x, int y) {
     }
 }
 
+static void summon_gem(Game* game) {
+    Gem gem;
+    if (is_inventory_full(&(game->player.inventory))) {
+        return;
+    }
+    if (generate_gem(&(game->player), 0, &gem) != OK) {
+        return;
+    }
+    add_inventory(&(game->player.inventory), gem);
+}
+
 bool process_event(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
@@ -194,6 +210,9 @@ bool process_event(Game* game) {
             } else if (is_coord_in_sector(game->sectors.field, x, y)) {
                 drop_gem_on_field(game, x, y);
             }
+            return false;
+        case SUMMON_GEM:
+            summon_gem(game);
             return false;
         default:
             break;

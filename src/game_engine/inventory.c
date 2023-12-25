@@ -27,11 +27,6 @@ Inventory init_inventory(void) {
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         inv.array[i] = init_gem_node();
     }
-
-    for (int i = 0; i < 10; i++) {
-        add_inventory(&inv, init_random_gem(1));
-    }
-
     return inv;
 }
 
@@ -55,6 +50,11 @@ Error remove_gem_at(Inventory* inv, Gem* gem, int index) {
 }
 
 Error next_free_index(Inventory* inv, int* index) {
+    if (is_inventory_full(inv)) {
+        *index = -1;
+        return INVENTORY_FULL;
+    }
+
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         if (inv->array[i].empty) {
             *index = i;
@@ -72,4 +72,8 @@ Error add_inventory(Inventory* inv, Gem gem) {
         return err;
     }
     return store_gem_at(inv, gem, index);
+}
+
+bool is_inventory_full(Inventory* inv) {
+    return inv->nb_gems == INVENTORY_SIZE;
 }

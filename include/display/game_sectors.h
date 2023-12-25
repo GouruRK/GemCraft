@@ -4,10 +4,11 @@
 #include "utils/sector.h"
 
 typedef struct {
+    Sector window;
     Sector field;
     Sector panel;
     Sector gauge;
-    Sector window;
+    Sector gem_button;
     Sector inventory;
 } GameSectors;
 

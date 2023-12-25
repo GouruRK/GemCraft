@@ -83,4 +83,6 @@ Error next_free_index(Inventory* inv, int* index);
  */
 Error add_inventory(Inventory* inv, Gem gem);
 
+bool is_inventory_full(Inventory* inv);
+
 #endif

@@ -11,6 +11,7 @@ typedef enum {
     NO_EVENT,
     SUMMON_WAVE,
     SUMMON_TOWER,
+    SUMMON_GEM,
     PLACE_TOWER,
     PLACE_GEM,
     CANCEL_PLACING_TOWER,
