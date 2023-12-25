@@ -163,6 +163,11 @@ static void drop_gem_on_field(Game* game, int x, int y) {
     }
 }
 
+/**
+ * @brief Summon a gem an store in in the inventory
+ * 
+ * @param game
+ */
 static void summon_gem(Game* game) {
     Gem gem;
     if (is_inventory_full(&(game->player.inventory))) {

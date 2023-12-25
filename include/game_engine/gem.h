@@ -25,6 +25,12 @@ typedef struct {
  */
 Gem init_gem(TypeGems type, int level, int color);
 
+/**
+ * @brief Create a random gem
+ * 
+ * @param level 
+ * @return
+ */
 Gem init_random_gem(int level);
 
 #endif
