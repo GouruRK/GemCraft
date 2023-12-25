@@ -34,12 +34,17 @@ static Sector gem_button_sector(int width, int height) {
     return init_sector(top_left, bottom_right);
 }
 
+static Sector tower_button_sector(int width, int height) {
+    Position top_left = init_position(width*CELL_SIZE, GAUGE_HEIGHT + BUTTON_HEIGHT);
+    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, GAUGE_HEIGHT + BUTTON_HEIGHT*2);
+    return init_sector(top_left, bottom_right);
+}
+
 static Sector inventory_sector(int width, int height) {
     Position top_left = init_position(width*CELL_SIZE, height*CELL_SIZE - INVENTORY_HEIGHT);
     Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, height*CELL_SIZE);
     return init_sector(top_left, bottom_right);
 }
-
 
 GameSectors init_game_sectors(int width, int height) {
     GameSectors sectors;
@@ -48,6 +53,7 @@ GameSectors init_game_sectors(int width, int height) {
     sectors.panel = panel_sector(width, height);
     sectors.gauge = gauge_sector(width, height);
     sectors.gem_button = gem_button_sector(width, height);
+    sectors.tower_button = tower_button_sector(width, height);
     sectors.inventory = inventory_sector(width, height);
     return sectors;
 }

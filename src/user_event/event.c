@@ -66,8 +66,11 @@ static Event get_event(Interaction interaction, const GameSectors* sectors) {
                 if (interaction.current_action == MOVING_GEM) {
                     return PLACE_GEM;
                 }
-                if (is_pos_in_sector(sectors->gem_button, init_position(x, y))) {
+                if (is_coord_in_sector(sectors->gem_button, x, y)) {
                     return SUMMON_GEM;
+                }
+                if (is_coord_in_sector(sectors->tower_button, x, y)) {
+                    return SUMMON_TOWER;
                 }
                 // TODO : check on button first before checking for gems movement
                 // Gem can be moved from anywhere (field to inventory, inventory to inventory, inventory to fields)

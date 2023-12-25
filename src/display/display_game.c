@@ -93,7 +93,7 @@ void draw_game(const Game* game) {
 
     draw_gauge(game->player, game->sectors.panel);
     draw_inventory(game->player.inventory, game->sectors.panel);
-    draw_button(game->sectors.gem_button);
+    draw_buttons(&(game->sectors));
 
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {

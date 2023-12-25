@@ -9,6 +9,7 @@ typedef struct {
     Sector panel;
     Sector gauge;
     Sector gem_button;
+    Sector tower_button;
     Sector inventory;
 } GameSectors;
 
