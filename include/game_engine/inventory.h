@@ -6,7 +6,7 @@
 #include "game_engine/gem.h"
 #include "utils/errors.h"
 
-#define INVENTORY_SIZE 20
+#define INVENTORY_SIZE 32
 
 typedef struct {
     Gem gem;
