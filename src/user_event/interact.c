@@ -8,6 +8,7 @@
 Interaction init_interact(void) {
     Interaction interact;
     interact.current_action = NO_ACTION;
+    interact.gem_level = 0;
     return interact;
 } 
 

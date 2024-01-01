@@ -81,6 +81,23 @@ static void draw_tower(const Tower tower) {
                            MLV_COLOR_PINK1);
 }
 
+static void draw_gem_level(Sector sector, unsigned int level) {
+    int text_width, text_height;
+    int x, y;
+
+    MLV_get_size_of_text("%d", &text_width, &text_height, level);
+    x = sector.top_left.x + sector.width/2 - text_width/2;
+    y = sector.top_left.y + sector.height/2 - text_height/2;
+    
+    MLV_draw_filled_rectangle(sector.top_left.x,
+                              sector.top_left.y,
+                              sector.width,
+                              sector.height,
+                              MLV_COLOR_BLACK);
+    
+    MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
+}
+
 // Prototype
 void draw_game(const Game* game) {
     draw_board(game->field);
@@ -108,6 +125,8 @@ void draw_game(const Game* game) {
             draw_gem(game->field.towers.lst[i].pos, game->field.towers.lst[i].gem);
         }
     }
+
+    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     
     MLV_update_window();
 }

@@ -13,14 +13,7 @@ static int max_mana(int level) {
     return pow(2000, 1.4 * level);
 }
 
-/**
- * @brief Gives the amout of mana require to create a pure gem of 
- *        a given level 
- * 
- * @param level wanted level
- * @return amout of mana
- */
-static int mana_require_for_gem(int level) {
+int mana_require_for_gem(int level) {
     return 100 * (1 << level);  // 100 * 2^n
 }
 
@@ -45,7 +38,7 @@ Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
 
 Player init_player(void) {
     Player player;
-    player.mana = 150;          // the mana pool store 150 mana by default
+    player.mana = 2000;          // the mana pool store 150 mana by default
     player.mana_lvl = 0;        // mana pool's level is 0 by default
     player.max_quantity = 2000; // a mana pool of level 0 can store 2000 mana
     player.inventory = init_inventory();

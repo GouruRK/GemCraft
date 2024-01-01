@@ -15,7 +15,7 @@
  * @param gem_button 
  * @param text 
  */
-static void draw_button(Sector gem_button, char* text) {
+static void draw_button(Sector gem_button, char* text, MLV_Color background_color, MLV_Color text_color) {
     int text_width, text_height;
     int x, y;
 
@@ -27,12 +27,14 @@ static void draw_button(Sector gem_button, char* text) {
                               gem_button.top_left.y,
                               gem_button.width,
                               gem_button.height,
-                              MLV_COLOR_YELLOW);
+                              background_color);
     
-    MLV_draw_text(x, y, text, MLV_COLOR_BLACK);
+    MLV_draw_text(x, y, text, text_color);
 }
 
 void draw_buttons(const GameSectors* sectors) {
-    draw_button(sectors->gem_button, "Gem");
-    draw_button(sectors->tower_button, "Tower");
+    draw_button(sectors->gem_button, "Gem", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
+    draw_button(sectors->tower_button, "Tower", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
+    draw_button(sectors->add_button, "++", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
+    draw_button(sectors->sub_button, "--", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
 }

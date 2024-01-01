@@ -16,6 +16,8 @@ typedef enum {
     PLACE_GEM,
     CANCEL_PLACING_TOWER,
     MOVE_GEM,
+    ADD_GEM_LEVEL,
+    SUB_GEM_LEVEL,
     QUIT
 } Event;
 

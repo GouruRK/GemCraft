@@ -12,6 +12,15 @@ typedef struct {
 } Player;
 
 /**
+ * @brief Gives the amout of mana require to create a pure gem of 
+ *        a given level 
+ * 
+ * @param level wanted level
+ * @return amout of mana
+ */
+int mana_require_for_gem(int level);
+
+/**
  * @brief PROTOTYPE
  * Initialize a player with an empty inventory
  * 

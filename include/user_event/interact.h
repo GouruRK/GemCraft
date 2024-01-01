@@ -20,6 +20,7 @@ typedef struct {
         Gem selected_gem;
     };
     Position object_pos;
+    unsigned int gem_level;
 } Interaction;
 
 /**

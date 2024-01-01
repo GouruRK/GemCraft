@@ -7,6 +7,7 @@
 #include "user_event/gem_placement.h"
 #include "game_engine/gem.h"
 #include "game_engine/game.h"
+#include "game_engine/player.h"
 #include "game_engine/inventory.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
@@ -68,6 +69,12 @@ static Event get_event(Interaction interaction, const GameSectors* sectors) {
                 }
                 if (is_coord_in_sector(sectors->gem_button, x, y)) {
                     return SUMMON_GEM;
+                }
+                if (is_coord_in_sector(sectors->add_button, x, y)) {
+                    return ADD_GEM_LEVEL;
+                }
+                if (is_coord_in_sector(sectors->sub_button, x, y)) {
+                    return SUB_GEM_LEVEL;
                 }
                 if (is_coord_in_sector(sectors->tower_button, x, y)) {
                     return SUMMON_TOWER;
@@ -176,16 +183,25 @@ static void summon_gem(Game* game) {
     if (is_inventory_full(&(game->player.inventory))) {
         return;
     }
-    if (generate_gem(&(game->player), 0, &gem) != OK) {
+    if (generate_gem(&(game->player), game->cur_interact.gem_level, &gem) != OK) {
         return;
     }
     add_inventory(&(game->player.inventory), gem);
 }
 
+static void gem_level(Game* game, Event event) {
+    if (event == ADD_GEM_LEVEL && game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
+        game->cur_interact.gem_level++;
+    } else if (event == SUB_GEM_LEVEL && game->cur_interact.gem_level) {
+        game->cur_interact.gem_level--;
+    }
+}
+
 bool process_event(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
-    switch (get_event(game->cur_interact, &(game->sectors))) {
+    Event event = get_event(game->cur_interact, &(game->sectors));
+    switch (event) {
         case QUIT:
             return true;
         case SUMMON_WAVE:
@@ -218,6 +234,10 @@ bool process_event(Game* game) {
             } else if (is_coord_in_sector(game->sectors.field, x, y)) {
                 drop_gem_on_field(game, x, y);
             }
+            return false;
+        case ADD_GEM_LEVEL:
+        case SUB_GEM_LEVEL:
+            gem_level(game, event);
             return false;
         case SUMMON_GEM:
             summon_gem(game);
