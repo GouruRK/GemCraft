@@ -5,6 +5,7 @@
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "user_event/gem_placement.h"
+#include "user_event/get_event.h"
 #include "game_engine/gem.h"
 #include "game_engine/game.h"
 #include "game_engine/player.h"
@@ -19,92 +20,15 @@ void exit_function(void* data) {
 }
 
 /**
- * @brief Get the current event
- * 
- * @param interaction current player interaction
- * @return current event
- */
-static Event get_event(Interaction interaction, const GameSectors* sectors) {
-    // intel on keyboard
-    MLV_Keyboard_modifier mod;
-    MLV_Keyboard_button sym;
-    MLV_Button_state state;
-    static MLV_Button_state prev_state;
-
-    // intel on mouse
-    MLV_Mouse_button mouse_but;
-
-    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
-                              &state);
-
-    if (state == prev_state) { // to prevent placing a gem right after picking it
-        return NO_EVENT;
-    } 
-    prev_state = state;
-
-    if (event == MLV_KEY) {
-        switch (sym) {
-            case 'q':  // Quit the game
-                return QUIT;
-            case 'w': // Summon a wave
-                return SUMMON_WAVE;
-            case 't': // place a tower
-                if (interaction.current_action == NO_ACTION) {
-                    return SUMMON_TOWER;
-                }
-                return NO_EVENT;
-            default:
-                break;
-            }
-    } else if(event == MLV_MOUSE_BUTTON) {
-        int x, y;
-        MLV_get_mouse_position(&x, &y);
-        switch (mouse_but) {
-            case MLV_BUTTON_LEFT:
-                if (interaction.current_action == PLACING_TOWER && is_coord_in_sector(sectors->field, x, y)) {
-                    return PLACE_TOWER;
-                }
-                if (interaction.current_action == MOVING_GEM) {
-                    return PLACE_GEM;
-                }
-                if (is_coord_in_sector(sectors->gem_button, x, y)) {
-                    return SUMMON_GEM;
-                }
-                if (is_coord_in_sector(sectors->add_button, x, y)) {
-                    return ADD_GEM_LEVEL;
-                }
-                if (is_coord_in_sector(sectors->sub_button, x, y)) {
-                    return SUB_GEM_LEVEL;
-                }
-                if (is_coord_in_sector(sectors->tower_button, x, y)) {
-                    return SUMMON_TOWER;
-                }
-                // TODO : check on button first before checking for gems movement
-                // Gem can be moved from anywhere (field to inventory, inventory to inventory, inventory to fields)
-                if (interaction.current_action == NO_ACTION) {
-                    return MOVE_GEM;
-                }
-            case MLV_BUTTON_RIGHT:
-                if (interaction.current_action == PLACING_TOWER) {
-                    return CANCEL_PLACING_TOWER;
-                }
-            default:
-                break;
-        }
-    }
-    return NO_EVENT;
-}
-
-/**
  * @brief Set interaction to select a gem from a tower.
  *        Tower coordinates on screen are (x, y)
  *        where the player clicked
  * 
- * @param game 
- * @param x mouse abscissa
- * @param y mouse ordinate
+ * @param game
  */
-static void pick_up_gem_from_field(Game* game, int x, int y) {
+static void pick_up_gem_from_field(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
     Gem gem;
     if (unload_gem(&(game->field), &gem, init_scaled_position(x, y)) == OK) {
         set_interact_gem_movement(&(game->cur_interact), gem);
@@ -116,12 +40,13 @@ static void pick_up_gem_from_field(Game* game, int x, int y) {
  *        Selected gem coordinates on screen are (x, y) 
  *        where the player clicked
  * 
- * @param game 
- * @param x mouse abscissa
- * @param y mouse ordinate
+ * @param game
  */
-static void pick_up_gem_from_inventory(Game* game, int x, int y) {
+static void pick_up_gem_from_inventory(Game* game) {
+    int x, y;
     Gem gem;
+    MLV_get_mouse_position(&x, &y);
+
     int inventory_index = from_coord_to_index(&(game->sectors), x, y);
 
     if (!game->player.inventory.array[inventory_index].empty) {
@@ -134,11 +59,11 @@ static void pick_up_gem_from_inventory(Game* game, int x, int y) {
  * @brief Drop the selected gem on the inventory square at coordinates (x, y).
  *        Store the gem if the inventory is empty, else mix.
  * 
- * @param game 
- * @param x mouse abscissa
- * @param y mouse ordinate
+ * @param game
  */
-static void drop_gem_on_inventory(Game* game, int x, int y) {
+static void drop_gem_on_inventory(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
     Gem gem, res;
     int inventory_index = from_coord_to_index(&(game->sectors), x, y);
 
@@ -163,11 +88,11 @@ static void drop_gem_on_inventory(Game* game, int x, int y) {
 /**
  * @brief Drop the selected gem on a tower of coordinates on screen (x, y).
  * 
- * @param game 
- * @param x mouse abscissa
- * @param y mouse ordinate
+ * @param game
  */
-static void drop_gem_on_field(Game* game, int x, int y) {
+static void drop_gem_on_field(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
     if (load_gem(&(game->field), game->cur_interact.selected_gem, init_scaled_position(x, y)) == OK) {
         reset_interaction(&(game->cur_interact));
     }
@@ -189,63 +114,64 @@ static void summon_gem(Game* game) {
     add_inventory(&(game->player.inventory), gem);
 }
 
-static void gem_level(Game* game, Event event) {
-    if (event == ADD_GEM_LEVEL && game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
+static void add_gem_level(Game* game) {
+    if (game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
         game->cur_interact.gem_level++;
-    } else if (event == SUB_GEM_LEVEL && game->cur_interact.gem_level) {
+    }
+}
+
+static void sub_gem_level(Game* game) {
+    if (game->cur_interact.gem_level) {
         game->cur_interact.gem_level--;
     }
 }
 
-bool process_event(Game* game) {
-    int x, y;
-    MLV_get_mouse_position(&x, &y);
-    Event event = get_event(game->cur_interact, &(game->sectors));
-    switch (event) {
-        case QUIT:
-            return true;
-        case SUMMON_WAVE:
-            if (game->field.nest.monster_remaining == 0) {
-                init_new_wave(&(game->field.nest), game->wave);
-                game->wave++;
-            }
-            return false;
-        case SUMMON_TOWER:
-            if (game->player.mana > game->field.towers.next_tower_cost) {
-                set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
-            }
-            return false;
-        case PLACE_TOWER:
-            drop_tower(&(game->cur_interact), &(game->field), &(game->player));
-            return false;
-        case CANCEL_PLACING_TOWER:
-            cancel_interaction(&(game->cur_interact));
-            return false;
-        case MOVE_GEM:
-            if (is_coord_in_sector(game->sectors.field, x, y)) {
-                pick_up_gem_from_field(game, x, y);    
-            } else if (is_coord_in_sector(game->sectors.inventory, x, y)) {
-                pick_up_gem_from_inventory(game, x, y);
-            }
-            break; // here break to update the selected object position
-        case PLACE_GEM:
-            if (is_coord_in_sector(game->sectors.inventory, x, y)) {
-                drop_gem_on_inventory(game, x, y);
-            } else if (is_coord_in_sector(game->sectors.field, x, y)) {
-                drop_gem_on_field(game, x, y);
-            }
-            return false;
-        case ADD_GEM_LEVEL:
-        case SUB_GEM_LEVEL:
-            gem_level(game, event);
-            return false;
-        case SUMMON_GEM:
-            summon_gem(game);
-            return false;
-        default:
-            break;
+static void summon_tower(Game* game) {
+    if (game->player.mana > game->field.towers.next_tower_cost) {
+        set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
     }
+}
 
+static void summon_wave(Game* game) {
+    if (game->field.nest.monster_remaining == 0) {
+        init_new_wave(&(game->field.nest), game->wave);
+        game->wave++;
+    }
+}
+
+static void place_in_fiend_tower(Game* game) {
+    drop_tower(&(game->cur_interact), &(game->field), &(game->player));
+}
+
+static void cancel_tower_placement(Game* game) {
+    cancel_interaction(&(game->cur_interact));
+}
+
+event_function func[] = {
+    [SUMMON_WAVE] = summon_wave,
+    [SUMMON_TOWER] = summon_tower,
+    [SUMMON_GEM] = summon_gem,
+    [PLACE_TOWER] = place_in_fiend_tower,
+    [CANCEL_PLACING_TOWER] = cancel_tower_placement,
+    [PICK_GEM_FROM_FIELD] = pick_up_gem_from_field,
+    [PICK_GEM_FROM_INVENTORY] = pick_up_gem_from_inventory,
+    [DROP_GEM_IN_INVENTORY] = drop_gem_on_inventory,
+    [DROP_GEM_IN_FIELD] = drop_gem_on_field,
+    [ADD_GEM_LEVEL] = add_gem_level,
+    [SUB_GEM_LEVEL] = sub_gem_level,
+    [SUMMON_GEM] = summon_gem
+};
+
+bool process_event(Game* game) {
+    Event event = get_event(game->cur_interact, &(game->sectors));
+    if (event == QUIT) {
+        return true;
+    }
+    event_function f;
+    if ((f = func[event])) {
+        f(game);
+    }
+    
     if (game->cur_interact.current_action == PLACING_TOWER) {
         update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
     } else if (game->cur_interact.current_action == MOVING_GEM) {

@@ -13,13 +13,17 @@ typedef enum {
     SUMMON_TOWER,
     SUMMON_GEM,
     PLACE_TOWER,
-    PLACE_GEM,
     CANCEL_PLACING_TOWER,
-    MOVE_GEM,
+    PICK_GEM_FROM_FIELD,
+    PICK_GEM_FROM_INVENTORY,
     ADD_GEM_LEVEL,
     SUB_GEM_LEVEL,
-    QUIT
+    QUIT,
+    DROP_GEM_IN_INVENTORY,
+    DROP_GEM_IN_FIELD
 } Event;
+
+typedef void (*event_function)(Game*);
 
 void exit_function(void* data);
 
