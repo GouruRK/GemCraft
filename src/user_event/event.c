@@ -112,26 +112,47 @@ static void summon_gem(Game* game) {
         return;
     }
     add_inventory(&(game->player.inventory), gem);
+    game->cur_interact.gem_level = 0;
 }
 
+/**
+ * @brief Add a level to generate a gem
+ * 
+ * @param game 
+ */
 static void add_gem_level(Game* game) {
     if (game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
         game->cur_interact.gem_level++;
     }
 }
 
+/**
+ * @brief Remove a level to generate a gem
+ * 
+ * @param game 
+ */
 static void sub_gem_level(Game* game) {
     if (game->cur_interact.gem_level) {
         game->cur_interact.gem_level--;
     }
 }
 
+/**
+ * @brief Summon a new tower and change interaction
+ * 
+ * @param game 
+ */
 static void summon_tower(Game* game) {
     if (game->player.mana > game->field.towers.next_tower_cost) {
         set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
     }
 }
 
+/**
+ * @brief Summon a new wave
+ * 
+ * @param game 
+ */
 static void summon_wave(Game* game) {
     if (game->field.nest.monster_remaining == 0) {
         init_new_wave(&(game->field.nest), game->wave);
@@ -139,27 +160,48 @@ static void summon_wave(Game* game) {
     }
 }
 
-static void place_in_fiend_tower(Game* game) {
+/**
+ * @brief Place a tower in field
+ * 
+ * @param game 
+ */
+static void place_tower_in_fiend(Game* game) {
     drop_tower(&(game->cur_interact), &(game->field), &(game->player));
 }
 
+/**
+ * @brief Cancel tower placement
+ * 
+ * @param game 
+ */
 static void cancel_tower_placement(Game* game) {
     cancel_interaction(&(game->cur_interact));
 }
 
+/**
+ * @brief Toggle game pause
+ * 
+ * @param game 
+ */
 static void toggle_pause(Game* game) {
     game->game_status = !(game->game_status);
 }
 
+/**
+ * @brief Upgrade mana pool's level
+ * 
+ * @param game 
+ */
 static void upgrade_pool(Game* game) {
     upgrade_mana_pool(&(game->player));
 }
 
+// Link between events and functions to apply them
 event_function func[] = {
     [SUMMON_WAVE] = summon_wave,
     [SUMMON_TOWER] = summon_tower,
     [SUMMON_GEM] = summon_gem,
-    [PLACE_TOWER] = place_in_fiend_tower,
+    [PLACE_TOWER] = place_tower_in_fiend,
     [CANCEL_PLACING_TOWER] = cancel_tower_placement,
     [PICK_GEM_FROM_FIELD] = pick_up_gem_from_field,
     [PICK_GEM_FROM_INVENTORY] = pick_up_gem_from_inventory,

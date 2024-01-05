@@ -19,6 +19,11 @@ typedef struct {
     Sector inventory;
 } GameSectors;
 
-GameSectors init_game_sectors(int width, int height);
+/**
+ * @brief Creates sectors of buttons, field, inventory, ... for the window 
+ * 
+ * @return
+ */
+GameSectors init_game_sectors(void);
 
 #endif

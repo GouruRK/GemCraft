@@ -27,6 +27,11 @@ typedef enum {
 
 typedef void (*event_function)(Game*);
 
+/**
+ * @brief Set 'data' to 1 whenever the player close the window
+ * 
+ * @param data 
+ */
 void exit_function(void* data);
 
 /**

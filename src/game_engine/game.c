@@ -25,7 +25,7 @@ Error init_game(Game* game) {
 
     game->player = init_player();
     game->cur_interact = init_interact();
-    game->sectors = init_game_sectors(WIDTH, HEIGHT);
+    game->sectors = init_game_sectors();
     return OK;
 }
 

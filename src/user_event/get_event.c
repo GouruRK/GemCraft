@@ -5,12 +5,21 @@
 #include "user_event/interact.h"
 #include "display/game_sectors.h"
 
+// link between keys and events
 Event key_events[] = {
     ['q'] = QUIT,
     ['w'] = SUMMON_WAVE,
     ['t'] = SUMMON_TOWER
 };
 
+/**
+ * @brief Get events triggered with the mouse
+ * 
+ * @param interaction 
+ * @param sectors 
+ * @param button 
+ * @return
+ */
 static Event get_mouse_event(Interaction interaction, const GameSectors* sectors, MLV_Mouse_button button) {
     int x, y;
     MLV_get_mouse_position(&x, &y);

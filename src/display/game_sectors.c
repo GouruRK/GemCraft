@@ -3,44 +3,76 @@
 #include "display/display_const.h"
 #include "utils/position.h"
 #include "utils/sector.h"
+#include "game_engine/field.h"
 
-static Sector window_sector(int width, int height) {
+/**
+ * @brief Create full window sector
+ * 
+ * @return
+ */
+static Sector window_sector(void) {
     Position top_left = init_position(0, 0);
-    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, height*CELL_SIZE);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-static Sector field_sector(int width, int height) {
+/**
+ * @brief Create the field sector
+ * 
+ * @return
+ */
+static Sector field_sector(void) {
     Position top_left = init_position(0, 0);
-    Position bottom_right = init_position(width*CELL_SIZE, height*CELL_SIZE);
+    Position bottom_right = init_position(FIELD_WIDTH, FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-static Sector panel_sector(int width, int height) {
-    Position top_left = init_position(width*CELL_SIZE, 0);
-    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, height*CELL_SIZE);
+/**
+ * @brief Create the rigth-panel sector, with all the controls buttons 
+ * 
+ * @return
+ */
+static Sector panel_sector(void) {
+    Position top_left = init_position(FIELD_WIDTH, 0);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-static Sector gauge_sector(int width, int height) {
-    Position top_left = init_position(width*CELL_SIZE, 0);
-    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, GAUGE_HEIGHT);
+/**
+ * @brief Create the gauge sector to draw mana
+ * 
+ * @return
+ */
+static Sector gauge_sector(void) {
+    Position top_left = init_position(FIELD_WIDTH, 0);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, GAUGE_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-static Sector create_panel_button_sector(int width, int height, int y) {
-    Position top_left = init_position(width*CELL_SIZE, y);
-    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, y + BUTTON_HEIGHT);
+/**
+ * @brief Create a button with a given ordinate
+ * 
+ * @param y 
+ * @return
+ */
+static Sector create_panel_button_sector(int y) {
+    Position top_left = init_position(FIELD_WIDTH, y);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, y + BUTTON_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-static Sector inventory_sector(int width, int height) {
-    Position top_left = init_position(width*CELL_SIZE, height*CELL_SIZE - INVENTORY_HEIGHT);
-    Position bottom_right = init_position(width*CELL_SIZE + PANEL_WIDTH, height*CELL_SIZE);
+/**
+ * @brief Create the inventory sector to save gems
+ * 
+ * @return
+ */
+static Sector inventory_sector(void) {
+    Position top_left = init_position(FIELD_WIDTH, FIELD_HEIGHT - INVENTORY_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
-GameSectors init_game_sectors(int width, int height) {
+GameSectors init_game_sectors(void) {
     GameSectors sectors;
 
     // no need to use static here because this function is only called once
@@ -55,15 +87,15 @@ GameSectors init_game_sectors(int width, int height) {
         &sectors.pause_button
     };
 
-    sectors.window = window_sector(width, height);
-    sectors.field = field_sector(width, height);
-    sectors.panel = panel_sector(width, height);
-    sectors.gauge = gauge_sector(width, height);
+    sectors.window = window_sector();
+    sectors.field = field_sector();
+    sectors.panel = panel_sector();
+    sectors.gauge = gauge_sector();
     
     for (int i = 0; i < NB_BUTTONS; i++) {
-        *(buttons_sector[i]) = create_panel_button_sector(width, height, GAUGE_HEIGHT + i*BUTTON_HEIGHT);
+        *(buttons_sector[i]) = create_panel_button_sector(GAUGE_HEIGHT + i*BUTTON_HEIGHT);
     }
 
-    sectors.inventory = inventory_sector(width, height);
+    sectors.inventory = inventory_sector();
     return sectors;
 }
