@@ -3,10 +3,13 @@
 
 #include "game_engine/inventory.h"
 
+#define NB_BUTTONS 8
+
 #define CELL_SIZE 32
-#define PANEL_WIDTH 2*CELL_SIZE
+#define PANEL_WIDTH (2*CELL_SIZE)
 #define GAUGE_HEIGHT 128
 #define BUTTON_HEIGHT CELL_SIZE
+
 #define INVENTORY_HEIGHT (INVENTORY_SIZE / 2 * CELL_SIZE)
 
 #endif

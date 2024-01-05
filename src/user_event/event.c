@@ -147,6 +147,14 @@ static void cancel_tower_placement(Game* game) {
     cancel_interaction(&(game->cur_interact));
 }
 
+static void toggle_pause(Game* game) {
+    game->game_status = !(game->game_status);
+}
+
+static void upgrade_pool(Game* game) {
+    upgrade_mana_pool(&(game->player));
+}
+
 event_function func[] = {
     [SUMMON_WAVE] = summon_wave,
     [SUMMON_TOWER] = summon_tower,
@@ -159,23 +167,28 @@ event_function func[] = {
     [DROP_GEM_IN_FIELD] = drop_gem_on_field,
     [ADD_GEM_LEVEL] = add_gem_level,
     [SUB_GEM_LEVEL] = sub_gem_level,
-    [SUMMON_GEM] = summon_gem
+    [SUMMON_GEM] = summon_gem,
+    [UPGRADE_MANA_POOL] = upgrade_pool,
 };
 
 bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
     if (event == QUIT) {
         return true;
-    }
-    event_function f;
-    if ((f = func[event])) {
-        f(game);
-    }
-    
-    if (game->cur_interact.current_action == PLACING_TOWER) {
-        update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
-    } else if (game->cur_interact.current_action == MOVING_GEM) {
-        update_gem_movement(&(game->cur_interact));
+    } else if (event == CHANGE_GAME_STATUS) { // need to do this because when game is paused,
+                                              // buttons except the pause one no longer works 
+        toggle_pause(game);
+    }  else if (game->game_status != PAUSE) {
+        event_function f;
+        if ((f = func[event])) {
+            f(game);
+        }
+        
+        if (game->cur_interact.current_action == PLACING_TOWER) {
+            update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
+        } else if (game->cur_interact.current_action == MOVING_GEM) {
+            update_gem_movement(&(game->cur_interact));
+        }
     }
     return false;
 }

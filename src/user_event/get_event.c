@@ -22,6 +22,9 @@ static Event get_mouse_event(Interaction interaction, const GameSectors* sectors
             if (is_coord_in_sector(sectors->inventory, x, y)) return DROP_GEM_IN_INVENTORY;
             if (is_coord_in_sector(sectors->field, x, y)) return DROP_GEM_IN_FIELD;
         }
+        if (is_coord_in_sector(sectors->upgrade_button, x, y)) return UPGRADE_MANA_POOL;
+        if (is_coord_in_sector(sectors->pause_button, x, y)) return CHANGE_GAME_STATUS;
+        if (is_coord_in_sector(sectors->wave_button, x, y)) return SUMMON_WAVE;
         if (is_coord_in_sector(sectors->gem_button, x, y)) return SUMMON_GEM;
         if (is_coord_in_sector(sectors->add_button, x, y)) return ADD_GEM_LEVEL;
         if (is_coord_in_sector(sectors->sub_button, x, y)) return SUB_GEM_LEVEL;

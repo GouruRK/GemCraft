@@ -6,15 +6,15 @@
 #include "utils/errors.h"
 
 static int mana_require_for_pool(int level) {
-    return pow(500, 1.4 * level);
+    return 500*pow(1.4, level);
 } 
 
 static int max_mana(int level) {
-    return pow(2000, 1.4 * level);
+    return 2000*pow(1.4, level);
 }
 
 int mana_require_for_gem(int level) {
-    return 100 * (1 << level);  // 100 * 2^n
+    return 100*(1 << level);  // 100 * 2^n
 }
 
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
@@ -47,7 +47,7 @@ Player init_player(void) {
 
 Error upgrade_mana_pool(Player* player) {
     int cost = mana_require_for_pool(player->mana_lvl);
-
+    
     if (player->mana < cost) {
         return NOT_ENOUGHT_MANA;
     }

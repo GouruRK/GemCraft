@@ -8,11 +8,14 @@ typedef struct {
     Sector field;
     Sector panel;
     Sector gauge;
+    Sector upgrade_button;
     Sector gem_button;
     Sector tower_button;
     Sector add_button;
     Sector gem_lvl;
     Sector sub_button;
+    Sector pause_button;
+    Sector wave_button;
     Sector inventory;
 } GameSectors;
 
