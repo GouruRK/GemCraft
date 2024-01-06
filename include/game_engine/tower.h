@@ -14,11 +14,8 @@ typedef struct {
     Gem gem;
     bool hold_gem;
     Position pos;
-
-    // If adding one of these field, event breaks
-    Gem m; // break
-    // Clock deploy_timer;  // Timer to load the gem  // Break
-    // Clock shoot_interval;  // Metronom to shoot projectile  // Break
+    // Clock deploy_timer;  // Timer to load the gem
+    // Clock shoot_interval;  // Metronom to shoot projectile
 } Tower;
 
 typedef struct {

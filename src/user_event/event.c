@@ -203,6 +203,7 @@ bool process_event(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
     Event event = get_event(game->cur_interact, &(game->sectors));
+    Position top_left = {0.5, 0.5};
     switch (event) {
         case QUIT:
             return true;
@@ -245,7 +246,6 @@ bool process_event(Game* game) {
             summon_gem(game);
             return false;
         case SHOOT: // PROTOTYPE
-            Position top_left = {0.5, 0.5};
             if (game->field.monsters.array_size >= 1 && is_alive(&(game->field.monsters.array[0]))) {
                 add_projectile_array(&(game->field.projectiles), init_projectile(top_left, &(game->field.monsters.array[0]), init_gem(MIXTE, 0, 120)));
                 fprintf(stderr, "FIRE !!!\n");
