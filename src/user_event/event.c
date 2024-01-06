@@ -215,6 +215,7 @@ event_function func[] = {
 
 bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
+    
     if (event == QUIT) {
         return true;
     } else if (event == CHANGE_GAME_STATUS) { // need to do this because when game is paused,

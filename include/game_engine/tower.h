@@ -6,6 +6,8 @@
 #include "game_engine/gem.h"
 #include "utils/position.h"
 #include "utils/errors.h"
+#include "utils/clock.h"
+
 
 #define MAX_TOWER 616  // 22 * 28 = number of tiles on the field
 
