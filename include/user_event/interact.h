@@ -1,6 +1,8 @@
 #ifndef INTERACT_H
 #define INTERACT_H
 
+#include <stdbool.h>
+
 #include "game_engine/tower.h"
 #include "game_engine/gem.h"
 #include "game_engine/field.h"
@@ -10,7 +12,8 @@
 typedef enum {
     NO_ACTION,
     PLACING_TOWER,
-    MOVING_GEM
+    MOVING_GEM,
+    SHOWING_TOOLTIP,
 } Action;
 
 typedef struct {
