@@ -196,6 +196,30 @@ static void upgrade_pool(Game* game) {
     upgrade_mana_pool(&(game->player));
 }
 
+static void display_tooltip(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
+    Position pos = init_position(x, y);
+    if (is_pos_in_sector(game->sectors.inventory, pos)) {
+        int inventory_index = from_coord_to_index(&(game->sectors), x, y);
+        if (!game->player.inventory.array[inventory_index].empty) {
+            set_interact_tooltip(&(game->cur_interact),
+                            init_gem_tooltip(game->player.inventory.array[inventory_index].gem, pos));
+        }
+    } else if (is_pos_in_sector(game->sectors.field, pos)) {
+        Tower* tower;
+        if (get_tower(&(game->field), &tower, pos) != OK) {
+            return;
+        }
+        set_interact_tooltip(&(game->cur_interact), 
+            init_tower_tooltip(*tower, pos));
+    }
+}
+
+static void hide_tooltip(Game* game) {
+    reset_interaction(&(game->cur_interact));
+}
+
 // Link between events and functions to apply them
 event_function func[] = {
     [SUMMON_WAVE] = summon_wave,
@@ -211,6 +235,8 @@ event_function func[] = {
     [SUB_GEM_LEVEL] = sub_gem_level,
     [SUMMON_GEM] = summon_gem,
     [UPGRADE_MANA_POOL] = upgrade_pool,
+    [SHOW_TOOLTIP] = display_tooltip,
+    [HIDE_TOOLTIP] = hide_tooltip,
 };
 
 bool process_event(Game* game) {

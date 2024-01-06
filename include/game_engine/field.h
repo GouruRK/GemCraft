@@ -102,6 +102,8 @@ Error load_gem(Field* field, Gem gem, Position pos);
  */
 Error unload_gem(Field* field, Gem* gem, Position pos);
 
+Error get_tower(Field* field, Tower** tower, Position pos);
+
 //-------------------------------Monster related-------------------------------
 
 /**

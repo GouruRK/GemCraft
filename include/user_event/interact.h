@@ -8,6 +8,7 @@
 #include "game_engine/field.h"
 #include "game_engine/player.h"
 #include "utils/position.h"
+#include "display/tooltip.h"
 
 typedef enum {
     NO_ACTION,
@@ -21,6 +22,7 @@ typedef struct {
     union {
         Tower selected_tower;
         Gem selected_gem;
+        ToolTip tooltip;
     };
     Position object_pos;
     unsigned int gem_level;
@@ -50,6 +52,8 @@ Error set_interact_tower_placement(Interaction* interact, Tower tower);
  * @return
  */
 Error set_interact_gem_movement(Interaction* interact, Gem gem);
+
+Error set_interact_tooltip(Interaction* interact, ToolTip tip);
 
 /**
  * @brief Place a tower on the current square of the field

@@ -42,10 +42,15 @@ static Event get_mouse_event(Interaction interaction, const GameSectors* sectors
             if (is_coord_in_sector(sectors->field, x, y)) return PICK_GEM_FROM_FIELD;
             if (is_coord_in_sector(sectors->inventory, x, y)) return PICK_GEM_FROM_INVENTORY;
         }
+        return HIDE_TOOLTIP;
     } else if (button == MLV_BUTTON_RIGHT) {
         if (interaction.current_action == PLACING_TOWER) {
             return CANCEL_PLACING_TOWER;
+        } 
+        if (interaction.current_action == NO_ACTION) {
+            return SHOW_TOOLTIP;
         }
+        return HIDE_TOOLTIP;
     }
     return NO_EVENT;
 }
@@ -55,18 +60,12 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     MLV_Keyboard_modifier mod;
     MLV_Keyboard_button sym;
     MLV_Button_state state;
-    static MLV_Button_state prev_state;
 
     // intel on mouse
     MLV_Mouse_button mouse_but;
 
     MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
                               &state);
-
-    if (state == prev_state) { // to prevent placing a gem right after picking it
-        return NO_EVENT;
-    } 
-    prev_state = state;
 
     if (state == MLV_RELEASED) {
         return NO_EVENT;

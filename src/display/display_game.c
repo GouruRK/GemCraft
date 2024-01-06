@@ -11,6 +11,7 @@
 #include "display/draw_button.h"
 #include "display/display_const.h"
 #include "display/draw_gems.h"
+#include "display/tooltip.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -117,6 +118,8 @@ void draw_game(const Game* game) {
         draw_tower(game->cur_interact.selected_tower);
     } else if (game->cur_interact.current_action == MOVING_GEM) {
         draw_gem(game->cur_interact.object_pos, game->cur_interact.selected_gem);
+    } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
+        display_tool_tip(&(game->sectors), game->cur_interact.tooltip);
     }
 
     // Prototype
@@ -127,6 +130,6 @@ void draw_game(const Game* game) {
     }
 
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
-    
+
     MLV_update_window();
 }

@@ -1,4 +1,3 @@
-#include "game_engine/field.h"
 
 #include <math.h>
 #include <stdbool.h>
@@ -25,20 +24,6 @@ void add_to_field(Field* field, Position pos, Objects object) {
     if (in_field(pos)) {
         field->board[(int)(pos.y)][(int)(pos.x)] = object;
     }
-}
-
-Error get_tower(Field* field, Tower** tower, Position pos) {
-    if (!in_field(pos)) { 
-        return OUT_OF_FIELD;
-    }
-
-    for (int i = 0; i < field->towers.cur_len; i++) {
-        if (compare_pos(field->towers.lst[i].pos, pos)) {
-            *tower = &(field->towers.lst[i]);
-            return OK;
-        }
-    }
-    return NO_TOWER_FOUND;
 }
 
 //-------------------------------Monster related-------------------------------
@@ -102,6 +87,20 @@ Error unload_gem(Field* field, Gem* gem, Position pos) {
         return NON_EMPTY_TOWER;
     }
     return OK;
+}
+
+Error get_tower(Field* field, Tower** tower, Position pos) {
+    if (!in_field(pos)) { 
+        return OUT_OF_FIELD;
+    }
+
+    for (int i = 0; i < field->towers.cur_len; i++) {
+        if (compare_pos(field->towers.lst[i].pos, pos)) {
+            *tower = &(field->towers.lst[i]);
+            return OK;
+        }
+    }
+    return NO_TOWER_FOUND;
 }
 
 /*-------------------------------Monster related------------------------------*/

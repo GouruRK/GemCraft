@@ -22,7 +22,9 @@ typedef enum {
     DROP_GEM_IN_INVENTORY,
     DROP_GEM_IN_FIELD,
     CHANGE_GAME_STATUS,
-    UPGRADE_MANA_POOL
+    UPGRADE_MANA_POOL,
+    SHOW_TOOLTIP,
+    HIDE_TOOLTIP
 } Event;
 
 typedef void (*event_function)(Game*);

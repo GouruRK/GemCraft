@@ -33,6 +33,15 @@ Error set_interact_gem_movement(Interaction* interact, Gem gem) {
     return OK;
 }
 
+Error set_interact_tooltip(Interaction* interact, ToolTip tip) {
+    if (interact->current_action != NO_ACTION) {
+        return ACTION_ALREADY_IN_PROGRESS;
+    }
+    interact->current_action = SHOWING_TOOLTIP;
+    interact->tooltip = tip;
+    return OK;
+}
+
 Error drop_tower(Interaction* interact, Field* field, Player* player) {
     if (interact->current_action != PLACING_TOWER) {
         return INVALID_ACTION;
