@@ -8,13 +8,14 @@
 #include "utils/errors.h"
 #include "utils/clock.h"
 
-
 #define MAX_TOWER 616  // 22 * 28 = number of tiles on the field
 
 typedef struct {
     Gem gem;
     bool hold_gem;
     Position pos;
+    Clock deploy_timer;  // Timer to load the gem
+    Clock shoot_interval;  // Metronom to shoot projectile
 } Tower;
 
 typedef struct {
@@ -52,6 +53,13 @@ Error add_gem_to_tower(Tower* tower, Gem gem);
  *         else OK
  */
 Error remove_gem_from_tower(Tower* tower, Gem* gem);
+
+/**
+ * @brief Decrease clocks of the tower
+ *
+ * @param tower
+ */
+void update_clock_tower(Tower* tower);
 
 //-------------------------------Tower Array related-------------------------------
 

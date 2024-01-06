@@ -3,13 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-double uniform(void) {
-    return rand() / (double)RAND_MAX;
-}
+double uniform(void) { return rand() / (double)RAND_MAX; }
 
-int random_int(int min, int max) {
-    return (rand() % (max - min + 1)) + min;
-}
+int random_int(int min, int max) { return (rand() % (max - min + 1)) + min; }
 
 struct timespec diff_time(struct timespec start, struct timespec end) {
     struct timespec diff;
@@ -24,6 +20,8 @@ struct timespec diff_time(struct timespec start, struct timespec end) {
     return diff;
 }
 
-color random_color() {
-    return random_int(0, 359);
-}
+color random_color() { return random_int(0, 359); }
+
+int max(int a, int b) { return (a > b) ? a : b; }
+
+int min(int a, int b) { return (a > b) ? b : a; }

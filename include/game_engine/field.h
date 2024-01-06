@@ -9,6 +9,7 @@
 #include "utils/position.h"
 #include "game_engine/tower.h"
 #include "game_engine/nest.h"
+#include "game_engine/projectile.h"
 
 #define WIDTH 28
 #define HEIGHT 22
@@ -31,8 +32,9 @@ typedef struct {
 typedef struct {
     Position camp;
     Nest nest;
-    TowerArray towers;      // list of towers
-    MonsterArray monsters;  // list of monsters
+    TowerArray towers;
+    ProjectileArray projectiles;
+    MonsterArray monsters;
     Objects board[HEIGHT][WIDTH];
     MonsterPath monster_path;
 } Field;

@@ -21,7 +21,7 @@ typedef enum {
 typedef struct {
     int wave;                   // number of waves
     int time_next_wave;         // number of frame before the next wave
-    struct timespec time;       // Time since the befinning of the game
+    struct timespec time;       // Time since the beginning of the game
     GameState game_status;
     Field field;                // game board
     Player player;              // player info
@@ -44,13 +44,5 @@ Error init_game(Game* game);
  * @return Error
  */
 Error update_game(Game* game);
-
-/**
- * @brief PROTOTYPE updating one projectile
- * 
- * @param proj 
- * @return Error 
- */
-Error update_projectile(Projectile* proj, MonsterArray* array);
 
 #endif

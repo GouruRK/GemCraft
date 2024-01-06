@@ -40,4 +40,22 @@ struct timespec diff_time(struct timespec start, struct timespec end);
  */
 color random_color();
 
+/**
+ * @brief Return the max value between a and b
+ * 
+ * @param a 
+ * @param b 
+ * @return int 
+ */
+int max(int a, int b);
+
+/**
+ * @brief Return the min value between a and b
+ * 
+ * @param a 
+ * @param b 
+ * @return int 
+ */
+int min(int a, int b);
+
 #endif
