@@ -35,7 +35,5 @@ void decrease_clock(Clock* clock) {
         clock->next_interval--;
     } else {
         clock->next_interval = clock->interval;
-    }
-
-    
+    }    
 }

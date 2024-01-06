@@ -5,11 +5,11 @@
 #include <stdio.h>
 
 #include "display/game_sectors.h"
-#include "game_engine/field.h"  // needed to test towers
+#include "game_engine/field.h"
 #include "game_engine/generation.h"
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
-#include "game_engine/tower.h"  // needed to test towers"
+#include "game_engine/tower.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "utils/clock.h"
@@ -107,6 +107,42 @@ static void update_projectiles(ProjectileArray* array,
     }
 }
 
+// static void update_tower(Tower* tower, MonsterArray* monsters,
+//                          ProjectileArray* projectiles) {
+//     if (!tower->hold_gem) return;
+
+//     if (tower->deploy_timer.remaining_time > 0) {
+//         decrease_clock(&tower->deploy_timer);
+//         return;
+//     }
+
+//     if (tower->shoot_interval.next_interval == 0) {
+//         Monster* target = NULL;
+//         // Find the monster with the most health within range of dist tiles
+//         float dist = 3 + tower->gem.level / 10.0;
+//         for (int i = 0; i < monsters->array_size; i++) {
+//             if (is_alive(&monsters->array[i]) &&
+//                 calc_distance(tower->pos, monsters->array[i].pos) <= dist) {
+//                 if (target == NULL ||
+//                     target->health < monsters->array[i].health) {
+//                     target = &monsters->array[i];
+//                 }
+//             }
+//         }
+//         if (target) {
+//             Projectile proj = init_projectile(tower->pos, target, tower->gem);
+//             add_projectile_array(projectiles, proj);
+//         }
+//     }
+// }
+
+// static void update_towers(TowerArray towers, MonsterArray* monsters,
+//                           ProjectileArray* projectiles) {
+//     for (int i = 0; i < towers.cur_len; i++) {
+//         update_tower(&towers.lst[i], monsters, projectiles);
+//     }
+// }
+
 Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
@@ -117,6 +153,13 @@ Error update_game(Game* game) {
     }
 
     update_nest(game);
+
+    // update_towers(game->field.towers, &game->field.monsters,
+    //                 &game->field.projectiles);
+
+    // if (game->field.towers.cur_len >= 1) {
+    //     fprintf(stderr, "has gem : %d\n", game->field.towers.lst[0].hold_gem);
+    // }
 
     update_projectiles(&(game->field.projectiles), &(game->field.monsters),
                        &(game->player));

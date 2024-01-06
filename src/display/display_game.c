@@ -11,6 +11,7 @@
 #include "display/draw_button.h"
 #include "display/display_const.h"
 #include "display/draw_gems.h"
+#include "display/color.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -59,16 +60,18 @@ static void draw_monster(const Monster* m) {
                               health_remaining, 4, MLV_COLOR_GREEN);
     
     // Draw the monster
+    MLV_Color monster_color = transform_color(m->color);
     MLV_draw_filled_circle((int)(m->pos.x * CELL_SIZE),
                            (int)(m->pos.y * CELL_SIZE), CELL_SIZE / 3,
-                           MLV_COLOR_BLUE);
+                           monster_color);
 }
 
 // Prototype
 static void draw_projectile(const Projectile* proj) {
+    MLV_Color color = transform_color(proj->source.color);
     MLV_draw_filled_circle((int)(proj->pos.x * CELL_SIZE),
                            (int)(proj->pos.y * CELL_SIZE), CELL_SIZE / 6,
-                           MLV_COLOR_DARK_GREEN);
+                           color);
 }
 
 // Prototype

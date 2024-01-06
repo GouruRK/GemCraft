@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "game_engine/tower.h"
 #include "game_engine/gem.h"
@@ -10,6 +11,10 @@ Tower init_tower(Position pos) {
     Tower tower;
     tower.pos = pos;
     tower.hold_gem = false;
+
+    // tower.deploy_timer = init_clock(-1, -1);
+    // tower.shoot_interval = init_clock(0.5, -1);
+
     return tower;
 }
 
@@ -19,6 +24,11 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
     }
     tower->gem = gem;
     tower->hold_gem = true;
+
+    // tower->deploy_timer = init_clock(-1, 2);
+
+    fprintf(stderr, "Tower mounted and loaded\n");
+
     return OK;
 }
 
@@ -55,14 +65,7 @@ Error add_tower_array(TowerArray* array, Tower tower) {
     return OK;
 }
 
-// int main(void) {
-//     TowerArray array = create_tower_array();
-// 
-//     for (int i = 0; i < 5; i++) {
-//         printf("------------ Tower %d : ------------", i + 1);
-//         add_tower_array(&array, init_tower((Gem){}, (Position){}));
-//         printf("coast : %d\tcurlen : %d\n", array.next_tower_cost, array.cur_len);
-//     }
-// 
-//     return 0;
-// }
+void update_clock_tower(Tower* tower) {
+    // decrease_clock(&tower->deploy_timer);
+    // decrease_clock(&tower->shoot_interval);
+}
