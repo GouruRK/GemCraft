@@ -125,6 +125,10 @@ void draw_game(const Game* game) {
             draw_gem(game->field.towers.lst[i].pos, game->field.towers.lst[i].gem);
         }
     }
+    
+    for (int i = 0; i < game->field.projectiles.nb_elt; i++) {
+        draw_projectile(&(game->field.projectiles.array[i]));
+    }
 
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     

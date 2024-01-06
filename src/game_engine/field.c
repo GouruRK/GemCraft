@@ -3,18 +3,17 @@
 #include <math.h>
 #include <stdbool.h>
 
+#include "game_engine/field.h"
+#include "game_engine/game.h"
 #include "game_engine/monster.h"
 #include "game_engine/player.h"
-#include "game_engine/field.h"
 #include "utils/position.h"
-#include "game_engine/game.h"
 #include "utils/util.h"
 
-//-------------------------------General------------------------------- 
+//-------------------------------General-------------------------------
 
 bool in_field(Position pos) {
-    return (0 <= pos.x && pos.x < WIDTH)
-            && (0 <= pos.y && pos.y < HEIGHT);
+    return (0 <= pos.x && pos.x < WIDTH) && (0 <= pos.y && pos.y < HEIGHT);
 }
 
 Objects get_field(Field* field, Position pos) {
@@ -28,7 +27,7 @@ void add_to_field(Field* field, Position pos, Objects object) {
 }
 
 Error get_tower(Field* field, Tower** tower, Position pos) {
-    if (!in_field(pos)) { 
+    if (!in_field(pos)) {
         return OUT_OF_FIELD;
     }
 
@@ -41,13 +40,13 @@ Error get_tower(Field* field, Tower** tower, Position pos) {
     return NO_TOWER_FOUND;
 }
 
-//-------------------------------Monster related-------------------------------
+//--------------------------------Tower related---------------------------------
 
 Error place_tower(Field* field, Player* player, Tower tower) {
     if (!in_field(tower.pos)) {
         return OUT_OF_FIELD;
     }
-    
+
     int cost = field->towers.next_tower_cost;
     Error err;
 
@@ -71,33 +70,32 @@ Error place_tower(Field* field, Player* player, Tower tower) {
 
 Error load_gem(Field* field, Gem gem, Position pos) {
     Tower* tower;
-    
+
     if (!in_field(pos)) {
         return OUT_OF_FIELD;
     }
-    
+
     if (get_tower(field, &tower, pos) != OK) {
         return NO_TOWER_FOUND;
     }
-    
+
     if (add_gem_to_tower(tower, gem) != OK) {
         return NON_EMPTY_TOWER;
     }
     return OK;
 }
 
-
 Error unload_gem(Field* field, Gem* gem, Position pos) {
     Tower* tower;
-    
+
     if (!in_field(pos)) {
         return OUT_OF_FIELD;
     }
-    
+
     if (get_tower(field, &tower, pos) != OK) {
         return NO_TOWER_FOUND;
     }
-    
+
     if (remove_gem_from_tower(tower, gem) != OK) {
         return NON_EMPTY_TOWER;
     }
@@ -123,8 +121,9 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave) {
  * @param field
  */
 static void ban_monster(Monster* monster, Player* player, const Field* field) {
-    player->mana -=
-        (monster->max_health * 15.0 / 100) * pow(1.3, player->mana_lvl);
+    int mana_loss =
+        (monster->max_health * 15.0 / 100.0) * pow(1.3, player->mana_lvl);
+    player->mana = max(0, player->mana - mana_loss);
 
     monster->index_path = 0;
     monster->dest = cell_center(field->monster_path.path[0]);
@@ -195,7 +194,7 @@ void init_new_wave(Nest* nest, int nb_wave) {
         case BOSS:
             nest->monster_remaining = 2;
             break;
-        
+
         default:
             break;
     }

@@ -53,6 +53,8 @@ static Event get_event(Interaction interaction, const GameSectors* sectors) {
                     return SUMMON_TOWER;
                 }
                 return NO_EVENT;
+            case 'a': // PROTOTYPE Shoot projectile
+                return SHOOT;
             default:
                 break;
             }
@@ -242,6 +244,12 @@ bool process_event(Game* game) {
         case SUMMON_GEM:
             summon_gem(game);
             return false;
+        case SHOOT: // PROTOTYPE
+            Position top_left = {0.5, 0.5};
+            if (game->field.monsters.array_size >= 1 && is_alive(&(game->field.monsters.array[0]))) {
+                add_projectile_array(&(game->field.projectiles), init_projectile(top_left, &(game->field.monsters.array[0]), init_gem(MIXTE, 0, 120)));
+                fprintf(stderr, "FIRE !!!\n");
+            }
         default:
             break;
     }

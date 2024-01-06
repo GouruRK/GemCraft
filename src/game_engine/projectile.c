@@ -57,6 +57,8 @@ int has_reach_target(Projectile* proj) {
 typedef void (*apply_effect)(MonsterArray* array, Projectile* proj);
 
 static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {
+    Monster* tmp = proj->target;
+
     proj->target->status[1].status = SPRAYING;
     proj->target->status[0].status = NONE;
     for (int i = 0; i < array->array_size; i++) {
@@ -68,6 +70,8 @@ static void apply_pyro_hydro(MonsterArray* array, Projectile* proj) {
             array->array[i].status[1].clock = init_clock(-1, 5);
         }
     }
+
+    proj->target = tmp;
 }
 
 static void apply_pyro_dendro(Projectile* proj) {
@@ -82,6 +86,7 @@ static void apply_hydro_dendro(Projectile* proj) {
 
 static void apply_pyro(MonsterArray* array, Projectile* proj) {
     if (proj->target->status[0].status == PYRO_RESIDUE) {
+        Monster* tmp = proj->target;
         for (int i = 0; i < array->array_size; i++) {
             if (is_alive(&array->array[i]) &&
                 calc_distance(proj->pos, array->array[i].pos) < 2) {
@@ -90,6 +95,7 @@ static void apply_pyro(MonsterArray* array, Projectile* proj) {
             }
         }
         proj->target->status[0].status = NONE;
+        proj->target = tmp;
     } else if (proj->target->status[0].status == HYDRO_RESIDUE) {
         apply_pyro_hydro(array, proj);
     } else if (proj->target->status[0].status == DENDRO_RESIDUE) {
@@ -134,7 +140,6 @@ void hit_target(Projectile* proj, MonsterArray* array) {
         [PYRO] = apply_pyro,
         [DENDRO] = apply_dendro,
         [HYDRO] = apply_hydro,
-
     };
     if (proj->source.type != MIXTE) {
         apply[proj->source.type](array, proj);
@@ -150,55 +155,56 @@ void move_projectile(Projectile* proj) {
 
 /*--------------------------------List Related--------------------------------*/
 
-Node* init_node(void) { return (Node*)malloc(sizeof(Node)); }
+Error init_projectile_array(ProjectileArray* array) {
+    array->array =
+        (Projectile*)malloc(sizeof(Projectile) * BASE_PROJ_ARRAY_SIZE);
+    if (!array->array) return ALLOCATION_ERROR;
 
-Node* init_filled_node(Projectile proj) {
-    Node* node = init_node();
-    if (node) {
-        node->proj = proj;
-        node->next = NULL;
+    array->max_size = BASE_PROJ_ARRAY_SIZE;
+    array->nb_elt = 0;
+
+    return OK;
+}
+
+/**
+ * @brief Double max_size of the array
+ *
+ * @param array
+ * @return Error ALLOCATION_ERROR
+ */
+static Error realloc_projectile_array(ProjectileArray* array) {
+    Projectile* tmp =
+        realloc(array->array, (array->max_size * 2) * sizeof(Projectile));
+    if (!tmp) {
+        return ALLOCATION_ERROR;
     }
-    return node;
+
+    array->array = tmp;
+    array->max_size *= 2;
+    return OK;
 }
 
-ProjectileArray init_array(void) { return NULL; }
-
-int add_node(ProjectileArray* array, Node* node) {
-    if (!node) return 0;
-
-    node->next = *array;
-    *array = node;
-
-    return 1;
-}
-
-int add_projectile(ProjectileArray* array, Projectile proj) {
-    return add_node(array, init_filled_node(proj));
-}
-
-Node* pop_node(ProjectileArray* array) {
-    if (!(*array)) return NULL;
-
-    Node* node = *array;
-    *array = (*array)->next;
-
-    return node;
-}
-
-void free_array(ProjectileArray* array) {
-    Node* temp;
-    while (*array) {
-        temp = (*array)->next;
-        free(*array);
-        *array = temp;
+Error add_projectile_array(ProjectileArray* array, Projectile proj) {
+    if (array->nb_elt == array->max_size) {
+        if (realloc_projectile_array(array) == ALLOCATION_ERROR) {
+            return ALLOCATION_ERROR;
+        }
     }
+
+    array->array[array->nb_elt] = proj;
+    array->nb_elt++;
+
+    return OK;
 }
 
-// Test allocation and free
-// int main(void) {
-//     ProjectileArray array = init_array();
-//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
-//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
-//     add_projectile(&array, init_projectile((Position){}, NULL, (Gem){}));
-//     free_array(&array);
-// }
+void suppress_proj_index(ProjectileArray* array, int index) {
+    if (index >= array->nb_elt || index < 0) {
+        return;
+    }
+
+    if (index != array->nb_elt - 1) {
+        array->array[index] = array->array[array->nb_elt - 1];
+    }
+    array->nb_elt--;
+
+}

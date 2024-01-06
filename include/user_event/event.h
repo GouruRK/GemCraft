@@ -18,7 +18,8 @@ typedef enum {
     MOVE_GEM,
     ADD_GEM_LEVEL,
     SUB_GEM_LEVEL,
-    QUIT
+    QUIT,
+    SHOOT
 } Event;
 
 void exit_function(void* data);

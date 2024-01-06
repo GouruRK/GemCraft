@@ -29,7 +29,8 @@ static void init_monster_health(Monster* monster, int wave_number) {
 static void modify_monster_type(Monster* monster, TypeWave type_wave) {
     switch (type_wave) {
         case BOSS:
-            monster->health *= 12;
+            monster->max_health *= 12;
+            monster->health = monster->max_health;
             break;
 
         case FAST:

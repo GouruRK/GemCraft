@@ -1,10 +1,10 @@
 #include "game_engine/game.h"
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "utils/clock.h"
-#include "utils/errors.h"
+#include "display/game_sectors.h"
 #include "game_engine/field.h"  // needed to test towers
 #include "game_engine/generation.h"
 #include "game_engine/player.h"
@@ -12,7 +12,8 @@
 #include "game_engine/tower.h"  // needed to test towers"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
-#include "display/game_sectors.h"
+#include "utils/clock.h"
+#include "utils/errors.h"
 
 Error init_game(Game* game) {
     game->wave = 0;
@@ -22,6 +23,9 @@ Error init_game(Game* game) {
 
     game->game_status = ONGOING;
     game->field = generate_field();
+    if (init_projectile_array(&(game->field.projectiles)) == ALLOCATION_ERROR) {
+        return ALLOCATION_ERROR;
+    }
 
     game->player = init_player();
     game->cur_interact = init_interact();
@@ -51,8 +55,8 @@ static Error update_monster(Monster* monster, Field* field, Player* player) {
 
 /**
  * @brief Spawn monsters
- * 
- * @param game 
+ *
+ * @param game
  */
 static void update_nest(Game* game) {
     if (game->field.nest.monster_remaining > 0 &&
@@ -81,6 +85,28 @@ static void update_clocks(Game* game) {
     decrease_clock(&game->field.nest.spawn_clock);
 }
 
+static void update_projectiles(ProjectileArray* array,
+                               MonsterArray* monster_array, Player* player) {
+    for (int i = 0; i < array->nb_elt; i++) {
+        if (!is_alive(array->array[i].target)) {
+            suppress_proj_index(array, i);
+        } else if (has_reach_target(&(array->array[i]))) {
+            hit_target(&(array->array[i]), monster_array);
+            // if the projectile kill his target
+            if (!is_alive(array->array[i].target)) {
+                int mana_drop = array->array[i].target->max_health * 0.1 *
+                                pow(1.3, player->mana_lvl);
+                player->mana =
+                    min(player->max_quantity, mana_drop + player->mana);
+            }
+
+            suppress_proj_index(array, i);
+        } else {
+            move_projectile(&(array->array[i]));
+        }
+    }
+}
+
 Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
@@ -92,19 +118,10 @@ Error update_game(Game* game) {
 
     update_nest(game);
 
-    // Update timer of objects
+    update_projectiles(&(game->field.projectiles), &(game->field.monsters),
+                       &(game->player));
+
     update_clocks(game);
 
-    return OK;
-}
-
-Error update_projectile(Projectile* proj, MonsterArray* array) {
-    if (has_reach_target(proj)) {
-        hit_target(proj, array);
-        // PROTOTYPE should suppress the proj
-        proj->target = NULL;
-        return OK;
-    }
-    move_projectile(proj);
     return OK;
 }
