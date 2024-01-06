@@ -33,8 +33,11 @@ static void draw_button(Sector gem_button, char* text, MLV_Color background_colo
 }
 
 void draw_buttons(const GameSectors* sectors) {
+    draw_button(sectors->upgrade_button, "Upgrade", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
     draw_button(sectors->gem_button, "Gem", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
     draw_button(sectors->tower_button, "Tower", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
     draw_button(sectors->add_button, "++", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
     draw_button(sectors->sub_button, "--", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
+    draw_button(sectors->wave_button, "Wave", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
+    draw_button(sectors->pause_button, "Pause", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
 }

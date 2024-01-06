@@ -39,6 +39,13 @@ Interaction init_interact(void);
  */
 Error set_interact_tower_placement(Interaction* interact, Tower tower);
 
+/**
+ * @brief Set the current interaction to `MOVING_GEM` and set the given gem
+ * 
+ * @param interact 
+ * @param gem 
+ * @return
+ */
 Error set_interact_gem_movement(Interaction* interact, Gem gem);
 
 /**

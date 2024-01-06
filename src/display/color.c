@@ -27,23 +27,3 @@ MLV_Color transform_color(int angle) {
 
     return MLV_rgba(r*lightness/100, g*lightness/100, b*lightness/100, 255);
 }
-
-// int main(void) {
-//     int size = 40;
-//     int heigth = 19;
-//     int width = 19;
-//     MLV_create_window("color", "", width*size, heigth*size);
-// 
-//     int angle;
-//     for (int y = 0; y < heigth; y++) { // 18*20 = 360
-//         for (int x = 0; x < width; x++) {
-//             angle = y*heigth + x;
-//             printf("%d\n", angle);
-//             MLV_draw_filled_rectangle(x*size, y*size, size, size, transform_color(angle));
-//             MLV_draw_text(x*size, y*size, "%d", MLV_COLOR_WHITE, angle);
-//         }
-//     }
-//     MLV_actualise_window();
-//     MLV_wait_seconds(10);
-//     MLV_free_window();
-// }

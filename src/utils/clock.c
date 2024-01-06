@@ -21,8 +21,6 @@ Clock init_clock(float interval, float remaining_time) {
         res.remaining_time = remaining_time * FRAMERATE;
     }
 
-
-
     return res;
 }
 
@@ -35,5 +33,5 @@ void decrease_clock(Clock* clock) {
         clock->next_interval--;
     } else {
         clock->next_interval = clock->interval;
-    }    
+    }
 }

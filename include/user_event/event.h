@@ -13,15 +13,25 @@ typedef enum {
     SUMMON_TOWER,
     SUMMON_GEM,
     PLACE_TOWER,
-    PLACE_GEM,
     CANCEL_PLACING_TOWER,
-    MOVE_GEM,
+    PICK_GEM_FROM_FIELD,
+    PICK_GEM_FROM_INVENTORY,
     ADD_GEM_LEVEL,
     SUB_GEM_LEVEL,
     QUIT,
-    SHOOT
+    DROP_GEM_IN_INVENTORY,
+    DROP_GEM_IN_FIELD,
+    CHANGE_GAME_STATUS,
+    UPGRADE_MANA_POOL
 } Event;
 
+typedef void (*event_function)(Game*);
+
+/**
+ * @brief Set 'data' to 1 whenever the player close the window
+ * 
+ * @param data 
+ */
 void exit_function(void* data);
 
 /**

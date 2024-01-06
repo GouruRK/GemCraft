@@ -12,8 +12,8 @@ Tower init_tower(Position pos) {
     tower.pos = pos;
     tower.hold_gem = false;
 
-    // tower.deploy_timer = init_clock(-1, -1);
-    // tower.shoot_interval = init_clock(0.5, -1);
+    tower.deploy_timer = init_clock(-1, -1);
+    tower.shoot_interval = init_clock(0.5, -1);
 
     return tower;
 }
@@ -25,7 +25,7 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
     tower->gem = gem;
     tower->hold_gem = true;
 
-    // tower->deploy_timer = init_clock(-1, 2);
+    tower->deploy_timer = init_clock(-1, 2);
 
     fprintf(stderr, "Tower mounted and loaded\n");
 
@@ -66,6 +66,6 @@ Error add_tower_array(TowerArray* array, Tower tower) {
 }
 
 void update_clock_tower(Tower* tower) {
-    // decrease_clock(&tower->deploy_timer);
-    // decrease_clock(&tower->shoot_interval);
+    decrease_clock(&tower->deploy_timer);
+    decrease_clock(&tower->shoot_interval);
 }
