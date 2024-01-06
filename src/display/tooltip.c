@@ -59,9 +59,9 @@ static void display_gem_tool_tip(const GameSectors* sectors, Position pos, Gem g
 }
 
 static void display_tower_tool_tip(const GameSectors* sectors, Position pos, Tower tower) {
-    int height = 40;
+    int height = 20;
     if (tower.hold_gem) {
-        height *= 2;
+        height = 50;
     }
     reposition(sectors, &pos, height);
 
@@ -74,7 +74,15 @@ static void display_tower_tool_tip(const GameSectors* sectors, Position pos, Tow
     MLV_get_size_of_text("Radius %d", &w, &h, 5);
     MLV_draw_text(pos.x, pos.y, "Radius %d", MLV_COLOR_WHITE, 5);
 
+    if (tower.hold_gem) {
     // gem type
+    MLV_get_size_of_text("Gem of type ", &w, &h);
+    MLV_draw_text(pos.x, pos.y + 15, "Gem of type ", MLV_COLOR_WHITE);
+    MLV_draw_text(pos.x + w, pos.y + 15, "%s", transform_color(tower.gem.color), gem_name_array[tower.gem.type]);
+
+    // gem level
+    MLV_draw_text(pos.x, pos.y + h + 15, "Level : %d", MLV_COLOR_WHITE, tower.gem.level);
+    }
 }
 
 void display_tool_tip(const GameSectors* sectors, ToolTip tip) {

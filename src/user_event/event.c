@@ -208,7 +208,7 @@ static void display_tooltip(Game* game) {
         }
     } else if (is_pos_in_sector(game->sectors.field, pos)) {
         Tower* tower;
-        if (get_tower(&(game->field), &tower, pos) != OK) {
+        if (get_tower(&(game->field), &tower, init_scaled_position(x, y)) != OK) {
             return;
         }
         set_interact_tooltip(&(game->cur_interact), 

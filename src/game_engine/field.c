@@ -90,10 +90,10 @@ Error unload_gem(Field* field, Gem* gem, Position pos) {
 }
 
 Error get_tower(Field* field, Tower** tower, Position pos) {
-    if (!in_field(pos)) { 
+    if (!in_field(pos)) {
         return OUT_OF_FIELD;
     }
-
+    
     for (int i = 0; i < field->towers.cur_len; i++) {
         if (compare_pos(field->towers.lst[i].pos, pos)) {
             *tower = &(field->towers.lst[i]);

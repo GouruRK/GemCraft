@@ -54,15 +54,3 @@ Error add_tower_array(TowerArray* array, Tower tower) {
     array->cur_len++;
     return OK;
 }
-
-// int main(void) {
-//     TowerArray array = create_tower_array();
-// 
-//     for (int i = 0; i < 5; i++) {
-//         printf("------------ Tower %d : ------------", i + 1);
-//         add_tower_array(&array, init_tower((Gem){}, (Position){}));
-//         printf("coast : %d\tcurlen : %d\n", array.next_tower_cost, array.cur_len);
-//     }
-// 
-//     return 0;
-// }
