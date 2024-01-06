@@ -14,8 +14,8 @@ typedef struct {
     Gem gem;
     bool hold_gem;
     Position pos;
-    // Clock deploy_timer;  // Timer to load the gem
-    // Clock shoot_interval;  // Metronom to shoot projectile
+    Clock deploy_timer;  // Timer to load the gem
+    Clock shoot_interval;  // Metronom to shoot projectile
 } Tower;
 
 typedef struct {
