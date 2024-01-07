@@ -12,5 +12,7 @@
  */
 void draw_gauge(Player player, Sector info);
 
+void draw_gauge_numbers(Player player, Sector info);
+
 #endif
 

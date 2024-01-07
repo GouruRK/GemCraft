@@ -8,6 +8,13 @@
 #include "game_engine/gem.h"
 #include "utils/errors.h"
 
+static bool is_action_can_be_overwritten(Action action) {
+   return action == NO_ACTION
+            || action == SHOWING_GEM_COST 
+            || action == SHOWING_TOWER_COST
+            || action == SHOWING_UPGRADE_COST;
+}
+
 Interaction init_interact(void) {
     Interaction interact;
     interact.current_action = NO_ACTION;
@@ -16,7 +23,7 @@ Interaction init_interact(void) {
 } 
 
 Error set_interact_tower_placement(Interaction* interact, Tower tower) {
-    if (interact->current_action != NO_ACTION) {
+    if (!is_action_can_be_overwritten(interact->current_action)) {
         return ACTION_ALREADY_IN_PROGRESS;
     }
     interact->current_action = PLACING_TOWER;
@@ -25,7 +32,7 @@ Error set_interact_tower_placement(Interaction* interact, Tower tower) {
 }
 
 Error set_interact_gem_movement(Interaction* interact, Gem gem) {
-    if (interact->current_action != NO_ACTION) {
+    if (!is_action_can_be_overwritten(interact->current_action)) {
         return ACTION_ALREADY_IN_PROGRESS;
     }
     interact->current_action = MOVING_GEM;
@@ -34,12 +41,32 @@ Error set_interact_gem_movement(Interaction* interact, Gem gem) {
 }
 
 Error set_interact_tooltip(Interaction* interact, ToolTip tip) {
-    if (interact->current_action != NO_ACTION) {
+    if (!is_action_can_be_overwritten(interact->current_action)) {
         return ACTION_ALREADY_IN_PROGRESS;
     }
     interact->current_action = SHOWING_TOOLTIP;
     interact->tooltip = tip;
     return OK;
+}
+
+static Error change_mouseover(Interaction* interact, Action action) {
+    if (is_action_can_be_overwritten(interact->current_action)) {
+        interact->current_action = action;
+        return OK;
+    }
+    return ACTION_ALREADY_IN_PROGRESS;
+}
+
+Error set_interact_show_upgrade_cost(Interaction* interact) {
+    return change_mouseover(interact, SHOWING_UPGRADE_COST);
+}
+
+Error set_interact_show_tower_cost(Interaction* interact) {
+    return change_mouseover(interact, SHOWING_TOWER_COST);
+}
+
+Error set_interact_show_gem_cost(Interaction* interact) {
+    return change_mouseover(interact, SHOWING_GEM_COST);
 }
 
 Error drop_tower(Interaction* interact, Field* field, Player* player) {
@@ -62,4 +89,10 @@ void cancel_interaction(Interaction* interact) {
 
 void reset_interaction(Interaction* interact) {
     interact->current_action = NO_ACTION;
+}
+
+void reset_overwritable_interaction(Interaction* interact) {
+    if (is_action_can_be_overwritten(interact->current_action)) {
+        interact->current_action = NO_ACTION;
+    }
 }

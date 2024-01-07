@@ -20,6 +20,8 @@ typedef struct {
  */
 int mana_require_for_gem(int level);
 
+int mana_require_for_pool(int level);
+
 /**
  * @brief PROTOTYPE
  * Initialize a player with an empty inventory

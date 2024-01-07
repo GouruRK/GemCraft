@@ -14,23 +14,23 @@
 #include "display/tooltip.h"
 
 int corners[NB_BLOCKS][2] = {
-        // top left corner
-        {-BLOCK_SIZE, -BLOCK_SIZE}, 
-        {-BLOCK_SIZE, 0},
-        {0, -BLOCK_SIZE},
-        // top right corner
-        {CELL_SIZE, -BLOCK_SIZE},
-        {CELL_SIZE - BLOCK_SIZE, -BLOCK_SIZE},
-        {CELL_SIZE, 0},
-        // bottom left corner
-        {-BLOCK_SIZE, CELL_SIZE},
-        {-BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE},
-        {0, CELL_SIZE},
-        // bottom right corner
-        {CELL_SIZE, CELL_SIZE},
-        {CELL_SIZE - BLOCK_SIZE, CELL_SIZE},
-        {CELL_SIZE, CELL_SIZE - BLOCK_SIZE}
-    };
+    // top left corner
+    {0, 0},
+    {0, BLOCK_SIZE},
+    {BLOCK_SIZE, 0},
+    // top right corner
+    {CELL_SIZE - BLOCK_SIZE, 0},
+    {CELL_SIZE - BLOCK_SIZE*2, 0},
+    {CELL_SIZE - BLOCK_SIZE, BLOCK_SIZE},
+    // bottom left corner
+    {0, CELL_SIZE - BLOCK_SIZE},
+    {0, CELL_SIZE - BLOCK_SIZE*2},
+    {BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE},
+    // bottom right corner
+    {CELL_SIZE - BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE},
+    {CELL_SIZE - BLOCK_SIZE*2, CELL_SIZE - BLOCK_SIZE},
+    {CELL_SIZE - BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE*2},
+};
 
 // Prototype
 static void draw_board(const Field field) {
@@ -93,16 +93,6 @@ static void draw_projectile(const Projectile* proj) {
                            MLV_COLOR_DARK_GREEN);
 }
 
-// Prototype
-// static void draw_tower(const Tower tower) {
-//     Position center = cell_center(tower.pos);
-// 
-//     MLV_draw_filled_circle((int)(center.x * CELL_SIZE),
-//                            (int)(center.y * CELL_SIZE),
-//                            CELL_SIZE / 3, 
-//                            MLV_COLOR_PINK1);
-// }
-
 static void draw_gem_level(Sector sector, unsigned int level) {
     int text_width, text_height;
     int x, y;
@@ -121,6 +111,11 @@ static void draw_gem_level(Sector sector, unsigned int level) {
 }
 
 void draw_tower(Tower tower) {
+    MLV_draw_filled_rectangle(tower.pos.x*CELL_SIZE,
+                              tower.pos.y*CELL_SIZE,
+                              CELL_SIZE, CELL_SIZE,
+                              MLV_rgba(85, 85, 85, 140));
+    
     for (int i = 0; i < NB_BLOCKS; i++) {
         MLV_draw_filled_rectangle(tower.pos.x*CELL_SIZE + corners[i][0],
                                   tower.pos.y*CELL_SIZE + corners[i][1],
@@ -128,6 +123,14 @@ void draw_tower(Tower tower) {
     }
     if (tower.hold_gem) {
         draw_gem(tower.pos, tower.gem);
+    }
+}
+
+void display_cost(Sector gauge, long max_quantity, long int cost) {
+    if (cost > 0) {
+        int height = (cost * (long)GAUGE_HEIGHT) / max_quantity;
+        MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
+                                gauge.width, -height, MLV_rgba(252, 3, 73, 200));
     }
 }
 
@@ -153,13 +156,20 @@ void draw_game(const Game* game) {
     if (game->cur_interact.current_action == PLACING_TOWER) {
         draw_tower(game->cur_interact.selected_tower);
     } else if (game->cur_interact.current_action == MOVING_GEM) {
-        draw_gem(game->cur_interact.object_pos, game->cur_interact.selected_gem);
+        draw_gem(game->cur_interact.object_pos, 
+                 game->cur_interact.selected_gem);
     } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
         display_tool_tip(&(game->sectors), game->cur_interact.tooltip);
+    } else if (game->cur_interact.current_action == SHOWING_UPGRADE_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity, mana_require_for_pool(game->player.mana_lvl + 1));
+    } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity, mana_require_for_gem(game->cur_interact.gem_level));
+    } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity, game->field.towers.next_tower_cost);
     }
 
-
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
+    draw_gauge_numbers(game->player, game->sectors.gauge);
 
     MLV_update_window();
 }

@@ -15,6 +15,9 @@ typedef enum {
     PLACING_TOWER,
     MOVING_GEM,
     SHOWING_TOOLTIP,
+    SHOWING_UPGRADE_COST,
+    SHOWING_GEM_COST,
+    SHOWING_TOWER_COST
 } Action;
 
 typedef struct {
@@ -55,6 +58,12 @@ Error set_interact_gem_movement(Interaction* interact, Gem gem);
 
 Error set_interact_tooltip(Interaction* interact, ToolTip tip);
 
+Error set_interact_show_upgrade_cost(Interaction* interact);
+
+Error set_interact_show_tower_cost(Interaction* interact);
+
+Error set_interact_show_gem_cost(Interaction* interact);
+
 /**
  * @brief Place a tower on the current square of the field
  * 
@@ -78,5 +87,7 @@ void cancel_interaction(Interaction* interact);
  * @param interact 
  */
 void reset_interaction(Interaction* interact);
+
+void reset_overwritable_interaction(Interaction* interact);
 
 #endif

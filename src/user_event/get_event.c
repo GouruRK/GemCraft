@@ -52,6 +52,11 @@ static Event get_mouse_event(Interaction interaction, const GameSectors* sectors
         }
         return HIDE_TOOLTIP;
     }
+    
+    if (is_coord_in_sector(sectors->upgrade_button, x, y)) return SHOW_UPGRADE_COST;
+    if (is_coord_in_sector(sectors->gem_button, x, y)) return SHOW_GEM_COST;
+    if (is_coord_in_sector(sectors->tower_button, x, y)) return SHOW_TOWER_COST;
+
     return NO_EVENT;
 }
 

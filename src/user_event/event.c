@@ -216,12 +216,29 @@ static void display_tooltip(Game* game) {
     }
 }
 
-static void hide_tooltip(Game* game) {
+static void reset_current_interaction(Game* game) {
     reset_interaction(&(game->cur_interact));
+}
+
+static void reset_overwritable_events(Game* game) {
+    reset_overwritable_interaction(&game->cur_interact);
+}
+
+static void show_upgrade_cost(Game* game) {
+    set_interact_show_upgrade_cost(&(game->cur_interact));
+}
+
+static void show_tower_cost(Game* game) {
+    set_interact_show_tower_cost(&(game->cur_interact));
+}
+
+static void show_gem_cost(Game* game) {
+    set_interact_show_gem_cost(&(game->cur_interact));
 }
 
 // Link between events and functions to apply them
 event_function func[] = {
+    [NO_EVENT] = reset_overwritable_events,
     [SUMMON_WAVE] = summon_wave,
     [SUMMON_TOWER] = summon_tower,
     [SUMMON_GEM] = summon_gem,
@@ -236,7 +253,10 @@ event_function func[] = {
     [SUMMON_GEM] = summon_gem,
     [UPGRADE_MANA_POOL] = upgrade_pool,
     [SHOW_TOOLTIP] = display_tooltip,
-    [HIDE_TOOLTIP] = hide_tooltip,
+    [HIDE_TOOLTIP] = reset_current_interaction,
+    [SHOW_UPGRADE_COST] = show_upgrade_cost,
+    [SHOW_GEM_COST] = show_gem_cost,
+    [SHOW_TOWER_COST] = show_tower_cost
 };
 
 bool process_event(Game* game) {

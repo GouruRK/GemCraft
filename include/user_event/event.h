@@ -24,7 +24,10 @@ typedef enum {
     CHANGE_GAME_STATUS,
     UPGRADE_MANA_POOL,
     SHOW_TOOLTIP,
-    HIDE_TOOLTIP
+    HIDE_TOOLTIP,
+    SHOW_UPGRADE_COST,
+    SHOW_GEM_COST,
+    SHOW_TOWER_COST
 } Event;
 
 typedef void (*event_function)(Game*);
