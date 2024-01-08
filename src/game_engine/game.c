@@ -22,6 +22,7 @@ Error init_game(Game* game) {
 
     game->game_status = ONGOING;
     game->field = generate_field();
+    game->field.towers = init_tower_array();
 
     game->player = init_player();
     game->cur_interact = init_interact();

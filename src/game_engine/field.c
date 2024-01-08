@@ -5,8 +5,9 @@
 #include "game_engine/monster.h"
 #include "game_engine/player.h"
 #include "game_engine/field.h"
-#include "utils/position.h"
+#include "game_engine/tower.h"
 #include "game_engine/game.h"
+#include "utils/position.h"
 #include "utils/util.h"
 
 //-------------------------------General------------------------------- 
@@ -33,7 +34,7 @@ Error place_tower(Field* field, Player* player, Tower tower) {
         return OUT_OF_FIELD;
     }
     
-    int cost = field->towers.next_tower_cost;
+    int cost = get_tower_cost(&(field->towers));
     Error err;
 
     if (player->mana < cost) {

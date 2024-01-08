@@ -10,6 +10,7 @@
 #include "game_engine/game.h"
 #include "game_engine/player.h"
 #include "game_engine/inventory.h"
+#include "game_engine/tower.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
@@ -143,7 +144,7 @@ static void sub_gem_level(Game* game) {
  * @param game 
  */
 static void summon_tower(Game* game) {
-    if (game->player.mana > game->field.towers.next_tower_cost) {
+    if (game->player.mana >= get_tower_cost(&(game->field.towers))) {
         set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
     }
 }

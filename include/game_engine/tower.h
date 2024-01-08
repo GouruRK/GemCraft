@@ -19,6 +19,7 @@ typedef struct {
     Tower lst[MAX_TOWER];
     int cur_len;
     int next_tower_cost;
+    int free_towers;
 } TowerArray;
 
 //-------------------------------Tower manipulation-------------------------------
@@ -53,12 +54,16 @@ Error remove_gem_from_tower(Tower* tower, Gem* gem);
 
 //-------------------------------Tower Array related-------------------------------
 
+int get_tower_cost(const TowerArray* array);
+
+void add_free_towers(TowerArray* array, int nb_towers);
+
 /**
  * @brief Create a tower array object
  * 
  * @return tower array 
  */
-TowerArray create_tower_array(void);
+TowerArray init_tower_array(void);
 
 /**
  * @brief Add a tower to a towerArray

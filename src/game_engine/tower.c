@@ -6,6 +6,8 @@
 #include "utils/position.h"
 #include "utils/errors.h"
 
+//--------------------------------Tower related---------------------------------
+
 Tower init_tower(Position pos) {
     Tower tower;
     tower.pos = pos;
@@ -31,11 +33,22 @@ Error remove_gem_from_tower(Tower* tower, Gem* gem) {
     return OK;
 }
 
-TowerArray create_tower_array(void) {
+//----------------------------Tower array related-------------------------------
+
+TowerArray init_tower_array(void) {
     TowerArray array;
     array.cur_len = 0;
-    array.next_tower_cost = 0;
+    array.next_tower_cost = 100;
+    array.free_towers = 3;
     return array;
+}
+
+int get_tower_cost(const TowerArray* array) {
+    return array->free_towers ? 0: array->next_tower_cost;
+} 
+
+void add_free_towers(TowerArray* array, int nb_towers) {
+    array->free_towers += nb_towers;
 }
 
 Error add_tower_array(TowerArray* array, Tower tower) {
@@ -44,13 +57,14 @@ Error add_tower_array(TowerArray* array, Tower tower) {
     }
     array->lst[array->cur_len] = tower;
     
-    if (array->cur_len >= 2) { // first three towers are free
-        if (!(array->next_tower_cost)) {
-            array->next_tower_cost = 100;
-        } else {
-            array->next_tower_cost *= 2;
-        }
+    if (array->free_towers) {
+        array->free_towers--;
+    } else {
+        array->next_tower_cost *= 2;
     }
+
+    printf("free_towers: %d\ncost: %d\n", array->free_towers, get_tower_cost(array));
+
     array->cur_len++;
     return OK;
 }

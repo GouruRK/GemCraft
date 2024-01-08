@@ -1,6 +1,7 @@
 #include "user_event/get_event.h"
 
 #include <MLV/MLV_all.h>
+#include <stdbool.h>
 
 #include "user_event/interact.h"
 #include "display/game_sectors.h"
@@ -8,9 +9,13 @@
 // link between keys and events
 Event key_events[] = {
     ['q'] = QUIT,
-    ['w'] = SUMMON_WAVE,
-    ['t'] = SUMMON_TOWER
+    ['t'] = SUMMON_TOWER,
+    ['w'] = SUMMON_WAVE
 };
+
+static bool is_key_register(MLV_Keyboard_button key) {
+    return key == 'q' || key == 't' || key == 'w';
+}
 
 /**
  * @brief Get events triggered with the mouse
@@ -76,7 +81,7 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
         return NO_EVENT;
     }
 
-    if (event == MLV_KEY) {
+    if (event == MLV_KEY && is_key_register(sym)) {
         return key_events[sym];
     }
     return get_mouse_event(interaction, sectors, mouse_but);

@@ -6,31 +6,14 @@
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
 #include "game_engine/game.h"
+#include "game_engine/tower.h"
 #include "display/draw_mana_gauge.h"
 #include "display/draw_inventory.h"
 #include "display/draw_button.h"
 #include "display/display_const.h"
 #include "display/draw_gems.h"
 #include "display/tooltip.h"
-
-int corners[NB_BLOCKS][2] = {
-    // top left corner
-    {0, 0},
-    {0, BLOCK_SIZE},
-    {BLOCK_SIZE, 0},
-    // top right corner
-    {CELL_SIZE - BLOCK_SIZE, 0},
-    {CELL_SIZE - BLOCK_SIZE*2, 0},
-    {CELL_SIZE - BLOCK_SIZE, BLOCK_SIZE},
-    // bottom left corner
-    {0, CELL_SIZE - BLOCK_SIZE},
-    {0, CELL_SIZE - BLOCK_SIZE*2},
-    {BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE},
-    // bottom right corner
-    {CELL_SIZE - BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE},
-    {CELL_SIZE - BLOCK_SIZE*2, CELL_SIZE - BLOCK_SIZE},
-    {CELL_SIZE - BLOCK_SIZE, CELL_SIZE - BLOCK_SIZE*2},
-};
+#include "display/display_tower.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -110,22 +93,6 @@ static void draw_gem_level(Sector sector, unsigned int level) {
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
 }
 
-void draw_tower(Tower tower) {
-    MLV_draw_filled_rectangle(tower.pos.x*CELL_SIZE,
-                              tower.pos.y*CELL_SIZE,
-                              CELL_SIZE, CELL_SIZE,
-                              MLV_rgba(85, 85, 85, 140));
-    
-    for (int i = 0; i < NB_BLOCKS; i++) {
-        MLV_draw_filled_rectangle(tower.pos.x*CELL_SIZE + corners[i][0],
-                                  tower.pos.y*CELL_SIZE + corners[i][1],
-                                  BLOCK_SIZE, BLOCK_SIZE, MLV_COLOR_BLACK);
-    }
-    if (tower.hold_gem) {
-        draw_gem(tower.pos, tower.gem);
-    }
-}
-
 void display_cost(Sector gauge, long max_quantity, long int cost) {
     if (cost > 0) {
         int height = (cost * (long)GAUGE_HEIGHT) / max_quantity;
@@ -165,7 +132,7 @@ void draw_game(const Game* game) {
     } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
         display_cost(game->sectors.gauge, game->player.max_quantity, mana_require_for_gem(game->cur_interact.gem_level));
     } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity, game->field.towers.next_tower_cost);
+        display_cost(game->sectors.gauge, game->player.max_quantity, get_tower_cost(&(game->field.towers)));
     }
 
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
