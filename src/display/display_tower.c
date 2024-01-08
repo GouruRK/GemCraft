@@ -5,6 +5,7 @@
 #include "display/display_const.h"
 #include "display/draw_gems.h"
 
+// Top left coordinates of blocks of tower corners
 int corners[NB_BLOCKS][2] = {
     // top left corner
     {0, 0},

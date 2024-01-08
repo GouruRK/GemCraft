@@ -8,6 +8,13 @@
 #include "game_engine/gem.h"
 #include "utils/errors.h"
 
+/**
+ * @brief Check if an interaction can be overwritten
+ * 
+ * @param action 
+ * @return
+ * @return
+ */
 static bool is_action_can_be_overwritten(Action action) {
    return action == NO_ACTION
             || action == SHOWING_GEM_COST 
@@ -49,6 +56,14 @@ Error set_interact_tooltip(Interaction* interact, ToolTip tip) {
     return OK;
 }
 
+/**
+ * @brief Set given action to the current interaction if the current interaction
+ *        can be overwritten
+ * 
+ * @param interact 
+ * @param action 
+ * @return
+ */
 static Error change_mouseover(Interaction* interact, Action action) {
     if (is_action_can_be_overwritten(interact->current_action)) {
         interact->current_action = action;

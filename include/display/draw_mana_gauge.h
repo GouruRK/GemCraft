@@ -5,6 +5,15 @@
 #include "utils/sector.h"
 
 /**
+ * @brief Get onscreen heigh for the given mana quantity 
+ * 
+ * @param max_quantity 
+ * @param mana 
+ * @return
+ */
+int get_height(int max_quantity, int mana);
+
+/**
  * @brief Draw mana reserve
  * 
  * @param player Mana data of the player
@@ -12,6 +21,13 @@
  */
 void draw_gauge(Player player, Sector info);
 
+/**
+ * @brief Display on gauge the max quantity and the current stored quantity
+ *        of mana of the gauge
+ * 
+ * @param player 
+ * @param info 
+ */
 void draw_gauge_numbers(Player player, Sector info);
 
 #endif

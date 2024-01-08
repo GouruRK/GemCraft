@@ -95,7 +95,7 @@ static void draw_gem_level(Sector sector, unsigned int level) {
 
 void display_cost(Sector gauge, long max_quantity, long int cost) {
     if (cost > 0) {
-        int height = (cost * (long)GAUGE_HEIGHT) / max_quantity;
+        int height = get_height(max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
                                 gauge.width, -height, MLV_rgba(252, 3, 73, 200));
     }
@@ -119,6 +119,8 @@ void draw_game(const Game* game) {
     draw_inventory(game->player.inventory, game->sectors.inventory);
     draw_buttons(&(game->sectors));
 
+    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
+    
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
         draw_tower(game->cur_interact.selected_tower);
@@ -126,16 +128,18 @@ void draw_game(const Game* game) {
         draw_gem(game->cur_interact.object_pos, 
                  game->cur_interact.selected_gem);
     } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
-        display_tool_tip(&(game->sectors), game->cur_interact.tooltip);
+        display_tool_tip(game->sectors.window, game->cur_interact.tooltip);
     } else if (game->cur_interact.current_action == SHOWING_UPGRADE_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity, mana_require_for_pool(game->player.mana_lvl + 1));
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     mana_require_for_pool(game->player.mana_lvl + 1));
     } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity, mana_require_for_gem(game->cur_interact.gem_level));
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     mana_require_for_gem(game->cur_interact.gem_level));
     } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity, get_tower_cost(&(game->field.towers)));
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     get_tower_cost(&(game->field.towers)));
     }
 
-    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     draw_gauge_numbers(game->player, game->sectors.gauge);
 
     MLV_update_window();

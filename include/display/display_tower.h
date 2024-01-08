@@ -6,6 +6,11 @@
 
 #include "game_engine/tower.h"
 
+/**
+ * @brief Display tower representation
+ * 
+ * @param tower 
+ */
 void draw_tower(Tower tower);
 
 #endif

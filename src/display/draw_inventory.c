@@ -11,8 +11,15 @@
 #include "utils/sector.h"
 #include "utils/position.h"
 
+/**
+ * @brief Transform inventory index to coordinates
+ * 
+ * @param index 
+ * @param x 
+ * @param y 
+ */
 static void transform_coords(int index, int* x, int* y) {
-    *x = index % 2; // 2 because inventory contains to columns
+    *x = index % 2; // 2 because inventory contains two columns
     *y = index / 2;
 }
 

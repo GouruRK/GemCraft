@@ -197,6 +197,12 @@ static void upgrade_pool(Game* game) {
     upgrade_mana_pool(&(game->player));
 }
 
+/**
+ * @brief Change interaction to showing tooltip, and select the correct object
+ *        to give information
+ * 
+ * @param game 
+ */
 static void display_tooltip(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
@@ -217,22 +223,48 @@ static void display_tooltip(Game* game) {
     }
 }
 
+/**
+ * @brief Reset current interaction
+ * 
+ * @param game 
+ */
 static void reset_current_interaction(Game* game) {
     reset_interaction(&(game->cur_interact));
 }
 
+/**
+ * @brief Reset current interaction if possible
+ * 
+ * @param game 
+ */
 static void reset_overwritable_events(Game* game) {
     reset_overwritable_interaction(&game->cur_interact);
 }
 
+/**
+ * @brief Change interaction to display the upgrade cost of the mana pool
+ * 
+ * @param game 
+ */
 static void show_upgrade_cost(Game* game) {
     set_interact_show_upgrade_cost(&(game->cur_interact));
 }
 
+/**
+ * @brief Change interaction to display the cost of the next tower
+ * 
+ * @param game 
+ */
 static void show_tower_cost(Game* game) {
     set_interact_show_tower_cost(&(game->cur_interact));
 }
 
+/**
+ * @brief Change interaction to display the cost of creating a gem at 
+ *        its current selected level
+ * 
+ * @param game 
+ */
 static void show_gem_cost(Game* game) {
     set_interact_show_gem_cost(&(game->cur_interact));
 }
@@ -260,6 +292,12 @@ event_function func[] = {
     [SHOW_TOWER_COST] = show_tower_cost
 };
 
+/**
+ * @brief Process current event
+ * 
+ * @param game 
+ * @return 'true' to quit the game, else 'false'
+ */
 bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
     if (event == QUIT) {

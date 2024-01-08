@@ -63,8 +63,6 @@ Error add_tower_array(TowerArray* array, Tower tower) {
         array->next_tower_cost *= 2;
     }
 
-    printf("free_towers: %d\ncost: %d\n", array->free_towers, get_tower_cost(array));
-
     array->cur_len++;
     return OK;
 }

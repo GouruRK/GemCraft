@@ -54,8 +54,20 @@ Error remove_gem_from_tower(Tower* tower, Gem* gem);
 
 //-------------------------------Tower Array related-------------------------------
 
+/**
+ * @brief Get cost for the next tower 
+ * 
+ * @param array 
+ * @return
+ */
 int get_tower_cost(const TowerArray* array);
 
+/**
+ * @brief Add free towers
+ * 
+ * @param array 
+ * @param nb_towers 
+ */
 void add_free_towers(TowerArray* array, int nb_towers);
 
 /**

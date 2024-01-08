@@ -20,16 +20,16 @@
  */
 static void draw_outline(Position pos, float points[][2], int length) {
     for (int i = 0; i < length - 1; i++) {
-        MLV_draw_line((pos.x + points[i][0]) * CELL_SIZE,
-                      (pos.y + points[i][1]) * CELL_SIZE, 
-                      (pos.x + points[i + 1][0]) * CELL_SIZE,
-                      (pos.y + points[i + 1][1]) * CELL_SIZE, 
+        MLV_draw_line((pos.x + points[i][0])*CELL_SIZE,
+                      (pos.y + points[i][1])*CELL_SIZE, 
+                      (pos.x + points[i + 1][0])*CELL_SIZE,
+                      (pos.y + points[i + 1][1])*CELL_SIZE, 
                       MLV_COLOR_BLACK);
     }
-    MLV_draw_line((pos.x + points[0][0]) * CELL_SIZE,
-                  (pos.y + points[0][1]) * CELL_SIZE, 
-                  (pos.x + points[length - 1][0]) * CELL_SIZE,
-                  (pos.y + points[length - 1][1]) * CELL_SIZE, 
+    MLV_draw_line((pos.x + points[0][0])*CELL_SIZE,
+                  (pos.y + points[0][1])*CELL_SIZE, 
+                  (pos.x + points[length - 1][0])*CELL_SIZE,
+                  (pos.y + points[length - 1][1])*CELL_SIZE, 
                   MLV_COLOR_BLACK);
 }
 
@@ -43,10 +43,10 @@ static void draw_outline(Position pos, float points[][2], int length) {
  */
 static void draw_connections(Position pos, float inline_p[][2], float outline_p[][2], int length) {
     for (int i = 0; i < length; i++) {
-        MLV_draw_line((pos.x + outline_p[i][0]) * CELL_SIZE,
-                      (pos.y + outline_p[i][1]) * CELL_SIZE, 
-                      (pos.x + inline_p[i][0]) * CELL_SIZE,
-                      (pos.y + inline_p[i][1]) * CELL_SIZE, 
+        MLV_draw_line((pos.x + outline_p[i][0])*CELL_SIZE,
+                      (pos.y + outline_p[i][1])*CELL_SIZE, 
+                      (pos.x + inline_p[i][0])*CELL_SIZE,
+                      (pos.y + inline_p[i][1])*CELL_SIZE, 
                       MLV_COLOR_BLACK);
     }
 }
@@ -73,12 +73,12 @@ static void draw_triangle_gem(Position pos, MLV_Color color) {
     };
 
     // draw textures
-    MLV_draw_filled_triangle((mid.x + outline_tri[0][0]) * CELL_SIZE, // draw triangle ABC
-                             (mid.y + outline_tri[0][1]) * CELL_SIZE,
-                             (mid.x + outline_tri[1][0]) * CELL_SIZE,
-                             (mid.y + outline_tri[1][1]) * CELL_SIZE,
-                             (mid.x + outline_tri[2][0]) * CELL_SIZE,
-                             (mid.y + outline_tri[2][1]) * CELL_SIZE,
+    MLV_draw_filled_triangle((mid.x + outline_tri[0][0])*CELL_SIZE, // draw triangle ABC
+                             (mid.y + outline_tri[0][1])*CELL_SIZE,
+                             (mid.x + outline_tri[1][0])*CELL_SIZE,
+                             (mid.y + outline_tri[1][1])*CELL_SIZE,
+                             (mid.x + outline_tri[2][0])*CELL_SIZE,
+                             (mid.y + outline_tri[2][1])*CELL_SIZE,
                              color);
                 
     // draw outlines
@@ -113,19 +113,19 @@ static void draw_square_gem(Position pos, MLV_Color color) {
         {0, +0.2}
     };
 
-    MLV_draw_filled_triangle((mid.x + outline_sq[0][0]) * CELL_SIZE, // draw triangle ABC
-                             (mid.y + outline_sq[0][1]) * CELL_SIZE,
-                             (mid.x + outline_sq[1][0]) * CELL_SIZE,
-                             (mid.y + outline_sq[1][1]) * CELL_SIZE,
-                             (mid.x + outline_sq[2][0]) * CELL_SIZE,
-                             (mid.y + outline_sq[2][1]) * CELL_SIZE,
+    MLV_draw_filled_triangle((mid.x + outline_sq[0][0])*CELL_SIZE, // draw triangle ABC
+                             (mid.y + outline_sq[0][1])*CELL_SIZE,
+                             (mid.x + outline_sq[1][0])*CELL_SIZE,
+                             (mid.y + outline_sq[1][1])*CELL_SIZE,
+                             (mid.x + outline_sq[2][0])*CELL_SIZE,
+                             (mid.y + outline_sq[2][1])*CELL_SIZE,
                              color);
-    MLV_draw_filled_triangle((mid.x + outline_sq[0][0]) * CELL_SIZE, // draw triangle ABC
-                             (mid.y + outline_sq[0][1]) * CELL_SIZE,
-                             (mid.x + outline_sq[2][0]) * CELL_SIZE,
-                             (mid.y + outline_sq[2][1]) * CELL_SIZE,
-                             (mid.x + outline_sq[3][0]) * CELL_SIZE,
-                             (mid.y + outline_sq[3][1]) * CELL_SIZE,
+    MLV_draw_filled_triangle((mid.x + outline_sq[0][0])*CELL_SIZE, // draw triangle ABC
+                             (mid.y + outline_sq[0][1])*CELL_SIZE,
+                             (mid.x + outline_sq[2][0])*CELL_SIZE,
+                             (mid.y + outline_sq[2][1])*CELL_SIZE,
+                             (mid.x + outline_sq[3][0])*CELL_SIZE,
+                             (mid.y + outline_sq[3][1])*CELL_SIZE,
                              color);
     
     // draw outlines
@@ -166,24 +166,24 @@ static void draw_hexa_gem(Position pos, MLV_Color color) {
     };
 
     // draw texture
-    MLV_draw_filled_rectangle((mid.x + outline_hexa[0][0]) * CELL_SIZE, // draw square ACDF
-                              (mid.y + outline_hexa[0][1]) * CELL_SIZE,
-                              (0.4 * CELL_SIZE) + PADDING,
-                              (0.4 * CELL_SIZE) + PADDING,
+    MLV_draw_filled_rectangle((mid.x + outline_hexa[0][0])*CELL_SIZE, // draw square ACDF
+                              (mid.y + outline_hexa[0][1])*CELL_SIZE,
+                              (0.4*CELL_SIZE) + PADDING,
+                              (0.4*CELL_SIZE) + PADDING,
                               color);
-    MLV_draw_filled_triangle((mid.x + outline_hexa[0][0]) * CELL_SIZE, // draw triangle ABC
-                             (mid.y + outline_hexa[0][1]) * CELL_SIZE,
-                             (mid.x + outline_hexa[1][0]) * CELL_SIZE,
-                             (mid.y + outline_hexa[1][1]) * CELL_SIZE,
-                             (mid.x + outline_hexa[2][0]) * CELL_SIZE,
-                             (mid.y + outline_hexa[2][1]) * CELL_SIZE,
+    MLV_draw_filled_triangle((mid.x + outline_hexa[0][0])*CELL_SIZE, // draw triangle ABC
+                             (mid.y + outline_hexa[0][1])*CELL_SIZE,
+                             (mid.x + outline_hexa[1][0])*CELL_SIZE,
+                             (mid.y + outline_hexa[1][1])*CELL_SIZE,
+                             (mid.x + outline_hexa[2][0])*CELL_SIZE,
+                             (mid.y + outline_hexa[2][1])*CELL_SIZE,
                              color);
-    MLV_draw_filled_triangle((mid.x + outline_hexa[NB_HEXA_VRTX - 1][0]) * CELL_SIZE, // draw triangle DFE
-                             (mid.y + outline_hexa[NB_HEXA_VRTX - 1][1]) * CELL_SIZE,
-                             (mid.x + outline_hexa[NB_HEXA_VRTX - 2][0]) * CELL_SIZE,
-                             (mid.y + outline_hexa[NB_HEXA_VRTX - 2][1]) * CELL_SIZE,
-                             (mid.x + outline_hexa[NB_HEXA_VRTX - 3][0]) * CELL_SIZE,
-                             (mid.y + outline_hexa[NB_HEXA_VRTX - 3][1]) * CELL_SIZE,
+    MLV_draw_filled_triangle((mid.x + outline_hexa[NB_HEXA_VRTX - 1][0])*CELL_SIZE, // draw triangle DFE
+                             (mid.y + outline_hexa[NB_HEXA_VRTX - 1][1])*CELL_SIZE,
+                             (mid.x + outline_hexa[NB_HEXA_VRTX - 2][0])*CELL_SIZE,
+                             (mid.y + outline_hexa[NB_HEXA_VRTX - 2][1])*CELL_SIZE,
+                             (mid.x + outline_hexa[NB_HEXA_VRTX - 3][0])*CELL_SIZE,
+                             (mid.y + outline_hexa[NB_HEXA_VRTX - 3][1])*CELL_SIZE,
                              color);
 
     // draw outlines
@@ -193,7 +193,6 @@ static void draw_hexa_gem(Position pos, MLV_Color color) {
 
     // draw connection between outlines
     draw_connections(mid, inline_hexa, outline_hexa, NB_HEXA_VRTX);
-    
 }
 
 void draw_gem(Position pos, Gem gem) {

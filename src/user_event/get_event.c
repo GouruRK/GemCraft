@@ -13,6 +13,13 @@ Event key_events[] = {
     ['w'] = SUMMON_WAVE
 };
 
+/**
+ * @brief Check if a key as an action
+ * 
+ * @param key 
+ * @return
+ * @return
+ */
 static bool is_key_register(MLV_Keyboard_button key) {
     return key == 'q' || key == 't' || key == 'w';
 }

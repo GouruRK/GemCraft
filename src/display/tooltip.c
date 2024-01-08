@@ -4,9 +4,9 @@
 
 #include "game_engine/gem.h"
 #include "game_engine/tower.h"
-#include "display/game_sectors.h"
 #include "display/color.h"
 #include "utils/position.h"
+#include "utils/sector.h"
 
 char* gem_name_array[] = {
     [PYRO] = "Pyro",
@@ -31,42 +31,82 @@ ToolTip init_tower_tooltip(Tower tower, Position pos) {
     return tip;
 }
 
-static void reposition(const GameSectors* sectors, Position* pos, int height) {
-    if (pos->x + TOOLTIP_WIDTH > sectors->window.width) {
+/**
+ * @brief Change pos's coordinates for the tooltip if its current display
+ *        is offscreen
+ * 
+ * @param window 
+ * @param pos 
+ * @param height 
+ */
+
+static void reposition(Sector window, Position* pos, int height) {
+    if (pos->x + TOOLTIP_WIDTH > window.width) {
         pos->x -= TOOLTIP_WIDTH;
     }
-    if (pos->y + height > sectors->window.height) {
+    if (pos->y + height > window.height) {
         pos->y -= height;
     }
 }
 
-static void display_gem_tool_tip(const GameSectors* sectors, Position pos, Gem gem) {
+/**
+ * @brief Display gem information at a given position with an 
+ *        ordinate offset `y`
+ * 
+ * @param pos 
+ * @param gem 
+ * @param y 
+ */
+static void display_gem_information(Position pos, Gem gem, int y) {
+    int w, h;
+    MLV_get_size_of_text("Gem of type ", &w, &h);
+    MLV_draw_text(pos.x, pos.y + y, "Gem of type ", MLV_COLOR_WHITE);
+    MLV_draw_text(pos.x + w, pos.y + y, "%s", transform_color(gem.color),
+                  gem_name_array[gem.type]);
+
+    // Gem level
+    MLV_draw_text(pos.x, pos.y + h + y, "Level : %d", MLV_COLOR_WHITE,
+                  gem.level);
+}
+
+/**
+ * @brief Display given gem tooltip at pos
+ * 
+ * @param window 
+ * @param pos 
+ * @param gem 
+ */
+static void display_gem_tool_tip(Sector window, Position pos, Gem gem) {
     int height = 40;
-    reposition(sectors, &pos, height);
+    reposition(window, &pos, height);
 
     // outline
-    MLV_draw_filled_rectangle(pos.x, pos.y, TOOLTIP_WIDTH, height, MLV_rgba(51, 51, 51, 255));
+    MLV_draw_filled_rectangle(pos.x, pos.y, TOOLTIP_WIDTH, height,
+                              MLV_rgba(51, 51, 51, 255));
     
     // Gem type
     pos.x += 5; // apply margin
-    int w, h;
-    MLV_get_size_of_text("Gem of type ", &w, &h);
-    MLV_draw_text(pos.x, pos.y, "Gem of type ", MLV_COLOR_WHITE);
-    MLV_draw_text(pos.x + w, pos.y, "%s", transform_color(gem.color), gem_name_array[gem.type]);
-
-    // Gem level
-    MLV_draw_text(pos.x, pos.y + h + 5, "Level : %d", MLV_COLOR_WHITE, gem.level);
+    display_gem_information(pos, gem, 0);
 }
 
-static void display_tower_tool_tip(const GameSectors* sectors, Position pos, Tower tower) {
+
+/**
+ * @brief Display tower tooltip
+ * 
+ * @param window 
+ * @param pos 
+ * @param tower 
+ */
+static void display_tower_tool_tip(Sector window, Position pos, Tower tower) {
     int height = 20;
     if (tower.hold_gem) {
         height = 50;
     }
-    reposition(sectors, &pos, height);
+    reposition(window, &pos, height);
 
     // outline
-    MLV_draw_filled_rectangle(pos.x, pos.y, TOOLTIP_WIDTH, height, MLV_rgba(51, 51, 51, 255));
+    MLV_draw_filled_rectangle(pos.x, pos.y, TOOLTIP_WIDTH, height,
+                              MLV_rgba(51, 51, 51, 255));
 
     // Tower
     pos.x += 5; // apply margin
@@ -75,21 +115,14 @@ static void display_tower_tool_tip(const GameSectors* sectors, Position pos, Tow
     MLV_draw_text(pos.x, pos.y, "Radius %d", MLV_COLOR_WHITE, 5);
 
     if (tower.hold_gem) {
-    // gem type
-    MLV_get_size_of_text("Gem of type ", &w, &h);
-    MLV_draw_text(pos.x, pos.y + 15, "Gem of type ", MLV_COLOR_WHITE);
-    MLV_draw_text(pos.x + w, pos.y + 15, "%s", transform_color(tower.gem.color), gem_name_array[tower.gem.type]);
-
-    // gem level
-    MLV_draw_text(pos.x, pos.y + h + 15, "Level : %d", MLV_COLOR_WHITE, tower.gem.level);
+        display_gem_information(pos, tower.gem, h + 5);
     }
 }
 
-void display_tool_tip(const GameSectors* sectors, ToolTip tip) {
+void display_tool_tip(Sector window, ToolTip tip) {
     if (tip.type == GEM_TYPE) {
-        display_gem_tool_tip(sectors, tip.pos, tip.gem);
+        display_gem_tool_tip(window, tip.pos, tip.gem);
     } else {
-        display_tower_tool_tip(sectors, tip.pos, tip.tower);
+        display_tower_tool_tip(window, tip.pos, tip.tower);
     }
 }
-
