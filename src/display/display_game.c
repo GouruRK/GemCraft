@@ -105,7 +105,7 @@ static void draw_gem_level(Sector sector, unsigned int level) {
                               sector.top_left.y,
                               sector.width,
                               sector.height,
-                              MLV_COLOR_BLACK);
+                              BUTTON_BACKGROUND_COLOR);
     
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
 }
