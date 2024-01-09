@@ -53,6 +53,13 @@ float calc_distance(Position a, Position b);
  */
 Position cell_center(Position cell);
 
+/**
+ * @brief Check if two positions are equals 
+ * 
+ * @param a 
+ * @param b 
+ * @return
+ */
 bool compare_pos(Position a, Position b);
 
 #endif

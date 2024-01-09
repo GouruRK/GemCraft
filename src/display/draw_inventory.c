@@ -11,8 +11,15 @@
 #include "utils/sector.h"
 #include "utils/position.h"
 
+/**
+ * @brief Transform inventory index to coordinates
+ * 
+ * @param index 
+ * @param x 
+ * @param y 
+ */
 static void transform_coords(int index, int* x, int* y) {
-    *x = index % 2; // 2 because inventory contains to columns
+    *x = index % 2; // 2 because inventory contains two columns
     *y = index / 2;
 }
 
@@ -21,28 +28,31 @@ static void transform_coords(int index, int* x, int* y) {
  * 
  * @param inventory sector where inventory is placed
  */
-static void draw_inventory_layout(Sector info) {
-    int top_y = info.bottom_right.y - INVENTORY_HEIGHT;
-    MLV_draw_filled_rectangle(info.top_left.x, 
-                              top_y,
-                              info.width,
-                              INVENTORY_HEIGHT,
+static void draw_inventory_layout(Sector inventory) {
+    MLV_draw_filled_rectangle(inventory.top_left.x, 
+                              inventory.top_left.y,
+                              inventory.width,
+                              inventory.height,
                               MLV_COLOR_DARKSLATEGREY);
     
     // horizontal
     for (int y = 0; y < INVENTORY_SIZE / 2; y++) {
-        MLV_draw_line(info.top_left.x, top_y + y*CELL_SIZE, info.bottom_right.x, top_y + y*CELL_SIZE, MLV_COLOR_BLACK);
+        MLV_draw_line(inventory.top_left.x, inventory.top_left.y + y*CELL_SIZE,
+                      inventory.bottom_right.x,
+                      inventory.top_left.y + y*CELL_SIZE, MLV_COLOR_BLACK);
     }
 
     // vertical
     for (int x = 0; x < 2; x++) {
-        MLV_draw_line(info.top_left.x + x*CELL_SIZE, top_y, info.top_left.x + x*CELL_SIZE, info.bottom_right.y, MLV_COLOR_BLACK);
+        MLV_draw_line(inventory.top_left.x + x*CELL_SIZE, inventory.top_left.y,
+                      inventory.top_left.x + x*CELL_SIZE,
+                      inventory.bottom_right.y, MLV_COLOR_BLACK);
     }
 
 }
 
-void draw_inventory(Inventory inventory, Sector info) {
-    draw_inventory_layout(info);
+void draw_inventory(Inventory inventory, Sector sector) {
+    draw_inventory_layout(sector);
     int x, y;
     Gem gem;
     
@@ -51,7 +61,8 @@ void draw_inventory(Inventory inventory, Sector info) {
             gem = inventory.array[i].gem;
             transform_coords(i, &x, &y);
 
-            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y), gem);
+            draw_gem(init_position(WIDTH + x, HEIGHT - INVENTORY_SIZE/2 + y),
+                     gem);
         }
     }
 }

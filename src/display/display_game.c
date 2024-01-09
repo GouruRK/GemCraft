@@ -6,12 +6,15 @@
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
 #include "game_engine/game.h"
+#include "game_engine/tower.h"
 #include "display/draw_mana_gauge.h"
 #include "display/draw_inventory.h"
 #include "display/draw_button.h"
 #include "display/display_const.h"
 #include "display/draw_gems.h"
 #include "display/color.h"
+#include "display/tooltip.h"
+#include "display/display_tower.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -25,9 +28,11 @@ static void draw_board(const Field field) {
     MLV_Color color;
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
-            color = objects_color[field.board[y][x]];
-            MLV_draw_filled_rectangle(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE,
-                                      CELL_SIZE, color);
+            if (field.board[y][x] != TOWER) {
+                color = objects_color[field.board[y][x]];
+                MLV_draw_filled_rectangle(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE,
+                                        CELL_SIZE, color);
+            }
         }
     }
 
@@ -74,16 +79,6 @@ static void draw_projectile(const Projectile* proj) {
                            color);
 }
 
-// Prototype
-static void draw_tower(const Tower tower) {
-    Position center = cell_center(tower.pos);
-
-    MLV_draw_filled_circle((int)(center.x * CELL_SIZE),
-                           (int)(center.y * CELL_SIZE),
-                           CELL_SIZE / 3, 
-                           MLV_COLOR_PINK1);
-}
-
 static void draw_gem_level(Sector sector, unsigned int level) {
     int text_width, text_height;
     int x, y;
@@ -96,9 +91,17 @@ static void draw_gem_level(Sector sector, unsigned int level) {
                               sector.top_left.y,
                               sector.width,
                               sector.height,
-                              MLV_COLOR_BLACK);
+                              BUTTON_BACKGROUND_COLOR);
     
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
+}
+
+void display_cost(Sector gauge, long max_quantity, long int cost) {
+    if (cost > 0) {
+        int height = get_height(max_quantity, cost);
+        MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
+                                gauge.width, -height, MLV_rgba(252, 3, 73, 200));
+    }
 }
 
 // Prototype
@@ -109,19 +112,18 @@ void draw_game(const Game* game) {
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         draw_monster(&(game->field.monsters.array[i]));
     }
-
-
-    draw_gauge(game->player, game->sectors.panel);
-    draw_inventory(game->player.inventory, game->sectors.panel);
-    draw_buttons(&(game->sectors));
-
+    
     // Prototype
-    if (game->cur_interact.current_action == PLACING_TOWER) {
-        draw_tower(game->cur_interact.selected_tower);
-    } else if (game->cur_interact.current_action == MOVING_GEM) {
-        draw_gem(game->cur_interact.object_pos, game->cur_interact.selected_gem);
+    for (int i = 0; i < game->field.towers.cur_len; i++) {
+        draw_tower(game->field.towers.lst[i]);
     }
 
+    draw_gauge(game->player, game->sectors.gauge);
+    draw_inventory(game->player.inventory, game->sectors.inventory);
+    draw_buttons(&(game->sectors));
+
+    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
+    
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         if (game->field.towers.lst[i].hold_gem) {
@@ -129,11 +131,30 @@ void draw_game(const Game* game) {
         }
     }
     
+    // Prototype
+    if (game->cur_interact.current_action == PLACING_TOWER) {
+        draw_tower(game->cur_interact.selected_tower);
+    } else if (game->cur_interact.current_action == MOVING_GEM) {
+        draw_gem(game->cur_interact.object_pos, 
+                 game->cur_interact.selected_gem);
+    } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
+        display_tool_tip(game->sectors.window, game->cur_interact.tooltip);
+    } else if (game->cur_interact.current_action == SHOWING_UPGRADE_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     mana_require_for_pool(game->player.mana_lvl + 1));
+    } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     mana_require_for_gem(game->cur_interact.gem_level));
+    } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
+        display_cost(game->sectors.gauge, game->player.max_quantity,
+                     get_tower_cost(&(game->field.towers)));
+    }
+
+    
     for (int i = 0; i < game->field.projectiles.nb_elt; i++) {
         draw_projectile(&(game->field.projectiles.array[i]));
     }
+    draw_gauge_numbers(game->player, game->sectors.gauge);
 
-    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
-    
     MLV_update_window();
 }

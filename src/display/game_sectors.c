@@ -12,7 +12,8 @@
  */
 static Sector window_sector(void) {
     Position top_left = init_position(0, 0);
-    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH,
+                                          FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
@@ -34,7 +35,8 @@ static Sector field_sector(void) {
  */
 static Sector panel_sector(void) {
     Position top_left = init_position(FIELD_WIDTH, 0);
-    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH,
+                                          FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
@@ -45,7 +47,8 @@ static Sector panel_sector(void) {
  */
 static Sector gauge_sector(void) {
     Position top_left = init_position(FIELD_WIDTH, 0);
-    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, GAUGE_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH,
+                                          GAUGE_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
@@ -57,7 +60,8 @@ static Sector gauge_sector(void) {
  */
 static Sector create_panel_button_sector(int y) {
     Position top_left = init_position(FIELD_WIDTH, y);
-    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, y + BUTTON_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH,
+                                          y + BUTTON_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
@@ -67,8 +71,10 @@ static Sector create_panel_button_sector(int y) {
  * @return
  */
 static Sector inventory_sector(void) {
-    Position top_left = init_position(FIELD_WIDTH, FIELD_HEIGHT - INVENTORY_HEIGHT);
-    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH, FIELD_HEIGHT);
+    Position top_left = init_position(FIELD_WIDTH,
+                                      FIELD_HEIGHT - INVENTORY_HEIGHT);
+    Position bottom_right = init_position(FIELD_WIDTH + PANEL_WIDTH,
+                                          FIELD_HEIGHT);
     return init_sector(top_left, bottom_right);
 }
 
@@ -93,7 +99,8 @@ GameSectors init_game_sectors(void) {
     sectors.gauge = gauge_sector();
     
     for (int i = 0; i < NB_BUTTONS; i++) {
-        *(buttons_sector[i]) = create_panel_button_sector(GAUGE_HEIGHT + i*BUTTON_HEIGHT);
+        *(buttons_sector[i]) = create_panel_button_sector(
+            GAUGE_HEIGHT + i*BUTTON_HEIGHT);
     }
 
     sectors.inventory = inventory_sector();

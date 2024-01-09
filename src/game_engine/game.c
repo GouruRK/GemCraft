@@ -26,6 +26,7 @@ Error init_game(Game* game) {
     if (init_projectile_array(&(game->field.projectiles)) == ALLOCATION_ERROR) {
         return ALLOCATION_ERROR;
     }
+    game->field.towers = init_tower_array();
 
     game->player = init_player();
     game->cur_interact = init_interact();

@@ -1,4 +1,3 @@
-#include "game_engine/field.h"
 
 #include <math.h>
 #include <stdbool.h>
@@ -7,6 +6,9 @@
 #include "game_engine/game.h"
 #include "game_engine/monster.h"
 #include "game_engine/player.h"
+#include "game_engine/field.h"
+#include "game_engine/tower.h"
+#include "game_engine/game.h"
 #include "utils/position.h"
 #include "utils/util.h"
 
@@ -26,28 +28,14 @@ void add_to_field(Field* field, Position pos, Objects object) {
     }
 }
 
-Error get_tower(Field* field, Tower** tower, Position pos) {
-    if (!in_field(pos)) {
-        return OUT_OF_FIELD;
-    }
-
-    for (int i = 0; i < field->towers.cur_len; i++) {
-        if (compare_pos(field->towers.lst[i].pos, pos)) {
-            *tower = &(field->towers.lst[i]);
-            return OK;
-        }
-    }
-    return NO_TOWER_FOUND;
-}
-
 //--------------------------------Tower related---------------------------------
 
 Error place_tower(Field* field, Player* player, Tower tower) {
     if (!in_field(tower.pos)) {
         return OUT_OF_FIELD;
     }
-
-    int cost = field->towers.next_tower_cost;
+    
+    int cost = get_tower_cost(&(field->towers));
     Error err;
 
     if (player->mana < cost) {
@@ -100,6 +88,20 @@ Error unload_gem(Field* field, Gem* gem, Position pos) {
         return NON_EMPTY_TOWER;
     }
     return OK;
+}
+
+Error get_tower(Field* field, Tower** tower, Position pos) {
+    if (!in_field(pos)) {
+        return OUT_OF_FIELD;
+    }
+    
+    for (int i = 0; i < field->towers.cur_len; i++) {
+        if (compare_pos(field->towers.lst[i].pos, pos)) {
+            *tower = &(field->towers.lst[i]);
+            return OK;
+        }
+    }
+    return NO_TOWER_FOUND;
 }
 
 /*-------------------------------Monster related------------------------------*/

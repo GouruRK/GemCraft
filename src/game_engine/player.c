@@ -5,7 +5,7 @@
 #include "utils/util.h"
 #include "utils/errors.h"
 
-static int mana_require_for_pool(int level) {
+int mana_require_for_pool(int level) {
     return 500*pow(1.4, level);
 } 
 

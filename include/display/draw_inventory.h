@@ -11,6 +11,6 @@
  * @param inventory inventory to draw
  * @param info sector where inventory is placed
  */
-void draw_inventory(Inventory inventory, Sector info);
+void draw_inventory(Inventory inventory, Sector sector);
 
 #endif

@@ -1,12 +1,28 @@
 #include "user_event/get_event.h"
 
 #include <MLV/MLV_all.h>
+#include <stdbool.h>
 
 #include "display/game_sectors.h"
 #include "user_event/interact.h"
 
 // link between keys and events
-Event key_events[] = {['q'] = QUIT, ['w'] = SUMMON_WAVE, ['t'] = SUMMON_TOWER};
+Event key_events[] = {
+    ['q'] = QUIT,
+    ['t'] = SUMMON_TOWER,
+    ['w'] = SUMMON_WAVE
+};
+
+/**
+ * @brief Check if a key as an action
+ * 
+ * @param key 
+ * @return
+ * @return
+ */
+static bool is_key_register(MLV_Keyboard_button key) {
+    return key == 'q' || key == 't' || key == 'w';
+}
 
 /**
  * @brief Get events triggered with the mouse
@@ -48,11 +64,21 @@ static Event get_mouse_event(Interaction interaction,
             if (is_coord_in_sector(sectors->inventory, x, y))
                 return PICK_GEM_FROM_INVENTORY;
         }
+        return HIDE_TOOLTIP;
     } else if (button == MLV_BUTTON_RIGHT) {
         if (interaction.current_action == PLACING_TOWER) {
             return CANCEL_PLACING_TOWER;
+        } 
+        if (interaction.current_action == NO_ACTION) {
+            return SHOW_TOOLTIP;
         }
+        return HIDE_TOOLTIP;
     }
+    
+    if (is_coord_in_sector(sectors->upgrade_button, x, y)) return SHOW_UPGRADE_COST;
+    if (is_coord_in_sector(sectors->gem_button, x, y)) return SHOW_GEM_COST;
+    if (is_coord_in_sector(sectors->tower_button, x, y)) return SHOW_TOWER_COST;
+
     return NO_EVENT;
 }
 
@@ -65,14 +91,14 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     // intel on mouse
     MLV_Mouse_button mouse_but;
 
-    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL,
-                                    &mouse_but, &state);
+    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
+                              &state);
 
     if (state == MLV_RELEASED) {
         return NO_EVENT;
     }
 
-    if (event == MLV_KEY) {
+    if (event == MLV_KEY && is_key_register(sym)) {
         return key_events[sym];
     }
     return get_mouse_event(interaction, sectors, mouse_but);

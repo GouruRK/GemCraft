@@ -12,32 +12,39 @@
 /**
  * @brief Draw a button in the given sector with text as its label
  * 
- * @param gem_button 
+ * @param button 
  * @param text 
  */
-static void draw_button(Sector gem_button, char* text, MLV_Color background_color, MLV_Color text_color) {
+static void draw_button(Sector button, char* text) {
     int text_width, text_height;
     int x, y;
 
+    MLV_Color color = BUTTON_BACKGROUND_COLOR;
+    MLV_get_mouse_position(&x, &y);
+    if (is_coord_in_sector(button, x, y)) {
+        color = BUTTON_HOVER_COLOR;
+    }
+    
     MLV_get_size_of_text(text, &text_width, &text_height);
-    x = gem_button.top_left.x + gem_button.width/2 - text_width/2;
-    y = gem_button.top_left.y + gem_button.height/2 - text_height/2;
+    x = button.top_left.x + button.width/2 - text_width/2;
+    y = button.top_left.y + button.height/2 - text_height/2;
+
+
+    MLV_draw_filled_rectangle(button.top_left.x,
+                              button.top_left.y,
+                              button.width,
+                              button.height,
+                              color);
     
-    MLV_draw_filled_rectangle(gem_button.top_left.x,
-                              gem_button.top_left.y,
-                              gem_button.width,
-                              gem_button.height,
-                              background_color);
-    
-    MLV_draw_text(x, y, text, text_color);
+    MLV_draw_text(x, y, text, BUTTON_TEXT_COLOR);
 }
 
 void draw_buttons(const GameSectors* sectors) {
-    draw_button(sectors->upgrade_button, "Upgrade", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
-    draw_button(sectors->gem_button, "Gem", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
-    draw_button(sectors->tower_button, "Tower", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
-    draw_button(sectors->add_button, "++", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
-    draw_button(sectors->sub_button, "--", MLV_COLOR_BLACK, MLV_COLOR_WHITE);
-    draw_button(sectors->wave_button, "Wave", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
-    draw_button(sectors->pause_button, "Pause", MLV_COLOR_YELLOW, MLV_COLOR_BLACK);
+    draw_button(sectors->upgrade_button, "Upgrade");
+    draw_button(sectors->gem_button, "Gem");
+    draw_button(sectors->tower_button, "Tower");
+    draw_button(sectors->add_button, "++");
+    draw_button(sectors->sub_button, "--");
+    draw_button(sectors->wave_button, "Wave");
+    draw_button(sectors->pause_button, "Pause");
 }

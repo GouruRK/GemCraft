@@ -104,6 +104,16 @@ Error load_gem(Field* field, Gem gem, Position pos);
  */
 Error unload_gem(Field* field, Gem* gem, Position pos);
 
+/**
+ * @brief Set tower pointer to the address of the tower at given position 
+ * 
+ * @param field field to look for the tower
+ * @param tower store tower's pointer
+ * @param pos position to look for the tower
+ * @return
+ */
+Error get_tower(Field* field, Tower** tower, Position pos);
+
 //-------------------------------Monster related-------------------------------
 
 /**

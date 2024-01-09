@@ -10,6 +10,7 @@
 #include "game_engine/game.h"
 #include "game_engine/player.h"
 #include "game_engine/inventory.h"
+#include "game_engine/tower.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
@@ -143,7 +144,7 @@ static void sub_gem_level(Game* game) {
  * @param game 
  */
 static void summon_tower(Game* game) {
-    if (game->player.mana > game->field.towers.next_tower_cost) {
+    if (game->player.mana >= get_tower_cost(&(game->field.towers))) {
         set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
     }
 }
@@ -196,8 +197,81 @@ static void upgrade_pool(Game* game) {
     upgrade_mana_pool(&(game->player));
 }
 
+/**
+ * @brief Change interaction to showing tooltip, and select the correct object
+ *        to give information
+ * 
+ * @param game 
+ */
+static void display_tooltip(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
+    Position pos = init_position(x, y);
+    if (is_pos_in_sector(game->sectors.inventory, pos)) {
+        int inventory_index = from_coord_to_index(&(game->sectors), x, y);
+        if (!game->player.inventory.array[inventory_index].empty) {
+            set_interact_tooltip(&(game->cur_interact),
+                            init_gem_tooltip(game->player.inventory.array[inventory_index].gem, pos));
+        }
+    } else if (is_pos_in_sector(game->sectors.field, pos)) {
+        Tower* tower;
+        if (get_tower(&(game->field), &tower, init_scaled_position(x, y)) != OK) {
+            return;
+        }
+        set_interact_tooltip(&(game->cur_interact), 
+            init_tower_tooltip(*tower, pos));
+    }
+}
+
+/**
+ * @brief Reset current interaction
+ * 
+ * @param game 
+ */
+static void reset_current_interaction(Game* game) {
+    reset_interaction(&(game->cur_interact));
+}
+
+/**
+ * @brief Reset current interaction if possible
+ * 
+ * @param game 
+ */
+static void reset_overwritable_events(Game* game) {
+    reset_overwritable_interaction(&game->cur_interact);
+}
+
+/**
+ * @brief Change interaction to display the upgrade cost of the mana pool
+ * 
+ * @param game 
+ */
+static void show_upgrade_cost(Game* game) {
+    set_interact_show_upgrade_cost(&(game->cur_interact));
+}
+
+/**
+ * @brief Change interaction to display the cost of the next tower
+ * 
+ * @param game 
+ */
+static void show_tower_cost(Game* game) {
+    set_interact_show_tower_cost(&(game->cur_interact));
+}
+
+/**
+ * @brief Change interaction to display the cost of creating a gem at 
+ *        its current selected level
+ * 
+ * @param game 
+ */
+static void show_gem_cost(Game* game) {
+    set_interact_show_gem_cost(&(game->cur_interact));
+}
+
 // Link between events and functions to apply them
 event_function func[] = {
+    [NO_EVENT] = reset_overwritable_events,
     [SUMMON_WAVE] = summon_wave,
     [SUMMON_TOWER] = summon_tower,
     [SUMMON_GEM] = summon_gem,
@@ -211,8 +285,19 @@ event_function func[] = {
     [SUB_GEM_LEVEL] = sub_gem_level,
     [SUMMON_GEM] = summon_gem,
     [UPGRADE_MANA_POOL] = upgrade_pool,
+    [SHOW_TOOLTIP] = display_tooltip,
+    [HIDE_TOOLTIP] = reset_current_interaction,
+    [SHOW_UPGRADE_COST] = show_upgrade_cost,
+    [SHOW_GEM_COST] = show_gem_cost,
+    [SHOW_TOWER_COST] = show_tower_cost
 };
 
+/**
+ * @brief Process current event
+ * 
+ * @param game 
+ * @return 'true' to quit the game, else 'false'
+ */
 bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
     
