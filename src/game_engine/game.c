@@ -123,7 +123,7 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
         float dist = 3 + tower->gem.level / 10.0;
         for (int i = 0; i < monsters->array_size; i++) {
             if (is_alive(&monsters->array[i]) &&
-                calc_distance(tower->pos, monsters->array[i].pos) <= dist) {
+                calc_distance(cell_center(tower->pos), monsters->array[i].pos) <= dist) {
                 if (target == NULL ||
                     target->health < monsters->array[i].health) {
                     target = &monsters->array[i];
