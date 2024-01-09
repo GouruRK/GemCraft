@@ -15,7 +15,7 @@
  * @param wave_number
  */
 static void init_monster_health(Monster* monster, int wave_number) {
-    int h = 1000;
+    int h = 100;
     monster->max_health = (int)(h * powf(1.2, wave_number));
     monster->health = monster->max_health;
 }

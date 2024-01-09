@@ -72,7 +72,9 @@ static Event get_mouse_event(Interaction interaction,
         if (interaction.current_action == NO_ACTION) {
             return SHOW_TOOLTIP;
         }
-        return HIDE_TOOLTIP;
+        if (interaction.current_action == SHOWING_TOOLTIP) {
+            return HIDE_TOOLTIP;
+        }
     }
     
     if (is_coord_in_sector(sectors->upgrade_button, x, y)) return SHOW_UPGRADE_COST;

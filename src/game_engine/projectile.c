@@ -26,8 +26,8 @@ Projectile init_projectile(Position pos, Monster* target, Gem source) {
  * @return int
  */
 static int hit_damage(const Projectile* proj) {
-    int d = 100;
-    return (int)(d * (2 << proj->source.level) *
+    int d = 37;
+    return (int)(d * (1 << proj->source.level) *
                  (1 - cosf(proj->source.color - proj->target->color) / 2));
 }
 
