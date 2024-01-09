@@ -8,8 +8,9 @@
 #include "utils/position.h"
 
 #define TRIANGLE_LEVEL 0
-#define SQUARE_LEVEL 5
-#define HEXA_LEVEL 10
+#define SQUARE_LEVEL 2
+#define PENTA_LEVEL 4
+#define HEXA_LEVEL 6
 
 /**
  * @brief Draw a gem at given position

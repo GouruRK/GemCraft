@@ -8,9 +8,16 @@
 
 // link between keys and events
 Event key_events[] = {
+    ['+'] = ADD_GEM_LEVEL,
+    ['-'] = SUB_GEM_LEVEL,
+    ['g'] = SUMMON_GEM,
+    ['p'] = CHANGE_GAME_STATUS,
     ['q'] = QUIT,
     ['t'] = SUMMON_TOWER,
-    ['w'] = SUMMON_WAVE
+    ['w'] = SUMMON_WAVE,
+    [270] = ADD_GEM_LEVEL, // keypad +
+    [269] = SUB_GEM_LEVEL, // keypad -
+    [61] = ADD_GEM_LEVEL, // maj + '+'
 };
 
 /**
@@ -21,7 +28,10 @@ Event key_events[] = {
  * @return
  */
 static bool is_key_register(MLV_Keyboard_button key) {
-    return key == 'q' || key == 't' || key == 'w';
+    return key == '+' || key == '-' || key == 'g'
+        || key == 'p' || key == 'q' || key == 't'
+        || key == 'w' || key == 270 || key == 269
+        || key == 61;
 }
 
 /**
@@ -34,9 +44,17 @@ static bool is_key_register(MLV_Keyboard_button key) {
  */
 static Event get_mouse_event(Interaction interaction,
                              const GameSectors* sectors,
-                             MLV_Mouse_button button) {
+                             MLV_Mouse_button button, MLV_Button_state state) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
+
+    static MLV_Button_state prev_state = MLV_RELEASED;
+
+    if (state == prev_state) {
+        return NO_EVENT;
+    }
+    prev_state = state;
+
     if (button == MLV_BUTTON_LEFT) {
         if (interaction.current_action == PLACING_TOWER &&
             is_coord_in_sector(sectors->field, x, y)) {
@@ -48,10 +66,12 @@ static Event get_mouse_event(Interaction interaction,
             if (is_coord_in_sector(sectors->field, x, y))
                 return DROP_GEM_IN_FIELD;
         }
-        if (is_coord_in_sector(sectors->upgrade_button, x, y))
+        if (is_coord_in_sector(sectors->upgrade_button, x, y)) {
             return UPGRADE_MANA_POOL;
-        if (is_coord_in_sector(sectors->pause_button, x, y))
+        }
+        if (is_coord_in_sector(sectors->pause_button, x, y)) {
             return CHANGE_GAME_STATUS;
+        }
         if (is_coord_in_sector(sectors->wave_button, x, y)) return SUMMON_WAVE;
         if (is_coord_in_sector(sectors->gem_button, x, y)) return SUMMON_GEM;
         if (is_coord_in_sector(sectors->add_button, x, y)) return ADD_GEM_LEVEL;
@@ -64,11 +84,16 @@ static Event get_mouse_event(Interaction interaction,
             if (is_coord_in_sector(sectors->inventory, x, y))
                 return PICK_GEM_FROM_INVENTORY;
         }
-        return HIDE_TOOLTIP;
+        if (interaction.current_action == SHOWING_TOOLTIP) {
+            return HIDE_TOOLTIP;
+        }
     } else if (button == MLV_BUTTON_RIGHT) {
         if (interaction.current_action == PLACING_TOWER) {
             return CANCEL_PLACING_TOWER;
         } 
+        if (interaction.current_action == MOVING_GEM) {
+            return CANCEL_PLACING_GEM;
+        }
         if (interaction.current_action == NO_ACTION) {
             return SHOW_TOOLTIP;
         }
@@ -103,5 +128,5 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     if (event == MLV_KEY && is_key_register(sym)) {
         return key_events[sym];
     }
-    return get_mouse_event(interaction, sectors, mouse_but);
+    return get_mouse_event(interaction, sectors, mouse_but, state);
 }

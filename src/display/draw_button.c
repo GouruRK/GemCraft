@@ -4,6 +4,7 @@
 
 #include "utils/sector.h"
 #include "display/game_sectors.h"
+#include "display/display_const.h"
 
 // TODO : save somehow computation of position depending the text
 // because a text position for a button is always the same
@@ -41,10 +42,19 @@ static void draw_button(Sector button, char* text) {
 
 void draw_buttons(const GameSectors* sectors) {
     draw_button(sectors->upgrade_button, "Upgrade");
-    draw_button(sectors->gem_button, "Gem");
     draw_button(sectors->tower_button, "Tower");
+    draw_button(sectors->gem_button, "Gem");
     draw_button(sectors->add_button, "++");
     draw_button(sectors->sub_button, "--");
     draw_button(sectors->wave_button, "Wave");
     draw_button(sectors->pause_button, "Pause");
+
+    for (int y = 0; y < 8; y++) {
+        MLV_draw_line(sectors->panel.top_left.x,
+                      sectors->upgrade_button.top_left.y + y*CELL_SIZE,
+                      sectors->panel.bottom_right.x,
+                      sectors->upgrade_button.top_left.y + y*CELL_SIZE,
+                      MLV_COLOR_BLACK);
+    }
+
 }

@@ -38,7 +38,7 @@ static void draw_board(const Field field) {
 
     // horizontal
     for (int y = 0; y < HEIGHT; y++) {
-        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE, y * CELL_SIZE,
+        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE + PANEL_WIDTH, y * CELL_SIZE,
                       MLV_COLOR_BLACK);
     }
 
@@ -120,9 +120,9 @@ void draw_game(const Game* game) {
 
     draw_gauge(game->player, game->sectors.gauge);
     draw_inventory(game->player.inventory, game->sectors.inventory);
+    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     draw_buttons(&(game->sectors));
 
-    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {

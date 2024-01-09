@@ -269,6 +269,15 @@ static void show_gem_cost(Game* game) {
     set_interact_show_gem_cost(&(game->cur_interact));
 }
 
+static void cancel_gem_movement(Game* game) {
+    if (is_inventory_full(&(game->player.inventory))) {
+        return;
+    }
+
+    add_inventory(&(game->player.inventory), game->cur_interact.selected_gem);
+    reset_interaction(&(game->cur_interact));
+}
+
 // Link between events and functions to apply them
 event_function func[] = {
     [NO_EVENT] = reset_overwritable_events,
@@ -277,6 +286,7 @@ event_function func[] = {
     [SUMMON_GEM] = summon_gem,
     [PLACE_TOWER] = place_tower_in_fiend,
     [CANCEL_PLACING_TOWER] = cancel_tower_placement,
+    [CANCEL_PLACING_GEM] = cancel_gem_movement,
     [PICK_GEM_FROM_FIELD] = pick_up_gem_from_field,
     [PICK_GEM_FROM_INVENTORY] = pick_up_gem_from_inventory,
     [DROP_GEM_IN_INVENTORY] = drop_gem_on_inventory,
@@ -315,7 +325,7 @@ bool process_event(Game* game) {
         if (game->cur_interact.current_action == PLACING_TOWER) {
             update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
         } else if (game->cur_interact.current_action == MOVING_GEM) {
-            update_gem_movement(&(game->cur_interact));
+            update_gem_movement(&(game->sectors), &(game->cur_interact));
         }
     }
     return false;

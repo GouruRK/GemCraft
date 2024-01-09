@@ -6,9 +6,10 @@
 #include "display/color.h"
 #include "display/display_const.h"
 
-#define NB_HEXA_VRTX 6
-#define NB_SQ_VRTX   4
-#define NB_TRIG_VRTX 3
+#define NB_HEXA_VRTX  6
+#define NB_SQ_VRTX    4
+#define NB_PENTA_VRTX 5
+#define NB_TRIG_VRTX  3
 #define PADDING 1
 
 /**
@@ -137,6 +138,62 @@ static void draw_square_gem(Position pos, MLV_Color color) {
     draw_connections(mid, inline_sq, outline_sq, NB_SQ_VRTX);
 }
 
+static void draw_penta_gem(Position pos, MLV_Color color) {
+    Position mid = cell_center(pos);
+
+    static float outline_penta[][2] = {
+        {-0.25, +0.4}, // A
+        {-0.4, -0.1}, // B
+        {0, -0.3}, // C
+        {+0.4, -0.1}, // D
+        {+0.25, +0.4} // E
+    };
+
+    static float inline_penta[][2] = {
+        {-0.125, +0.2}, // A
+        {-0.2, -0.05}, // B
+        {0, -0.15}, // C
+        {+0.2, -0.05}, // D
+        {+0.125, +0.2} // E
+    };
+
+    // ABC
+    MLV_draw_filled_triangle((mid.x + outline_penta[0][0])*CELL_SIZE,
+                             (mid.y + outline_penta[0][1])*CELL_SIZE,
+                             (mid.x + outline_penta[1][0])*CELL_SIZE,
+                             (mid.y + outline_penta[1][1])*CELL_SIZE,
+                             (mid.x + outline_penta[2][0])*CELL_SIZE,
+                             (mid.y + outline_penta[2][1])*CELL_SIZE,
+                             color);
+
+    // CDE
+    MLV_draw_filled_triangle((mid.x + outline_penta[2][0])*CELL_SIZE,
+                             (mid.y + outline_penta[2][1])*CELL_SIZE,
+                             (mid.x + outline_penta[3][0])*CELL_SIZE,
+                             (mid.y + outline_penta[3][1])*CELL_SIZE,
+                             (mid.x + outline_penta[4][0])*CELL_SIZE,
+                             (mid.y + outline_penta[4][1])*CELL_SIZE,
+                             color);
+
+    // AEC
+    MLV_draw_filled_triangle((mid.x + outline_penta[0][0])*CELL_SIZE,
+                             (mid.y + outline_penta[0][1])*CELL_SIZE,
+                             (mid.x + outline_penta[4][0])*CELL_SIZE,
+                             (mid.y + outline_penta[4][1])*CELL_SIZE,
+                             (mid.x + outline_penta[2][0])*CELL_SIZE,
+                             (mid.y + outline_penta[2][1])*CELL_SIZE,
+                             color);
+            
+    // draw outlines
+    draw_outline(mid, outline_penta, NB_PENTA_VRTX);
+    draw_outline(mid, inline_penta, NB_PENTA_VRTX);
+
+
+    // draw connection between outlines
+    draw_connections(mid, outline_penta, inline_penta, NB_PENTA_VRTX);
+
+}
+
 /**
  * @brief Draw hexagonal representation of gems
  * 
@@ -199,8 +256,10 @@ void draw_gem(Position pos, Gem gem) {
     MLV_Color color = transform_color(gem.color);
     if (TRIANGLE_LEVEL <= gem.level && gem.level < SQUARE_LEVEL) {
         draw_triangle_gem(pos, color); 
-    } else if (SQUARE_LEVEL <= gem.level && gem.level < HEXA_LEVEL) {
+    } else if (SQUARE_LEVEL <= gem.level && gem.level < PENTA_LEVEL) {
         draw_square_gem(pos, color);
+    } else if (PENTA_LEVEL <= gem.level && gem.level < HEXA_LEVEL) {
+        draw_penta_gem(pos, color);
     } else {
         draw_hexa_gem(pos, color);
     }
