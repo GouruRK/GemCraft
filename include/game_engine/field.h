@@ -136,11 +136,4 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave);
  */
 void update_monster_dest(Monster* monster, const Field* field, Player* player);
 
-/**
- * @brief Load a new wave in a nest
- *
- * @param nest
- */
-void init_new_wave(Nest* nest, int nb_wave);
-
 #endif

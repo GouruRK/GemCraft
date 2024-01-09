@@ -16,6 +16,15 @@ typedef struct {
 } Gem;
 
 /**
+ * @brief Return the shooting range of a gem.
+ * The gem increase its range when its level increase
+ * 
+ * @param gem 
+ * @return float 
+ */
+float calc_radius_shoot_range(Gem* gem);
+
+/**
  * @brief Creates a gem object.
  * 
  * @param type gem type

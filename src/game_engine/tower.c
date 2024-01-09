@@ -29,8 +29,6 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
 
     tower->deploy_timer = init_clock(-1, 2);
 
-    fprintf(stderr, "Tower mounted and loaded\n");
-
     return OK;
 }
 

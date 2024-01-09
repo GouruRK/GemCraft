@@ -12,6 +12,10 @@ Gem init_gem(TypeGems type, int level, int color) {
     return gem;
 }
 
+float calc_radius_shoot_range(Gem* gem) {
+    return 3 + gem->level / 10.0;
+}
+
 Gem init_random_gem(int level) {
     int color;
     TypeGems type = random_int(0, 2);

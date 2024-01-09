@@ -6,7 +6,7 @@
 #include "utils/position.h"
 #include "utils/errors.h"
 
-#define BASE_PROJ_ARRAY_SIZE 1000
+#define BASE_PROJ_ARRAY_SIZE 100
 
 typedef struct {
     Position pos;

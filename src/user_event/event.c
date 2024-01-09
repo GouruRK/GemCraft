@@ -11,6 +11,7 @@
 #include "game_engine/player.h"
 #include "game_engine/inventory.h"
 #include "game_engine/tower.h"
+#include "game_engine/nest.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
@@ -155,10 +156,10 @@ static void summon_tower(Game* game) {
  * @param game 
  */
 static void summon_wave(Game* game) {
-    if (game->field.nest.monster_remaining == 0) {
-        init_new_wave(&(game->field.nest), game->wave);
-        game->wave++;
-    }
+    add_wave_nest(&(game->field.nest), game->wave);
+    game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
+    decrease_clock(&game->time_until_next_wave);
+    game->wave++;
 }
 
 /**

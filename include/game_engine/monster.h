@@ -9,7 +9,7 @@
 #include "utils/util.h"
 
 #define MAX_WAVE_SIZE 24
-#define MAX_MONSTERS 500
+#define MAX_MONSTERS 2000
 
 typedef enum {
     NORMAL,

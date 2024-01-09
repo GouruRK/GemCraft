@@ -12,8 +12,7 @@ Tower init_tower_at_mouse(Sector panel) {
     if (is_coord_in_sector(panel, x, y)) {
         x = panel.top_left.x - 1;
     }
-
-    printf("x: %d, y: %d\n", x, y);
+    
     return init_tower(init_position(x / CELL_SIZE, y / CELL_SIZE));
 }
 
