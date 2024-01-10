@@ -9,6 +9,7 @@
 #include "utils/clock.h"
 
 #define MAX_TOWER 616  // 22 * 28 = number of tiles on the field
+#define TOWER_DEPLOY_TIME 2
 
 typedef struct {
     Gem gem;

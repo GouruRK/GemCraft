@@ -27,7 +27,8 @@ Error add_gem_to_tower(Tower* tower, Gem gem) {
     tower->gem = gem;
     tower->hold_gem = true;
 
-    tower->deploy_timer = init_clock(-1, 2);
+    tower->deploy_timer = init_clock(-1, TOWER_DEPLOY_TIME);
+    tower->shoot_interval = init_clock(-1, 0);
 
     return OK;
 }

@@ -3,6 +3,7 @@
 
 #include <time.h>
 
+#define M_PI 3.14159265358979323846
 #define FLOAT_COMPARISON_MARGIN 0.05
 
 typedef unsigned int color;  // Color represented with an angle in degrees (0-359)

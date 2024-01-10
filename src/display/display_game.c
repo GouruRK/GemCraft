@@ -158,15 +158,6 @@ void draw_game(const Game* game) {
     draw_buttons(&(game->sectors));
     draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
 
-    
-    // Prototype
-    for (int i = 0; i < game->field.towers.cur_len; i++) {
-        if (game->field.towers.lst[i].hold_gem) {
-            draw_gem(game->field.towers.lst[i].pos,
-                     game->field.towers.lst[i].gem);
-        }
-    }
-
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
         draw_tower(game->cur_interact.selected_tower);
