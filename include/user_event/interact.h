@@ -17,7 +17,10 @@ typedef enum {
     SHOWING_TOOLTIP,
     SHOWING_UPGRADE_COST,
     SHOWING_GEM_COST,
-    SHOWING_TOWER_COST
+    SHOWING_TOWER_COST,
+    SHOWING_GEM_COST_ADD,
+    SHOWING_GEM_COST_SUB,
+    SHOWING_COMBINE_COST,
 } Action;
 
 typedef struct {
@@ -29,6 +32,7 @@ typedef struct {
     };
     Position object_pos;
     unsigned int gem_level;
+    bool show_combine_cost;
 } Interaction;
 
 /**
@@ -88,6 +92,22 @@ Error set_interact_show_tower_cost(Interaction* interact);
  * @return
  */
 Error set_interact_show_gem_cost(Interaction* interact);
+
+/**
+ * @brief Set current interaction to `SHOWING_GEM_COST_ADD`
+ * 
+ * @param interact 
+ * @return
+ */
+Error set_interact_show_gem_cost_add(Interaction* interact);
+
+/**
+ * @brief Set current interaction to `SHOWING_GEM_COST_SUB`
+ * 
+ * @param interact 
+ * @return
+ */
+Error set_interact_show_gem_cost_sub(Interaction* interact);
 
 /**
  * @brief Place a tower on the current square of the field

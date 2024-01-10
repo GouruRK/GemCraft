@@ -47,14 +47,7 @@ static Event get_mouse_event(Interaction interaction,
                              MLV_Mouse_button button, MLV_Button_state state) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
-
-    static MLV_Button_state prev_state = MLV_RELEASED;
-
-    if (state == prev_state) {
-        return NO_EVENT;
-    }
-    prev_state = state;
-
+    
     if (button == MLV_BUTTON_LEFT) {
         if (interaction.current_action == PLACING_TOWER &&
             is_coord_in_sector(sectors->field, x, y)) {
@@ -70,7 +63,13 @@ static Event get_mouse_event(Interaction interaction,
             return UPGRADE_MANA_POOL;
         }
         if (is_coord_in_sector(sectors->pause_button, x, y)) {
-            return CHANGE_GAME_STATUS;
+            // Somehow a MVL_RELEASED is there right after cliking
+            // need to investigate ... 
+
+            // printf("%s\n", state == MLV_PRESSED ? "pressed": "released");
+            if (state == MLV_PRESSED) {
+                return CHANGE_GAME_STATUS;
+            }
         }
         if (is_coord_in_sector(sectors->wave_button, x, y)) return SUMMON_WAVE;
         if (is_coord_in_sector(sectors->gem_button, x, y)) return SUMMON_GEM;
@@ -101,10 +100,14 @@ static Event get_mouse_event(Interaction interaction,
             return HIDE_TOOLTIP;
         }
     }
-    
+
     if (is_coord_in_sector(sectors->upgrade_button, x, y)) return SHOW_UPGRADE_COST;
     if (is_coord_in_sector(sectors->gem_button, x, y)) return SHOW_GEM_COST;
     if (is_coord_in_sector(sectors->tower_button, x, y)) return SHOW_TOWER_COST;
+    if (is_coord_in_sector(sectors->add_button, x, y)) return SHOW_GEM_COST_ADD;
+    if (is_coord_in_sector(sectors->sub_button, x, y)) return SHOW_GEM_COST_SUB;
+    if (is_coord_in_sector(sectors->inventory, x, y) 
+        && (interaction.current_action == MOVING_GEM)) return SHOW_COMBINE_COST;
 
     return NO_EVENT;
 }

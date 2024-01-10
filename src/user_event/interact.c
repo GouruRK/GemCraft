@@ -19,13 +19,16 @@ static bool is_action_can_be_overwritten(Action action) {
    return action == NO_ACTION
             || action == SHOWING_GEM_COST 
             || action == SHOWING_TOWER_COST
-            || action == SHOWING_UPGRADE_COST;
+            || action == SHOWING_UPGRADE_COST
+            || action == SHOWING_GEM_COST_ADD
+            || action == SHOWING_GEM_COST_SUB;
 }
 
 Interaction init_interact(void) {
     Interaction interact;
     interact.current_action = NO_ACTION;
     interact.gem_level = 0;
+    interact.show_combine_cost = false;
     return interact;
 } 
 
@@ -82,6 +85,14 @@ Error set_interact_show_tower_cost(Interaction* interact) {
 
 Error set_interact_show_gem_cost(Interaction* interact) {
     return change_mouseover(interact, SHOWING_GEM_COST);
+}
+
+Error set_interact_show_gem_cost_add(Interaction* interact) {
+    return change_mouseover(interact, SHOWING_GEM_COST_ADD);
+}
+
+Error set_interact_show_gem_cost_sub(Interaction* interact) {
+    return change_mouseover(interact, SHOWING_GEM_COST_SUB);
 }
 
 Error drop_tower(Interaction* interact, Field* field, Player* player) {

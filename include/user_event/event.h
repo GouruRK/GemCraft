@@ -3,9 +3,10 @@
 
 #include <stdbool.h>
 
-#include "interact.h"
+#include "user_event/interact.h"
 #include "game_engine/game.h"
 #include "display/game_sectors.h"
+#include "utils/errors.h"
 
 typedef enum {
     NO_EVENT,
@@ -28,10 +29,13 @@ typedef enum {
     HIDE_TOOLTIP,
     SHOW_UPGRADE_COST,
     SHOW_GEM_COST,
-    SHOW_TOWER_COST
+    SHOW_TOWER_COST,
+    SHOW_GEM_COST_ADD,
+    SHOW_GEM_COST_SUB,
+    SHOW_COMBINE_COST
 } Event;
 
-typedef void (*event_function)(Game*);
+typedef Error (*event_function)(Game*);
 
 /**
  * @brief Set 'data' to 1 whenever the player close the window
