@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "game_engine/effect.h"
+#include "game_engine/score.h"
 #include "utils/errors.h"
 #include "utils/position.h"
 #include "utils/util.h"
@@ -49,6 +50,15 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
                      Position dest);
 
 /**
+ * @brief Apply damages to the monster and update score
+ * 
+ * @param monster 
+ * @param score 
+ * @param damage 
+ */
+void take_damage(Monster* monster, Score* score, int damage);
+
+/**
  * @brief Move a monster in toward his destination
  *
  * @param monster
@@ -85,7 +95,7 @@ void add_effect_monster(Monster* monster, Effect effect);
  *
  * @param monster
  */
-void update_effect_monster(Monster* monster);
+void update_effect_monster(Monster* monster, Score* score);
 
 /*---------------------------Monster array related---------------------------*/
 

@@ -47,7 +47,7 @@ static Event get_mouse_event(Interaction interaction,
                              MLV_Mouse_button button, MLV_Button_state state) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
-    
+
     if (button == MLV_BUTTON_LEFT) {
         if (interaction.current_action == PLACING_TOWER &&
             is_coord_in_sector(sectors->field, x, y)) {
@@ -60,16 +60,15 @@ static Event get_mouse_event(Interaction interaction,
                 return DROP_GEM_IN_FIELD;
         }
         if (is_coord_in_sector(sectors->upgrade_button, x, y)) {
+            printf("upgrade: %s\n", state == MLV_PRESSED ? "pressed": "released");
             return UPGRADE_MANA_POOL;
         }
         if (is_coord_in_sector(sectors->pause_button, x, y)) {
             // Somehow a MVL_RELEASED is there right after cliking
             // need to investigate ... 
 
-            // printf("%s\n", state == MLV_PRESSED ? "pressed": "released");
-            if (state == MLV_PRESSED) {
-                return CHANGE_GAME_STATUS;
-            }
+            // printf("pause: %s\n", state == MLV_PRESSED ? "pressed": "released");
+            return CHANGE_GAME_STATUS;
         }
         if (is_coord_in_sector(sectors->wave_button, x, y)) return SUMMON_WAVE;
         if (is_coord_in_sector(sectors->gem_button, x, y)) return SUMMON_GEM;

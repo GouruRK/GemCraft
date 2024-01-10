@@ -10,11 +10,12 @@
 #include "game_engine/tower.h"
 #include "game_engine/nest.h"
 #include "game_engine/projectile.h"
+#include "game_engine/score.h"
 
 #define WIDTH 28
 #define HEIGHT 22
 
-#define MAX_LEN WIDTH* HEIGHT
+#define MAX_LEN WIDTH*HEIGHT
 
 typedef enum {
     TOWER,
@@ -141,6 +142,6 @@ void update_monster_dest(Monster* monster, const Field* field, Player* player);
  *
  * @param nest
  */
-void init_new_wave(Nest* nest, int nb_wave);
+void init_new_wave(Nest* nest, Score* score, int nb_wave);
 
 #endif

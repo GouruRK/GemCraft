@@ -10,6 +10,7 @@
 #include "game_engine/game.h"
 #include "game_engine/player.h"
 #include "game_engine/inventory.h"
+#include "game_engine/score.h"
 #include "game_engine/tower.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
@@ -171,7 +172,7 @@ static Error summon_tower(Game* game) {
  */
 static Error summon_wave(Game* game) {
     if (game->field.nest.monster_remaining == 0) {
-        init_new_wave(&(game->field.nest), game->wave);
+        init_new_wave(&(game->field.nest), &(game->score), game->wave);
         game->wave++;
         return OK;
     }
@@ -398,4 +399,22 @@ bool process_event(Game* game) {
         }
     }
     return false;
+}
+
+void wait_event(int* terminated) {
+    MLV_Keyboard_modifier mod;
+    MLV_Keyboard_button sym;
+    MLV_Button_state state;
+
+    *terminated = 0;
+    // intel on mouse
+    MLV_Mouse_button mouse_but;
+    while (!(*terminated)) {
+        MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
+                              &state);
+        if (event) {
+            break;
+        }
+        MLV_update_window();
+    }
 }

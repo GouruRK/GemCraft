@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "display/game_sectors.h"
+#include "game_engine/score.h"
 #include "game_engine/field.h"
 #include "game_engine/generation.h"
 #include "game_engine/player.h"
@@ -31,6 +32,7 @@ Error init_game(Game* game) {
     game->player = init_player();
     game->cur_interact = init_interact();
     game->sectors = init_game_sectors();
+    game->score = init_score();
     return OK;
 }
 
@@ -42,8 +44,8 @@ Error init_game(Game* game) {
  * @param player
  * @return Error
  */
-static Error update_monster(Monster* monster, Field* field, Player* player) {
-    update_effect_monster(monster);
+static Error update_monster(Monster* monster, Score* score, Field* field, Player* player) {
+    update_effect_monster(monster, score);
 
     move_monster(monster);
 
@@ -72,7 +74,7 @@ static void update_nest(Game* game) {
             game->field.nest.spawn_clock.interval;
     } else if (game->wave >= 1 &&
                game->field.nest.spawn_clock.next_interval == 0) {
-        init_new_wave(&(game->field.nest), game->wave);
+        init_new_wave(&(game->field.nest), &(game->score), game->wave);
         game->wave++;
     }
 }
@@ -86,13 +88,13 @@ static void update_clocks(Game* game) {
     decrease_clock(&game->field.nest.spawn_clock);
 }
 
-static void update_projectiles(ProjectileArray* array,
+static void update_projectiles(ProjectileArray* array, Score* score,
                                MonsterArray* monster_array, Player* player) {
     for (int i = 0; i < array->nb_elt; i++) {
         if (!is_alive(array->array[i].target)) {
             suppress_proj_index(array, i);
         } else if (has_reach_target(&(array->array[i]))) {
-            hit_target(&(array->array[i]), monster_array);
+            hit_target(&(array->array[i]), score, monster_array);
             // if the projectile kill his target
             if (!is_alive(array->array[i].target)) {
                 int mana_drop = array->array[i].target->max_health * 0.1 *
@@ -150,7 +152,7 @@ Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         if (is_alive(&(game->field.monsters.array[i]))) {
-            update_monster(&(game->field.monsters.array[i]), &(game->field),
+            update_monster(&(game->field.monsters.array[i]), &(game->score), &(game->field),
                            &(game->player));
         }
     }
@@ -160,10 +162,18 @@ Error update_game(Game* game) {
     update_towers(&game->field.towers, &game->field.monsters,
                     &game->field.projectiles);
 
-    update_projectiles(&(game->field.projectiles), &(game->field.monsters),
-                       &(game->player));
+    update_projectiles(&(game->field.projectiles), &(game->score),
+                       &(game->field.monsters), &(game->player));
 
     update_clocks(game);
 
     return OK;
+}
+
+bool is_game_over(Game* game) {
+    if (game->player.mana <= 0) {
+        game->game_status = OVER;
+        return true;
+    }
+    return false;
 }

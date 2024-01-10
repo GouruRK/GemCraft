@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "display/display_game.h"
+#include "display/display_score.h"
 #include "game_engine/field.h"
 #include "game_engine/game.h"
 #include "game_engine/generation.h"
@@ -33,7 +34,7 @@ int main(int argc, char* argv[]) {
 
     MLV_create_window("Tower Defense", NULL, game.sectors.window.width, game.sectors.window.height);
 
-    while (!terminated) {
+    while (!terminated && !is_game_over(&game)) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);
 
         if (process_event(&game)) {
@@ -53,6 +54,13 @@ int main(int argc, char* argv[]) {
         if (extra_time > 0) {
             MLV_wait_milliseconds((int)(extra_time * 1000));
         }
+    }
+
+    // do frees here
+
+    if (is_game_over(&game)) {
+        display_score(&(game.score), &(game.sectors));
+        wait_event(&terminated);
     }
 
     MLV_free_window();

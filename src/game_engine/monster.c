@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "game_engine/game.h"
+#include "game_engine/score.h"
 #include "utils/position.h"
 #include "utils/util.h"
 
@@ -18,6 +19,15 @@ static void init_monster_health(Monster* monster, int wave_number) {
     int h = 100;
     monster->max_health = (int)(h * powf(1.2, wave_number));
     monster->health = monster->max_health;
+}
+
+
+void take_damage(Monster* monster, Score* score, int damage) {
+    monster->health -= damage;
+    score->total_damage += damage;
+    if (!is_alive(monster)) {
+        score->monster_kills++;
+    }
 }
 
 /**
@@ -114,7 +124,7 @@ int has_reach_dest(const Monster* monster) {
 int is_alive(const Monster* monster) { return monster->health > 0; }
 
 // All function to update monster effect
-typedef void (*update_effect)(Monster* monster);
+typedef void (*update_effect)(Monster* monster, Score* score);
 
 static void decrease_status_clock(Monster* monster) {
     for (int i = 0; i < STACKABLE_STATUS; i++) {
@@ -125,19 +135,20 @@ static void decrease_status_clock(Monster* monster) {
     }
 }
 
-static void update_parasit(Monster* monster) {
+static void update_parasit(Monster* monster, Score* score) {
     if (monster->status->clock.next_interval == 0) {
-        monster->health -= monster->status->next_damage;
+        take_damage(monster, score, monster->status->next_damage);
+        // monster->health -= monster->status->next_damage;
     }
 }
 
-void update_effect_monster(Monster* monster) {
+void update_effect_monster(Monster* monster, Score* score) {
     static update_effect effect[] = {
         [PARASIT] = update_parasit,
     };
 
     if (monster->status->status == PARASIT) {
-        effect[monster->status->status](monster);
+        effect[monster->status->status](monster, score);
     }
     decrease_status_clock(monster);
 }

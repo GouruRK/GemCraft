@@ -54,4 +54,11 @@ void exit_function(void* data);
  */
 bool process_event(Game* game);
 
+/**
+ * @brief Wait for the very next event
+ * 
+ * @param stop 
+ */
+void wait_event(int* stop);
+
 #endif

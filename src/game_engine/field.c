@@ -177,7 +177,7 @@ static TypeWave generate_random_wave(int nb_wave) {
     return -1;  // Should never happend
 }
 
-void init_new_wave(Nest* nest, int nb_wave) {
+void init_new_wave(Nest* nest, Score* score, int nb_wave) {
     nest->type_wave = generate_random_wave(nb_wave);
 
     nest->monster_remaining = 12;
@@ -187,17 +187,21 @@ void init_new_wave(Nest* nest, int nb_wave) {
     switch (nest->type_wave) {
         case CROWD:
             nest->monster_remaining = 24;
+            score->crowd_wave++;
             break;
 
         case FAST:
             nest->spawn_clock.interval = FRAMERATE / 2;
+            score->fast_wave++;
             break;
 
         case BOSS:
             nest->monster_remaining = 2;
+            score->boss_wave++;
             break;
 
         default:
+            score->normal_wave++;
             break;
     }
 }

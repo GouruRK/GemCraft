@@ -7,6 +7,7 @@
 #include "game_engine/field.h"
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
+#include "game_engine/score.h"
 #include "user_event/interact.h"
 #include "display/game_sectors.h"
 
@@ -16,6 +17,7 @@
 typedef enum {
     ONGOING,
     PAUSE,
+    OVER
 } GameState;
 
 typedef struct {
@@ -27,6 +29,7 @@ typedef struct {
     Player player;              // player info
     Interaction cur_interact;   // current player interaction
     GameSectors sectors;       // differencies window's section for inventory and field
+    Score score;
 } Game;
 
 /**
@@ -44,5 +47,7 @@ Error init_game(Game* game);
  * @return Error
  */
 Error update_game(Game* game);
+
+bool is_game_over(Game* game);
 
 #endif
