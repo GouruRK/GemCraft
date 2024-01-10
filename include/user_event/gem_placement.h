@@ -19,6 +19,6 @@ int from_coord_to_index(const GameSectors* sectors, int x, int y);
  * 
  * @param interact 
  */
-void update_gem_movement(Interaction* interact);
+void update_gem_movement(const GameSectors* sectors, Interaction* interact);
 
 #endif

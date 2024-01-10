@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "game_engine/game.h"
+#include "game_engine/score.h"
 
 Nest init_nest(Position pos) {
     Nest res;
@@ -47,10 +48,11 @@ static TypeWave generate_random_wave(int nb_wave) {
 /**
  * @brief Generate wave with random type (crowd fast normal or boss)
  * 
+ * @param score
  * @param nb_wave 
  * @return Wave 
  */
-static Wave init_wave(int nb_wave) {
+static Wave init_wave(Score* score, int nb_wave) {
     Wave res;
 
     res.type = generate_random_wave(nb_wave);
@@ -61,27 +63,31 @@ static Wave init_wave(int nb_wave) {
         case CROWD:
             res.monster_remaining = 24;
             res.spawn_clock.interval = FRAMERATE / 2;
+            score->crowd_wave++;
             break;
 
         case FAST:
             res.spawn_clock.interval = FRAMERATE / 2;
+            score->fast_wave++;
             break;
 
         case BOSS:
             res.monster_remaining = 2;
+            score->boss_wave++;
             break;
 
         default:
+            score->normal_wave++;
             break;
     }
 
     return res;
 }
 
-int add_wave_nest(Nest* nest, int nb_wave) {
+int add_wave_nest(Nest* nest, Score* score, int nb_wave) {
     for (int i = 0; i < nest->nb_waves; i++) {
         if (nest->wave[i].monster_remaining == 0) {
-            nest->wave[i] = init_wave(nb_wave);
+            nest->wave[i] = init_wave(score, nb_wave);
             return 1;
         }
     }
@@ -90,7 +96,7 @@ int add_wave_nest(Nest* nest, int nb_wave) {
         return 0;
     }
 
-    nest->wave[nest->nb_waves] = init_wave(nb_wave);
+    nest->wave[nest->nb_waves] = init_wave(score, nb_wave);
     nest->nb_waves++;
     return 1;
 }

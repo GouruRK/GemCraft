@@ -10,11 +10,12 @@
 #include "game_engine/tower.h"
 #include "game_engine/nest.h"
 #include "game_engine/projectile.h"
+#include "game_engine/score.h"
 
 #define WIDTH 28
 #define HEIGHT 22
 
-#define MAX_LEN WIDTH* HEIGHT
+#define MAX_LEN WIDTH*HEIGHT
 
 typedef enum {
     TOWER,

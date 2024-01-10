@@ -2,6 +2,7 @@
 #define NEST_H
 
 #include "game_engine/monster.h"
+#include "game_engine/score.h"
 #include "utils/position.h"
 #include "utils/clock.h"
 
@@ -34,6 +35,6 @@ Nest init_nest(Position pos);
  * @param nb_wave
  * @return int 0 if wave isn't generated, othewhise 1
  */
-int add_wave_nest(Nest* nest, int nb_wave);
+int add_wave_nest(Nest* nest, Score* score, int nb_wave);
 
 #endif

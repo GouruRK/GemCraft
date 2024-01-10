@@ -5,12 +5,14 @@
 #include <stdio.h>
 
 #include "display/game_sectors.h"
+#include "game_engine/score.h"
 #include "game_engine/field.h"
 #include "game_engine/generation.h"
 #include "game_engine/nest.h"
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
 #include "game_engine/tower.h"
+#include "game_engine/monster.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "utils/clock.h"
@@ -27,10 +29,12 @@ Error init_game(Game* game) {
         return ALLOCATION_ERROR;
     }
     game->field.towers = init_tower_array();
+    init_monster_array(&(game->field.monsters));
 
     game->player = init_player();
     game->cur_interact = init_interact();
     game->sectors = init_game_sectors();
+    game->score = init_score();
     return OK;
 }
 
@@ -42,8 +46,8 @@ Error init_game(Game* game) {
  * @param player
  * @return Error
  */
-static Error update_monster(Monster* monster, Field* field, Player* player) {
-    update_effect_monster(monster);
+static Error update_monster(Monster* monster, Score* score, Field* field, Player* player) {
+    update_effect_monster(monster, score);
 
     if (!is_alive(monster)) {  // If the monster dies of effect
         int mana_drop = monster->max_health * 0.1 * pow(1.3, player->mana_lvl);
@@ -82,21 +86,21 @@ static void update_nest(Game* game) {
     }
 
     if (game->wave >= 1 && game->time_until_next_wave.next_interval == 0) {
-        add_wave_nest(&(game->field.nest), game->wave);
+        add_wave_nest(&(game->field.nest), &(game->score), game->wave);
         game->wave++;
     }
 
     decrease_clock(&game->time_until_next_wave);
 }
 
-static void update_projectiles(ProjectileArray* array,
+static void update_projectiles(ProjectileArray* array, Score* score,
                                MonsterArray* monster_array, Player* player) {
     for (int i = 0; i < array->nb_elt; i++) {
         int suppress_proj = 0;
         if (!is_alive(array->array[i].target)) {
             suppress_proj = 1;
         } else if (has_reach_target(&(array->array[i]))) {
-            hit_target(&(array->array[i]), monster_array);
+            hit_target(&(array->array[i]), score, monster_array);
             // if the projectile kill his target
             if (!is_alive(array->array[i].target)) {
                 int mana_drop = array->array[i].target->max_health * 0.1 *
@@ -144,7 +148,8 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
             Projectile proj =
                 init_projectile(cell_center(tower->pos), target, tower->gem);
             add_projectile_array(projectiles, proj);
-            tower->shoot_interval = init_clock(-1, 0.5);
+            tower->shoot_interval = init_clock(-1, 
+                                               0.5 - tower->gem.level / 100);
         }
     }
     
@@ -162,7 +167,7 @@ Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         if (is_alive(&(game->field.monsters.array[i]))) {
-            update_monster(&(game->field.monsters.array[i]), &(game->field),
+            update_monster(&(game->field.monsters.array[i]), &(game->score), &(game->field),
                            &(game->player));
         }
     }
@@ -172,8 +177,16 @@ Error update_game(Game* game) {
     update_towers(&game->field.towers, &game->field.monsters,
                   &game->field.projectiles);
 
-    update_projectiles(&(game->field.projectiles), &(game->field.monsters),
-                       &(game->player));
+    update_projectiles(&(game->field.projectiles), &(game->score),
+                       &(game->field.monsters), &(game->player));
 
     return OK;
+}
+
+bool is_game_over(Game* game) {
+    if (game->player.mana <= 0) {
+        game->game_status = OVER;
+        return true;
+    }
+    return false;
 }

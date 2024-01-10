@@ -9,8 +9,8 @@ typedef struct {
     Sector panel;
     Sector gauge;
     Sector upgrade_button;
-    Sector gem_button;
     Sector tower_button;
+    Sector gem_button;
     Sector add_button;
     Sector gem_lvl;
     Sector sub_button;

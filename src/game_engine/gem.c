@@ -23,7 +23,7 @@ Gem init_random_gem(int level) {
         case PYRO:
             // chose between 0-30 or 330-359
             if (uniform() < 0.5) {
-                color = random_color();
+                color = random_int(0, 30);
             } else {
                 color = random_int(330, 359);
             }

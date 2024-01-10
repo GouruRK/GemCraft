@@ -10,11 +10,13 @@
 #include "game_engine/game.h"
 #include "game_engine/player.h"
 #include "game_engine/inventory.h"
+#include "game_engine/score.h"
 #include "game_engine/tower.h"
 #include "game_engine/nest.h"
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
+#include "utils/errors.h"
 
 void exit_function(void* data) {
     int* stop = (int*)data;
@@ -28,13 +30,14 @@ void exit_function(void* data) {
  * 
  * @param game
  */
-static void pick_up_gem_from_field(Game* game) {
+static Error pick_up_gem_from_field(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
     Gem gem;
     if (unload_gem(&(game->field), &gem, init_scaled_position(x, y)) == OK) {
-        set_interact_gem_movement(&(game->cur_interact), gem);
+        return set_interact_gem_movement(&(game->cur_interact), gem);
     }
+    return OK;
 }
 
 /**
@@ -44,7 +47,7 @@ static void pick_up_gem_from_field(Game* game) {
  * 
  * @param game
  */
-static void pick_up_gem_from_inventory(Game* game) {
+static Error pick_up_gem_from_inventory(Game* game) {
     int x, y;
     Gem gem;
     MLV_get_mouse_position(&x, &y);
@@ -53,8 +56,9 @@ static void pick_up_gem_from_inventory(Game* game) {
 
     if (!game->player.inventory.array[inventory_index].empty) {
         remove_gem_at(&(game->player.inventory), &gem, inventory_index);
-        set_interact_gem_movement(&(game->cur_interact), gem);
+        return set_interact_gem_movement(&(game->cur_interact), gem);
     }
+    return OK;
 }
 
 /**
@@ -63,10 +67,11 @@ static void pick_up_gem_from_inventory(Game* game) {
  * 
  * @param game
  */
-static void drop_gem_on_inventory(Game* game) {
+static Error drop_gem_on_inventory(Game* game) {
     int x, y;
-    MLV_get_mouse_position(&x, &y);
     Gem gem, res;
+    
+    MLV_get_mouse_position(&x, &y);
     int inventory_index = from_coord_to_index(&(game->sectors), x, y);
 
     if (game->player.inventory.array[inventory_index].empty) { 
@@ -85,6 +90,7 @@ static void drop_gem_on_inventory(Game* game) {
             reset_interaction(&(game->cur_interact));
         }
     }
+    return OK;
 }
 
 /**
@@ -92,12 +98,15 @@ static void drop_gem_on_inventory(Game* game) {
  * 
  * @param game
  */
-static void drop_gem_on_field(Game* game) {
+static Error drop_gem_on_field(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
-    if (load_gem(&(game->field), game->cur_interact.selected_gem, init_scaled_position(x, y)) == OK) {
+    Error err = load_gem(&(game->field), game->cur_interact.selected_gem, init_scaled_position(x, y)); 
+    
+    if (err == OK) {
         reset_interaction(&(game->cur_interact));
     }
+    return err;
 }
 
 /**
@@ -105,16 +114,18 @@ static void drop_gem_on_field(Game* game) {
  * 
  * @param game
  */
-static void summon_gem(Game* game) {
+static Error summon_gem(Game* game) {
     Gem gem;
+    Error err;
     if (is_inventory_full(&(game->player.inventory))) {
-        return;
+        return INVENTORY_FULL;
     }
-    if (generate_gem(&(game->player), game->cur_interact.gem_level, &gem) != OK) {
-        return;
+    err = generate_gem(&(game->player), game->cur_interact.gem_level, &gem);
+    if (err != OK) {
+        return err;
     }
-    add_inventory(&(game->player.inventory), gem);
     game->cur_interact.gem_level = 0;
+    return add_inventory(&(game->player.inventory), gem);
 }
 
 /**
@@ -122,10 +133,12 @@ static void summon_gem(Game* game) {
  * 
  * @param game 
  */
-static void add_gem_level(Game* game) {
+static Error add_gem_level(Game* game) {
     if (game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
         game->cur_interact.gem_level++;
+        return OK;
     }
+    return NOT_ENOUGHT_MANA;
 }
 
 /**
@@ -133,10 +146,11 @@ static void add_gem_level(Game* game) {
  * 
  * @param game 
  */
-static void sub_gem_level(Game* game) {
+static Error sub_gem_level(Game* game) {
     if (game->cur_interact.gem_level) {
         game->cur_interact.gem_level--;
     }
+    return OK;
 }
 
 /**
@@ -144,11 +158,13 @@ static void sub_gem_level(Game* game) {
  * 
  * @param game 
  */
-static void summon_tower(Game* game) {
+static Error summon_tower(Game* game) {
     if (game->player.mana >= get_tower_cost(&(game->field.towers))) {
-        set_interact_tower_placement(&(game->cur_interact),
+        set_interact_tower_placement(&(game->cur_interact), 
                                      init_tower_at_mouse(game->sectors.panel));
+        return OK;
     }
+    return NOT_ENOUGHT_MANA;
 }
 
 /**
@@ -156,8 +172,8 @@ static void summon_tower(Game* game) {
  * 
  * @param game 
  */
-static void summon_wave(Game* game) {
-    int generate = add_wave_nest(&(game->field.nest), game->wave);
+static Error summon_wave(Game* game) {
+    int generate = add_wave_nest(&(game->field.nest), &(game->score), game->wave);
     if (game->wave > 0 && generate) {
         int t = game->time_until_next_wave.next_interval / 60;
         int mana_win = t * game->player.max_quantity / 100;
@@ -169,7 +185,9 @@ static void summon_wave(Game* game) {
         game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
         decrease_clock(&game->time_until_next_wave);
         game->wave++;
+        return OK;
     }
+    return WAVE_IS_ALREADY_SPAWNING;
 }
 
 /**
@@ -177,8 +195,8 @@ static void summon_wave(Game* game) {
  * 
  * @param game 
  */
-static void place_tower_in_fiend(Game* game) {
-    drop_tower(&(game->cur_interact), &(game->field), &(game->player));
+static Error place_tower_in_fiend(Game* game) {
+    return drop_tower(&(game->cur_interact), &(game->field), &(game->player));
 }
 
 /**
@@ -186,17 +204,9 @@ static void place_tower_in_fiend(Game* game) {
  * 
  * @param game 
  */
-static void cancel_tower_placement(Game* game) {
+static Error cancel_tower_placement(Game* game) {
     cancel_interaction(&(game->cur_interact));
-}
-
-/**
- * @brief Toggle game pause
- * 
- * @param game 
- */
-static void toggle_pause(Game* game) {
-    game->game_status = !(game->game_status);
+    return OK;
 }
 
 /**
@@ -204,8 +214,8 @@ static void toggle_pause(Game* game) {
  * 
  * @param game 
  */
-static void upgrade_pool(Game* game) {
-    upgrade_mana_pool(&(game->player));
+static Error upgrade_pool(Game* game) {
+    return upgrade_mana_pool(&(game->player));
 }
 
 /**
@@ -214,7 +224,7 @@ static void upgrade_pool(Game* game) {
  * 
  * @param game 
  */
-static void display_tooltip(Game* game) {
+static Error display_tooltip(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
     Position pos = init_position(x, y);
@@ -227,11 +237,12 @@ static void display_tooltip(Game* game) {
     } else if (is_pos_in_sector(game->sectors.field, pos)) {
         Tower* tower;
         if (get_tower(&(game->field), &tower, init_scaled_position(x, y)) != OK) {
-            return;
+            return OK;
         }
         set_interact_tooltip(&(game->cur_interact), 
             init_tower_tooltip(*tower, pos));
     }
+    return OK;
 }
 
 /**
@@ -239,8 +250,9 @@ static void display_tooltip(Game* game) {
  * 
  * @param game 
  */
-static void reset_current_interaction(Game* game) {
+static Error reset_current_interaction(Game* game) {
     reset_interaction(&(game->cur_interact));
+    return OK;
 }
 
 /**
@@ -248,8 +260,9 @@ static void reset_current_interaction(Game* game) {
  * 
  * @param game 
  */
-static void reset_overwritable_events(Game* game) {
+static Error reset_overwritable_events(Game* game) {
     reset_overwritable_interaction(&game->cur_interact);
+    return OK;
 }
 
 /**
@@ -257,8 +270,9 @@ static void reset_overwritable_events(Game* game) {
  * 
  * @param game 
  */
-static void show_upgrade_cost(Game* game) {
+static Error show_upgrade_cost(Game* game) {
     set_interact_show_upgrade_cost(&(game->cur_interact));
+    return OK;
 }
 
 /**
@@ -266,8 +280,9 @@ static void show_upgrade_cost(Game* game) {
  * 
  * @param game 
  */
-static void show_tower_cost(Game* game) {
+static Error show_tower_cost(Game* game) {
     set_interact_show_tower_cost(&(game->cur_interact));
+    return OK;
 }
 
 /**
@@ -276,8 +291,69 @@ static void show_tower_cost(Game* game) {
  * 
  * @param game 
  */
-static void show_gem_cost(Game* game) {
+static Error show_gem_cost(Game* game) {
     set_interact_show_gem_cost(&(game->cur_interact));
+    return OK;
+}
+
+/**
+ * @brief Change interaction to display the cost of creating a gem at 
+ *        its selected level + 1
+ * 
+ * @param game 
+ */
+static Error show_gem_cost_add(Game* game) {
+    set_interact_show_gem_cost_add(&(game->cur_interact));
+    return OK;
+}
+
+/**
+ * @brief Change interaction to display the cost of creating a gem at 
+ *        its selected level - 1
+ * 
+ * @param game 
+ */
+static Error show_gem_cost_sub(Game* game) {
+    set_interact_show_gem_cost_sub(&(game->cur_interact));
+    return OK;
+}
+
+/**
+ * @brief Change interaction to display the cost of combining two gems
+ * 
+ * @param game 
+ * @return
+ */
+static Error show_combine_cost(Game* game) {
+    int x, y;
+    MLV_get_mouse_position(&x, &y);
+    if (is_coord_in_sector(game->sectors.inventory, x, y)) {
+        int inventory_index = from_coord_to_index(&(game->sectors), x, y);
+        if (!game->player.inventory.array[inventory_index].empty) {
+            game->cur_interact.show_combine_cost = true;
+        } else {
+            game->cur_interact.show_combine_cost = false;
+        }
+    } else {
+        game->cur_interact.show_combine_cost = false;
+    }
+    return OK;
+}
+
+/**
+ * @brief Cancel a gem movement and place the gem in the inventory
+ * 
+ * @param game 
+ * @return
+ */
+static Error cancel_gem_movement(Game* game) {
+    if (is_inventory_full(&(game->player.inventory))) {
+        return INVENTORY_FULL;
+    }
+
+    add_inventory(&(game->player.inventory), game->cur_interact.selected_gem);
+    reset_interaction(&(game->cur_interact));
+    return OK;
 }
 
 // Link between events and functions to apply them
@@ -288,6 +364,7 @@ event_function func[] = {
     [SUMMON_GEM] = summon_gem,
     [PLACE_TOWER] = place_tower_in_fiend,
     [CANCEL_PLACING_TOWER] = cancel_tower_placement,
+    [CANCEL_PLACING_GEM] = cancel_gem_movement,
     [PICK_GEM_FROM_FIELD] = pick_up_gem_from_field,
     [PICK_GEM_FROM_INVENTORY] = pick_up_gem_from_inventory,
     [DROP_GEM_IN_INVENTORY] = drop_gem_on_inventory,
@@ -300,7 +377,10 @@ event_function func[] = {
     [HIDE_TOOLTIP] = reset_current_interaction,
     [SHOW_UPGRADE_COST] = show_upgrade_cost,
     [SHOW_GEM_COST] = show_gem_cost,
-    [SHOW_TOWER_COST] = show_tower_cost
+    [SHOW_TOWER_COST] = show_tower_cost,
+    [SHOW_GEM_COST_ADD] = show_gem_cost_add,
+    [SHOW_GEM_COST_SUB] = show_gem_cost_sub,
+    [SHOW_COMBINE_COST] = show_combine_cost
 };
 
 /**
@@ -311,12 +391,11 @@ event_function func[] = {
  */
 bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
-    
     if (event == QUIT) {
         return true;
     } else if (event == CHANGE_GAME_STATUS) { // need to do this because when game is paused,
                                               // buttons except the pause one no longer works 
-        toggle_pause(game);
+        game->game_status = !(game->game_status);
     }  else if (game->game_status != PAUSE) {
         event_function f;
         if ((f = func[event])) {
@@ -325,9 +404,28 @@ bool process_event(Game* game) {
         
         if (game->cur_interact.current_action == PLACING_TOWER) {
             update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
-        } else if (game->cur_interact.current_action == MOVING_GEM) {
-            update_gem_movement(&(game->cur_interact));
+        } else if (game->cur_interact.current_action == MOVING_GEM || 
+                   game->cur_interact.current_action == SHOWING_COMBINE_COST) {
+            update_gem_movement(&(game->sectors), &(game->cur_interact));
         }
     }
     return false;
+}
+
+void wait_event(int* terminated) {
+    MLV_Keyboard_modifier mod;
+    MLV_Keyboard_button sym;
+    MLV_Button_state state;
+
+    *terminated = 0;
+    // intel on mouse
+    MLV_Mouse_button mouse_but;
+    while (!(*terminated)) {
+        MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
+                              &state);
+        if (event) {
+            break;
+        }
+        MLV_update_window();
+    }
 }

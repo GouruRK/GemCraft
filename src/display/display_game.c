@@ -38,7 +38,7 @@ static void draw_board(const Field field) {
 
     // horizontal
     for (int y = 0; y < HEIGHT; y++) {
-        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE, y * CELL_SIZE,
+        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE + PANEL_WIDTH, y * CELL_SIZE,
                       MLV_COLOR_BLACK);
     }
 
@@ -94,17 +94,47 @@ static void draw_gem_level(Sector sector, unsigned int level) {
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
 }
 
-void display_cost(Sector gauge, long max_quantity, long mana, long int cost) {
-    if (cost > 0 && cost > mana) {
-        int height = get_height(max_quantity, cost);
+void display_cost(Sector gauge, Player player, long int cost) {
+    if (cost > 0 && cost > player.mana) {
+        int height = get_height(player.max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
                                   gauge.width, -height,
                                   MLV_rgba(252, 3, 73, 200));
-    } else if (cost > 0 && cost <= mana) {
-        int height = get_height(max_quantity, cost);
+    } else if (cost > 0 && cost <= player.mana) {
+        int height = get_height(player.max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
                                   gauge.width, -height,
                                   MLV_rgba(255 - 252, 255 - 3, 255 - 73, 200));
+    }
+}
+
+static void display_cost_of_element(const Game* game) {
+    int cost;
+    switch (game->cur_interact.current_action) {
+        case SHOWING_UPGRADE_COST:
+            cost = mana_require_for_pool(game->player.mana_lvl + 1);
+            break;
+        case SHOWING_GEM_COST:    
+            cost = mana_require_for_gem(game->cur_interact.gem_level);
+            break;
+        case SHOWING_TOWER_COST:
+            cost = get_tower_cost(&(game->field.towers));
+            break;
+        case SHOWING_GEM_COST_ADD:
+            cost = mana_require_for_gem(game->cur_interact.gem_level + 1);
+            break;
+        case SHOWING_GEM_COST_SUB:
+            cost = 0;
+            if (game->cur_interact.gem_level) {
+                cost = mana_require_for_gem(game->cur_interact.gem_level - 1);
+            }
+            break;
+        default: 
+            cost = 0;
+            break;
+    }
+    if (cost) {
+        display_cost(game->sectors.gauge, game->player, cost);
     }
 }
 
@@ -124,11 +154,11 @@ void draw_game(const Game* game) {
 
     draw_gauge(game->player, game->sectors.gauge);
     draw_inventory(game->player.inventory, game->sectors.inventory);
+    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     draw_buttons(&(game->sectors));
     draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
 
-    draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
-
+    
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         if (game->field.towers.lst[i].hold_gem) {
@@ -143,19 +173,13 @@ void draw_game(const Game* game) {
     } else if (game->cur_interact.current_action == MOVING_GEM) {
         draw_gem(game->cur_interact.object_pos,
                  game->cur_interact.selected_gem);
+        if (game->cur_interact.show_combine_cost) {
+            display_cost(game->sectors.gauge, game->player, 100);
+        }
     } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
         display_tool_tip(game->sectors.window, game->cur_interact.tooltip);
-    } else if (game->cur_interact.current_action == SHOWING_UPGRADE_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity,
-                     game->player.mana,
-                     mana_require_for_pool(game->player.mana_lvl + 1));
-    } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity,
-                     game->player.mana,
-                     mana_require_for_gem(game->cur_interact.gem_level));
-    } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
-        display_cost(game->sectors.gauge, game->player.max_quantity,
-                     game->player.mana, get_tower_cost(&(game->field.towers)));
+    } else {
+        display_cost_of_element(game);
     }
 
     for (int i = 0; i < game->field.projectiles.nb_elt; i++) {

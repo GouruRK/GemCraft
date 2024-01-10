@@ -81,11 +81,10 @@ static Sector inventory_sector(void) {
 GameSectors init_game_sectors(void) {
     GameSectors sectors;
 
-    // no need to use static here because this function is only called once
     Sector* buttons_sector[NB_BUTTONS] = {
         &sectors.upgrade_button,
-        &sectors.gem_button,
         &sectors.tower_button,
+        &sectors.gem_button,
         &sectors.add_button,
         &sectors.gem_lvl,
         &sectors.sub_button,

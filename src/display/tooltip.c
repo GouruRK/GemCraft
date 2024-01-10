@@ -105,6 +105,18 @@ static void display_tower_tool_tip(Sector window, Position pos, Tower tower) {
     }
     reposition(window, &pos, height);
 
+    Position center_tower = cell_center(tower.pos);
+    center_tower.x *= CELL_SIZE;
+    center_tower.y *= CELL_SIZE;
+
+    // radius
+    float radius = 0;
+    if (tower.hold_gem) {
+        radius = calc_radius_shoot_range(&tower.gem);
+        MLV_draw_circle(center_tower.x, center_tower.y, 
+                        radius * CELL_SIZE, MLV_COLOR_BROWN);
+    }
+
     // outline
     MLV_draw_filled_rectangle(pos.x, pos.y, TOOLTIP_WIDTH, height,
                               MLV_rgba(51, 51, 51, 255));
@@ -112,14 +124,8 @@ static void display_tower_tool_tip(Sector window, Position pos, Tower tower) {
     // Tower
     pos.x += 5; // apply margin
     int w, h;
-    Position center_tower = cell_center(tower.pos);
-    center_tower.x *= CELL_SIZE;
-    center_tower.y *= CELL_SIZE;
     if (tower.hold_gem) {
-        float radius = calc_radius_shoot_range(&tower.gem);
         MLV_get_size_of_text("Radius %.1f", &w, &h, radius);
-        MLV_draw_circle(center_tower.x, center_tower.y, 
-                        radius * CELL_SIZE, MLV_COLOR_BROWN);
         MLV_draw_text(pos.x, pos.y, "Radius %.1f", MLV_COLOR_WHITE, radius);
     } else {
         MLV_get_size_of_text("Radius %d", &w, &h, 0);

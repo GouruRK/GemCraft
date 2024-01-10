@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c17 -Wall -Wfatal-errors -pedantic
+CFLAGS = -std=c17 -Wall -Wfatal-errors -pedantic -g -g3
 PFLAGS = include
 LFLAGS = -lMLV -lm
 
@@ -20,7 +20,7 @@ OBJ_FILES = $(patsubst $(SRC)%.c, $(BIN)%.o, $(SRC_FILES))
 # Generic rule
 
 $(EXEC) : $(OBJ_FILES)
-	$(CC) $^ -o $@ $(LFLAGS)
+	$(CC) $^ -o $@ $(LFLAGS) -g -g3
 
 $(BIN)%.o : $(SRC)%.c
 	@mkdir --parents $(INCLUDES)

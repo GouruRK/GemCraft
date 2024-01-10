@@ -14,7 +14,7 @@ int from_coord_to_index(const GameSectors* sectors, int x, int y) {
     return INVENTORY_SIZE - (y*2 + x) - 1;
 }
 
-void update_gem_movement(Interaction* interact) {
+void update_gem_movement(const GameSectors* sectors, Interaction* interact) {
     if (interact->current_action != MOVING_GEM) {
         return;
     }
@@ -22,5 +22,9 @@ void update_gem_movement(Interaction* interact) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
 
-    interact->object_pos = init_position(x / CELL_SIZE, y / CELL_SIZE);
+    if (is_coord_in_sector(sectors->field, x, y)
+         || is_coord_in_sector(sectors->inventory, x, y)) {
+        interact->object_pos = init_position(x / CELL_SIZE, y / CELL_SIZE);
+    }
+
 }

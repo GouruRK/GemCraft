@@ -9,12 +9,40 @@ int mana_require_for_pool(int level) {
     return 500*pow(1.4, level);
 } 
 
+/**
+ * @brief Retrurn the maximum amout of mana the gauge can store at its level
+ * 
+ * @param level 
+ * @return
+ */
 static int max_mana(int level) {
     return 2000*pow(1.4, level);
 }
 
 int mana_require_for_gem(int level) {
     return 100*(1 << level);  // 100 * 2^n
+}
+
+/**
+ * @brief Combine colors of two gems of same type
+ * 
+ * @param a 
+ * @param b 
+ * @param type 
+ * @return
+ */
+static int combine_color(int a, int b, TypeGems type) {
+    int color = (a + b) / 2;
+    if (type != PYRO) {
+        return color;
+    }
+
+    if (((0 <= a && a <= 30) && (0 <= b && b <= 30)) || 
+        ((330 <= a && a <= 359) && (330 <= b && b <= 359))) {
+            return color;
+    }
+
+    return max(a, b);
 }
 
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
@@ -30,7 +58,8 @@ Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
         type = a.type;
     }
     
-    int color = (a.color + b.color) / 2;
+    // int color = (a.color + b.color) / 2;
+    int color = combine_color(a.color, b.color, type);
     *res = init_gem(type, a.level + 1, color);
     player->mana -= 100;
     return OK;
@@ -46,7 +75,7 @@ Player init_player(void) {
 }
 
 Error upgrade_mana_pool(Player* player) {
-    int cost = mana_require_for_pool(player->mana_lvl);
+    int cost = mana_require_for_pool(player->mana_lvl + 1);
     
     if (player->mana < cost) {
         return NOT_ENOUGHT_MANA;
