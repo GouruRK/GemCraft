@@ -146,7 +146,8 @@ static void sub_gem_level(Game* game) {
  */
 static void summon_tower(Game* game) {
     if (game->player.mana >= get_tower_cost(&(game->field.towers))) {
-        set_interact_tower_placement(&(game->cur_interact), init_tower_at_mouse(game->sectors.panel));
+        set_interact_tower_placement(&(game->cur_interact),
+                                     init_tower_at_mouse(game->sectors.panel));
     }
 }
 
@@ -156,10 +157,17 @@ static void summon_tower(Game* game) {
  * @param game 
  */
 static void summon_wave(Game* game) {
+    if (game->wave > 0) {
+        int t = game->time_until_next_wave.next_interval / 60;
+        int mana_win = t * game->player.max_quantity / 100;
+        game->player.mana = min(game->player.max_quantity, 
+                                game->player.mana + mana_win);
+    }
     add_wave_nest(&(game->field.nest), game->wave);
     game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
     decrease_clock(&game->time_until_next_wave);
     game->wave++;
+
 }
 
 /**

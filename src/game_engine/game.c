@@ -146,6 +146,7 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
             add_projectile_array(projectiles, proj);
         }
     }
+    
     decrease_clock(&tower->shoot_interval);
 }
 

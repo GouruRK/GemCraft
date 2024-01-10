@@ -100,7 +100,8 @@ void display_cost(Sector gauge, long max_quantity, long int cost) {
     if (cost > 0) {
         int height = get_height(max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
-                                gauge.width, -height, MLV_rgba(252, 3, 73, 200));
+                                gauge.width, 
+                                -height, MLV_rgba(252, 3, 73, 200));
     }
 }
 
@@ -121,13 +122,16 @@ void draw_game(const Game* game) {
     draw_gauge(game->player, game->sectors.gauge);
     draw_inventory(game->player.inventory, game->sectors.inventory);
     draw_buttons(&(game->sectors));
+    draw_wave_progression(game->time_until_next_wave.next_interval, game->wave,
+                          game->sectors.wave_button);
 
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         if (game->field.towers.lst[i].hold_gem) {
-            draw_gem(game->field.towers.lst[i].pos, game->field.towers.lst[i].gem);
+            draw_gem(game->field.towers.lst[i].pos,
+                     game->field.towers.lst[i].gem);
         }
     }
     

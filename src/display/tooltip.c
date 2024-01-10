@@ -7,6 +7,7 @@
 #include "display/color.h"
 #include "utils/position.h"
 #include "utils/sector.h"
+#include "display/display_const.h"
 
 char* gem_name_array[] = {
     [PYRO] = "Pyro",
@@ -111,8 +112,19 @@ static void display_tower_tool_tip(Sector window, Position pos, Tower tower) {
     // Tower
     pos.x += 5; // apply margin
     int w, h;
-    MLV_get_size_of_text("Radius %d", &w, &h, 5);
-    MLV_draw_text(pos.x, pos.y, "Radius %d", MLV_COLOR_WHITE, 5);
+    Position center_tower = cell_center(tower.pos);
+    center_tower.x *= CELL_SIZE;
+    center_tower.y *= CELL_SIZE;
+    if (tower.hold_gem) {
+        float radius = calc_radius_shoot_range(&tower.gem);
+        MLV_get_size_of_text("Radius %2f", &w, &h, radius);
+        MLV_draw_circle(center_tower.x, center_tower.y, 
+                        radius * CELL_SIZE, MLV_COLOR_BROWN);
+        MLV_draw_text(pos.x, pos.y, "Radius %2f", MLV_COLOR_WHITE, radius);
+    } else {
+        MLV_get_size_of_text("Radius %d", &w, &h, 0);
+        MLV_draw_text(pos.x, pos.y, "Radius %d", MLV_COLOR_WHITE, 0);
+    }
 
     if (tower.hold_gem) {
         display_gem_information(pos, tower.gem, h + 5);

@@ -14,4 +14,13 @@
  */
 void draw_buttons(const GameSectors* sectors);
 
+/**
+ * @brief Draw the remaining time of the next wave on wave button
+ * 
+ * @param remaining_time 
+ * @param nb_wave 
+ * @param wave 
+ */
+void draw_wave_progression(int remaining_time, int nb_wave, Sector wave);
+
 #endif
