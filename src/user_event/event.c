@@ -157,17 +157,19 @@ static void summon_tower(Game* game) {
  * @param game 
  */
 static void summon_wave(Game* game) {
-    if (game->wave > 0) {
+    int generate = add_wave_nest(&(game->field.nest), game->wave);
+    if (game->wave > 0 && generate) {
         int t = game->time_until_next_wave.next_interval / 60;
         int mana_win = t * game->player.max_quantity / 100;
         game->player.mana = min(game->player.max_quantity, 
                                 game->player.mana + mana_win);
     }
-    add_wave_nest(&(game->field.nest), game->wave);
-    game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
-    decrease_clock(&game->time_until_next_wave);
-    game->wave++;
 
+    if (generate) {
+        game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
+        decrease_clock(&game->time_until_next_wave);
+        game->wave++;
+    }
 }
 
 /**

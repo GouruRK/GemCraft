@@ -2,19 +2,19 @@
 
 #include <MLV/MLV_all.h>
 
+#include "display/color.h"
+#include "display/display_const.h"
+#include "display/display_tower.h"
+#include "display/draw_button.h"
+#include "display/draw_gems.h"
+#include "display/draw_inventory.h"
+#include "display/draw_mana_gauge.h"
+#include "display/tooltip.h"
 #include "game_engine/field.h"
+#include "game_engine/game.h"
 #include "game_engine/monster.h"
 #include "game_engine/projectile.h"
-#include "game_engine/game.h"
 #include "game_engine/tower.h"
-#include "display/draw_mana_gauge.h"
-#include "display/draw_inventory.h"
-#include "display/draw_button.h"
-#include "display/display_const.h"
-#include "display/draw_gems.h"
-#include "display/color.h"
-#include "display/tooltip.h"
-#include "display/display_tower.h"
 
 // Prototype
 static void draw_board(const Field field) {
@@ -30,8 +30,8 @@ static void draw_board(const Field field) {
         for (int x = 0; x < WIDTH; x++) {
             if (field.board[y][x] != TOWER) {
                 color = objects_color[field.board[y][x]];
-                MLV_draw_filled_rectangle(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE,
-                                        CELL_SIZE, color);
+                MLV_draw_filled_rectangle(x * CELL_SIZE, y * CELL_SIZE,
+                                          CELL_SIZE, CELL_SIZE, color);
             }
         }
     }
@@ -63,7 +63,7 @@ static void draw_monster(const Monster* m) {
     MLV_draw_filled_rectangle((int)(m->pos.x * CELL_SIZE) - 10,
                               (int)(m->pos.y * CELL_SIZE) - CELL_SIZE / 2,
                               health_remaining, 4, MLV_COLOR_GREEN);
-    
+
     // Draw the monster
     MLV_Color monster_color = transform_color(m->color);
     MLV_draw_filled_circle((int)(m->pos.x * CELL_SIZE),
@@ -84,24 +84,27 @@ static void draw_gem_level(Sector sector, unsigned int level) {
     int x, y;
 
     MLV_get_size_of_text("%d", &text_width, &text_height, level);
-    x = sector.top_left.x + sector.width/2 - text_width/2;
-    y = sector.top_left.y + sector.height/2 - text_height/2;
-    
-    MLV_draw_filled_rectangle(sector.top_left.x,
-                              sector.top_left.y,
-                              sector.width,
-                              sector.height,
+    x = sector.top_left.x + sector.width / 2 - text_width / 2;
+    y = sector.top_left.y + sector.height / 2 - text_height / 2;
+
+    MLV_draw_filled_rectangle(sector.top_left.x, sector.top_left.y,
+                              sector.width, sector.height,
                               BUTTON_BACKGROUND_COLOR);
-    
+
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
 }
 
-void display_cost(Sector gauge, long max_quantity, long int cost) {
-    if (cost > 0) {
+void display_cost(Sector gauge, long max_quantity, long mana, long int cost) {
+    if (cost > 0 && cost > mana) {
         int height = get_height(max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
-                                gauge.width, 
-                                -height, MLV_rgba(252, 3, 73, 200));
+                                  gauge.width, -height,
+                                  MLV_rgba(252, 3, 73, 200));
+    } else if (cost > 0 && cost <= mana) {
+        int height = get_height(max_quantity, cost);
+        MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
+                                  gauge.width, -height,
+                                  MLV_rgba(255 - 252, 255 - 3, 255 - 73, 200));
     }
 }
 
@@ -113,7 +116,7 @@ void draw_game(const Game* game) {
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         draw_monster(&(game->field.monsters.array[i]));
     }
-    
+
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         draw_tower(game->field.towers.lst[i]);
@@ -122,11 +125,10 @@ void draw_game(const Game* game) {
     draw_gauge(game->player, game->sectors.gauge);
     draw_inventory(game->player.inventory, game->sectors.inventory);
     draw_buttons(&(game->sectors));
-    draw_wave_progression(game->time_until_next_wave.next_interval, game->wave,
-                          game->sectors.wave_button);
+    draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
 
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
-    
+
     // Prototype
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         if (game->field.towers.lst[i].hold_gem) {
@@ -134,27 +136,28 @@ void draw_game(const Game* game) {
                      game->field.towers.lst[i].gem);
         }
     }
-    
+
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
         draw_tower(game->cur_interact.selected_tower);
     } else if (game->cur_interact.current_action == MOVING_GEM) {
-        draw_gem(game->cur_interact.object_pos, 
+        draw_gem(game->cur_interact.object_pos,
                  game->cur_interact.selected_gem);
     } else if (game->cur_interact.current_action == SHOWING_TOOLTIP) {
         display_tool_tip(game->sectors.window, game->cur_interact.tooltip);
     } else if (game->cur_interact.current_action == SHOWING_UPGRADE_COST) {
         display_cost(game->sectors.gauge, game->player.max_quantity,
+                     game->player.mana,
                      mana_require_for_pool(game->player.mana_lvl + 1));
     } else if (game->cur_interact.current_action == SHOWING_GEM_COST) {
         display_cost(game->sectors.gauge, game->player.max_quantity,
+                     game->player.mana,
                      mana_require_for_gem(game->cur_interact.gem_level));
     } else if (game->cur_interact.current_action == SHOWING_TOWER_COST) {
         display_cost(game->sectors.gauge, game->player.max_quantity,
-                     get_tower_cost(&(game->field.towers)));
+                     game->player.mana, get_tower_cost(&(game->field.towers)));
     }
 
-    
     for (int i = 0; i < game->field.projectiles.nb_elt; i++) {
         draw_projectile(&(game->field.projectiles.array[i]));
     }

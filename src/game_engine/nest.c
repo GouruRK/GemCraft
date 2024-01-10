@@ -78,18 +78,19 @@ static Wave init_wave(int nb_wave) {
     return res;
 }
 
-void add_wave_nest(Nest* nest, int nb_wave) {
+int add_wave_nest(Nest* nest, int nb_wave) {
     for (int i = 0; i < nest->nb_waves; i++) {
         if (nest->wave[i].monster_remaining == 0) {
             nest->wave[i] = init_wave(nb_wave);
-            return;
+            return 1;
         }
     }
 
     if (nest->nb_waves == MAX_WAVE_NUMBER) {
-        return;
+        return 0;
     }
 
     nest->wave[nest->nb_waves] = init_wave(nb_wave);
     nest->nb_waves++;
+    return 1;
 }

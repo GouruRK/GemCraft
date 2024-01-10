@@ -126,7 +126,7 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
         return;
     }
 
-    if (tower->shoot_interval.next_interval == 0) {
+    if (tower->shoot_interval.remaining_time == 0) {
         Monster* target = NULL;
         // Find the monster with the most health within range of dist tiles
         float dist = calc_radius_shoot_range(&tower->gem);
@@ -144,6 +144,7 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
             Projectile proj =
                 init_projectile(cell_center(tower->pos), target, tower->gem);
             add_projectile_array(projectiles, proj);
+            tower->shoot_interval = init_clock(-1, 0.5);
         }
     }
     

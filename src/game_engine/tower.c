@@ -15,7 +15,7 @@ Tower init_tower(Position pos) {
     tower.hold_gem = false;
 
     tower.deploy_timer = init_clock(-1, -1);
-    tower.shoot_interval = init_clock(0.5, -1);
+    tower.shoot_interval = init_clock(-1, 0);
 
     return tower;
 }

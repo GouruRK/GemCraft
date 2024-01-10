@@ -32,7 +32,8 @@ Nest init_nest(Position pos);
  * 
  * @param nest
  * @param nb_wave
+ * @return int 0 if wave isn't generated, othewhise 1
  */
-void add_wave_nest(Nest* nest, int nb_wave);
+int add_wave_nest(Nest* nest, int nb_wave);
 
 #endif

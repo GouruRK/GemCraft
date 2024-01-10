@@ -117,10 +117,10 @@ static void display_tower_tool_tip(Sector window, Position pos, Tower tower) {
     center_tower.y *= CELL_SIZE;
     if (tower.hold_gem) {
         float radius = calc_radius_shoot_range(&tower.gem);
-        MLV_get_size_of_text("Radius %2f", &w, &h, radius);
+        MLV_get_size_of_text("Radius %.1f", &w, &h, radius);
         MLV_draw_circle(center_tower.x, center_tower.y, 
                         radius * CELL_SIZE, MLV_COLOR_BROWN);
-        MLV_draw_text(pos.x, pos.y, "Radius %2f", MLV_COLOR_WHITE, radius);
+        MLV_draw_text(pos.x, pos.y, "Radius %.1f", MLV_COLOR_WHITE, radius);
     } else {
         MLV_get_size_of_text("Radius %d", &w, &h, 0);
         MLV_draw_text(pos.x, pos.y, "Radius %d", MLV_COLOR_WHITE, 0);

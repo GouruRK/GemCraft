@@ -2,6 +2,7 @@
 #define DRAW_BUTTONS_H
 
 #include "display/game_sectors.h"
+#include "game_engine/game.h"
 
 #define BUTTON_BACKGROUND_COLOR MLV_COLOR_DARKSLATEGREY
 #define BUTTON_HOVER_COLOR MLV_rgba(32, 56, 56, 255)
@@ -17,10 +18,10 @@ void draw_buttons(const GameSectors* sectors);
 /**
  * @brief Draw the remaining time of the next wave on wave button
  * 
- * @param remaining_time 
- * @param nb_wave 
- * @param wave 
+ * @param game
+ * @param wave
+ * @param gauge 
  */
-void draw_wave_progression(int remaining_time, int nb_wave, Sector wave);
+void draw_wave_progression(const Game* game, Sector wave, Sector gauge);
 
 #endif
