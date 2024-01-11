@@ -6,6 +6,8 @@
 #include "user_event/tower_placement.h"
 #include "user_event/gem_placement.h"
 #include "user_event/get_event.h"
+#include "user_event/error_message.h"
+#include "user_event/events.h"
 #include "game_engine/gem.h"
 #include "game_engine/game.h"
 #include "game_engine/player.h"
@@ -70,7 +72,8 @@ static Error pick_up_gem_from_inventory(Game* game) {
 static Error drop_gem_on_inventory(Game* game) {
     int x, y;
     Gem gem, res;
-    
+    Error err;
+
     MLV_get_mouse_position(&x, &y);
     int inventory_index = from_coord_to_index(&(game->sectors), x, y);
 
@@ -81,9 +84,11 @@ static Error drop_gem_on_inventory(Game* game) {
     } else {
         // if this inventory place isn't empty, mix the selected gem with the one currently store
         remove_gem_at(&(game->player.inventory), &gem, inventory_index);
-        if (combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res) != OK) {
+        err = combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res);
+        if (err != OK) {
             // if gems cannot be combined, store the stored gem in the inventory again
             store_gem_at(&(game->player.inventory), gem, inventory_index);
+            return err;
         } else {
             // store the result of gem mixing
             store_gem_at(&(game->player.inventory), res, inventory_index);
@@ -195,7 +200,7 @@ static Error summon_wave(Game* game) {
  * 
  * @param game 
  */
-static Error place_tower_in_fiend(Game* game) {
+static Error place_tower_in_field(Game* game) {
     return drop_tower(&(game->cur_interact), &(game->field), &(game->player));
 }
 
@@ -362,7 +367,7 @@ event_function func[] = {
     [SUMMON_WAVE] = summon_wave,
     [SUMMON_TOWER] = summon_tower,
     [SUMMON_GEM] = summon_gem,
-    [PLACE_TOWER] = place_tower_in_fiend,
+    [PLACE_TOWER] = place_tower_in_field,
     [CANCEL_PLACING_TOWER] = cancel_tower_placement,
     [CANCEL_PLACING_GEM] = cancel_gem_movement,
     [PICK_GEM_FROM_FIELD] = pick_up_gem_from_field,
@@ -399,7 +404,10 @@ bool process_event(Game* game) {
     }  else if (game->game_status != PAUSE) {
         event_function f;
         if ((f = func[event])) {
-            f(game);
+            Error err = f(game);
+            if (err != OK) {
+                game->cur_interact.err = init_error_message(event, err);
+            }
         }
         
         if (game->cur_interact.current_action == PLACING_TOWER) {

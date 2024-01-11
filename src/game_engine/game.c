@@ -15,6 +15,7 @@
 #include "game_engine/monster.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
+#include "user_event/error_message.h"
 #include "utils/clock.h"
 #include "utils/errors.h"
 
@@ -179,6 +180,13 @@ Error update_game(Game* game) {
 
     update_projectiles(&(game->field.projectiles), &(game->score),
                        &(game->field.monsters), &(game->player));
+
+    if (game->cur_interact.err.contains_message) {
+        decrease_clock(&(game->cur_interact.err.clock));
+        if (!game->cur_interact.err.clock.remaining_time) {
+            game->cur_interact.err.contains_message = false;
+        }
+    }
 
     return OK;
 }

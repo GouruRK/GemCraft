@@ -10,6 +10,7 @@
 #include "display/draw_inventory.h"
 #include "display/draw_mana_gauge.h"
 #include "display/tooltip.h"
+#include "display/display_error.h"
 #include "game_engine/field.h"
 #include "game_engine/game.h"
 #include "game_engine/monster.h"
@@ -186,6 +187,10 @@ void draw_game(const Game* game) {
         draw_projectile(&(game->field.projectiles.array[i]));
     }
     draw_gauge_numbers(game->player, game->sectors.gauge);
+
+    if (game->cur_interact.err.contains_message) {
+        display_error(&(game->cur_interact.err), game->sectors.window);
+    }
 
     MLV_update_window();
 }
