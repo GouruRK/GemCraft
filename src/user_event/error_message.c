@@ -7,6 +7,7 @@
 #include "utils/errors.h"
 #include "utils/clock.h"
 
+// kind of errors when player is missing mana
 static char* mana_error[] = {
     [SUMMON_TOWER] = "create a tower",
     [SUMMON_GEM] = "create a gem at its selected level",
@@ -15,11 +16,20 @@ static char* mana_error[] = {
     [ADD_GEM_LEVEL] = "not enough mana to create gem of superior level"
 };
 
+// kind of errors with inventory
 static char* inventory_error[] = {
     [CANCEL_PLACING_GEM] = "drop gem",
     [SUMMON_GEM] = "create gem"
 };
 
+/**
+ * @brief Create a error message object according to the event 
+ *        and the error code
+ * 
+ * @param message 
+ * @param event 
+ * @param code 
+ */
 static void create_error_message(char* message, Event event, Error code) {
     switch (code) {
         case NOT_ENOUGHT_MANA:
@@ -29,10 +39,6 @@ static void create_error_message(char* message, Event event, Error code) {
             sprintf(message, "Cannot %s because inventory's full", 
                     inventory_error[event]);
             break;
-        case NON_EMPTY_TOWER:
-            sprintf(message, "Cannot place gem in  the tower because its "
-                             "not an empty tower");
-            break;
         case DIFFERENT_GEM_LVL:
             sprintf(message, "Selected gems dont have the same level and "
                              "can't be combined");
@@ -40,6 +46,13 @@ static void create_error_message(char* message, Event event, Error code) {
         case WAVE_IS_ALREADY_SPAWNING:
             sprintf(message, "You have already reach the maximum of "
                              "simultaneous spawning waves");
+            break;
+        case NO_TOWER_FOUND:
+        case NON_EMPTY_TOWER:
+            sprintf(message, "You can only place gems on empty towers");
+            break;
+        case NON_EMPTY_PLACE:
+            sprintf(message, "Towers can only be placed on empty tiles");
             break;
         default:
             sprintf(message, "Unhandle code %d of event %d", 
@@ -53,7 +66,7 @@ ErrorMessage init_error_message(Event event, Error code) {
     err.contains_message = true;
     err.event = event;
     err.code = code;
-    err.clock = init_clock(-1, 5);
+    err.clock = init_clock(-1, 4);
     create_error_message(err.message, event, code);
     return err;
 }

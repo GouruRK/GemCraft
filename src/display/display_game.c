@@ -158,6 +158,7 @@ void draw_game(const Game* game) {
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     draw_buttons(&(game->sectors));
     draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
+    draw_button_outline(&(game->sectors));
 
     
     // Prototype

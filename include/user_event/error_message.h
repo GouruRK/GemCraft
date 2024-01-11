@@ -15,6 +15,14 @@ typedef struct {
     char message[512];
 } ErrorMessage;
 
+/**
+ * @brief Create an error message structure according to the given event
+ *        and the error code
+ * 
+ * @param event 
+ * @param code 
+ * @return
+ */
 ErrorMessage init_error_message(Event event, Error code);
 
 #endif

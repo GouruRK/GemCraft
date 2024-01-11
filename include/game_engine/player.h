@@ -5,14 +5,14 @@
 #include "game_engine/inventory.h"
 
 typedef struct {
-    int mana;               // Current quantity of mana
     int mana_lvl;           // Level of the mana pool
+    int mana;               // Current quantity of mana
     int max_quantity;       // Maximum of mana that can be stored in the pool
     Inventory inventory;
 } Player;
 
 /**
- * @brief Gives the amout of mana require to create a pure gem of 
+ * @brief Gives the amount of mana require to create a pure gem of 
  *        a given level 
  * 
  * @param level wanted level
@@ -20,6 +20,12 @@ typedef struct {
  */
 int mana_require_for_gem(int level);
 
+/**
+ * @brief Gives the amount of mana require to update the mana pool
+ * 
+ * @param level 
+ * @return
+ */
 int mana_require_for_pool(int level);
 
 /**

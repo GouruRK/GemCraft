@@ -24,4 +24,11 @@ void draw_buttons(const GameSectors* sectors);
  */
 void draw_wave_progression(const Game* game, Sector wave, Sector gauge);
 
+/**
+ * @brief Draw buttons outline
+ * 
+ * @param sectors 
+ */
+void draw_button_outline(const GameSectors* sectors);
+
 #endif
