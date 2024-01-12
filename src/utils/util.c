@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 double uniform(void) { return rand() / (double)RAND_MAX; }
 
@@ -27,3 +28,7 @@ int max(int a, int b) { return (a > b) ? a : b; }
 int min(int a, int b) { return (a > b) ? b : a; }
 
 int abs(int a) { return a < 0 ? -a : a; }
+
+double degree_to_rad(int angle) {
+    return angle * M_PI / 180;
+}

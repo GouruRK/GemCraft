@@ -4,6 +4,7 @@
 #include "game_engine/gem.h"
 #include "game_engine/monster.h"
 #include "game_engine/score.h"
+#include "game_engine/player.h"
 #include "utils/position.h"
 #include "utils/errors.h"
 
@@ -49,7 +50,8 @@ int has_reach_target(Projectile* proj);
  * @param score
  * @param array
  */
-void hit_target(Projectile* proj, Score* score, MonsterArray* array);
+void hit_target(Projectile* proj, Score* score, MonsterArray* array,
+                Player* player);
 
 /**
  * @brief Move a projectile toward his target

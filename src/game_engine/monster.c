@@ -60,7 +60,7 @@ static void modify_monster_type(Monster* monster, TypeWave type_wave) {
  */
 static void init_all_monster_status(Monster* monster) {
     for (int i = 0; i < STACKABLE_STATUS; i++) {
-        monster->status[i] = init_effect(NONE);
+        monster->status[i] = init_effect(NONE, 0);
     }
 }
 
@@ -80,6 +80,7 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
     monster.default_speed = 1;
     monster.speed = monster.default_speed;
 
+    monster.residue = NONE;
     init_all_monster_status(&monster);
 
     modify_monster_type(&monster, type_wave);
@@ -89,7 +90,7 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
 
 void move_monster(Monster* monster) {
     float direction = calc_direction(monster->pos, monster->dest);
-    float frame_speed = monster->speed;
+    float frame_speed = monster->speed; // speed on the current frame
 
     for (int i = 0; i < STACKABLE_STATUS; i++) {
         if (monster->status[i].status == SLOW) {
@@ -123,41 +124,38 @@ int has_reach_dest(const Monster* monster) {
 
 int is_alive(const Monster* monster) { return monster->health > 0; }
 
-// All function to update monster effect
-typedef void (*update_effect)(Monster* monster, Score* score);
-
 static void decrease_status_clock(Monster* monster) {
     for (int i = 0; i < STACKABLE_STATUS; i++) {
         decrease_clock(&monster->status[i].clock);
         if (monster->status[i].clock.remaining_time == 0) {
-            monster->status[i] = init_effect();
+            monster->status[i] = init_effect(NONE, 0);
         }
     }
 }
 
 static void update_parasit(Monster* monster, Score* score) {
-    if (monster->status->clock.next_interval == 0) {
+    if (monster->status[0].clock.next_interval == 0) {
         take_damage(monster, score, monster->status->next_damage);
-        // monster->health -= monster->status->next_damage;
     }
 }
 
 void update_effect_monster(Monster* monster, Score* score) {
-    static update_effect effect[] = {
-        [PARASIT] = update_parasit,
-    };
+    if (monster->status[0].status == NONE) {
+        return;
+    }
 
-    if (monster->status->status == PARASIT) {
-        effect[monster->status->status](monster, score);
+    if (monster->status[0].status == PARASIT) {
+        update_parasit(monster, score);
     }
     decrease_status_clock(monster);
 }
 
 void add_effect_monster(Monster* monster, Effect effect) {
-    for (int i = 0; i < STACKABLE_STATUS; i++) {
-        if (monster->status[i].status == NONE) {
-            monster->status[i] = effect;
-        }
+    if (effect.status == SPRAYING) {
+        monster->status[1] = effect;
+    } else if (monster->status[0].status == NONE || 
+               effect.status == monster->status[0].status) {
+        monster->status[0] = effect;
     }
 }
 

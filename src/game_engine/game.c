@@ -100,7 +100,7 @@ static void update_projectiles(ProjectileArray* array, Score* score,
         if (!is_alive(array->array[i].target)) {
             suppress_proj = 1;
         } else if (has_reach_target(&(array->array[i]))) {
-            hit_target(&(array->array[i]), score, monster_array);
+            hit_target(&(array->array[i]), score, monster_array, player);
             // if the projectile kill his target
             if (!is_alive(array->array[i].target)) {
                 int mana_drop = array->array[i].target->max_health * 0.1 *

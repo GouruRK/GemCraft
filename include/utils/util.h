@@ -61,4 +61,12 @@ int min(int a, int b);
 
 int abs(int a);
 
+/**
+ * @brief Convert degree to radiant
+ * 
+ * @param angle 
+ * @return double 
+ */
+double degree_to_rad(int angle);
+
 #endif

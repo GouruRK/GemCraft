@@ -27,8 +27,16 @@ Projectile init_projectile(Position pos, Monster* target, Gem source) {
  */
 static int hit_damage(const Projectile* proj) {
     int d = 37;
-    return (int)(d * (1 << proj->source.level) *
-                 (1 - cosf(proj->source.color - proj->target->color) / 2));
+    double diff_color = degree_to_rad(proj->source.color) - 
+                        degree_to_rad(proj->target->color);
+    int damage = (d * (1 << proj->source.level) * (1 - cos(diff_color) / 2));
+    
+    if (proj->source.type == MIXTE) {
+        if (random_int(0, 10) == 0) damage *= 2;
+        return damage * 2;
+    }
+
+    return damage;
 }
 
 /**
@@ -54,21 +62,28 @@ int has_reach_target(Projectile* proj) {
 }
 
 /* Functions to apply status to the target */
-typedef void (*apply_effect)(MonsterArray* array, Score* score, Projectile* proj);
+typedef void (*apply_effect)(MonsterArray* array, Score* score, 
+                             Projectile* proj, Player* player);
 
-static void apply_pyro_hydro(MonsterArray* array, Score* score, Projectile* proj) {
+static void apply_pyro_hydro(MonsterArray* array, Score* score, 
+                             Projectile* proj, Player* player) {
     Monster* tmp = proj->target;
-
-    proj->target->status[1].status = SPRAYING;
-    proj->target->status[0].status = NONE;
+    
     for (int i = 0; i < array->array_size; i++) {
         float dist_proj_monster = calc_distance(proj->pos, array->array[i].pos);
-        if (is_alive(&array->array[i]) && dist_proj_monster < 3.5) {
+        
+        if (is_alive(&array->array[i]) && dist_proj_monster <= 3.5) {
             proj->target = &array->array[i];
-            array->array[i].status[1].status = SPRAYING;
-            take_damage(&(array->array[i]), score, 5 * hit_damage(proj) / 100);
-            // array->array[i].health -= (5 * hit_damage(proj) / 100);
-            array->array[i].status[1].clock = init_clock(-1, 5);
+            
+            add_effect_monster(&array->array[i], init_effect(SPRAYING, 0));
+            take_damage(&(array->array[i]), score, hit_damage(proj) * 0.05);
+
+            if (!is_alive(&(array->array[i])) && (tmp != &(array->array[i]))) {
+                int mana_drop = array->array[i].max_health * 0.1 *
+                                pow(1.3, player->mana_lvl);
+                player->mana =
+                    min(player->max_quantity, mana_drop + player->mana);
+            }
         }
     }
 
@@ -77,76 +92,94 @@ static void apply_pyro_hydro(MonsterArray* array, Score* score, Projectile* proj
 
 static void apply_pyro_dendro(Projectile* proj, Score* score) {
     take_damage(proj->target, score, hit_damage(proj) * 2);
-    // proj->target->health -= hit_damage(proj) * 2;
-    proj->target->status[0].status = NONE;
 }
 
 static void apply_hydro_dendro(Projectile* proj) {
-    proj->target->status[0].status = PETRIFICUS;
-    proj->target->status[0].clock = init_clock(-1, 3);
+    add_effect_monster(proj->target, init_effect(PETRIFICUS, 0));
 }
 
-static void apply_pyro(MonsterArray* array, Score* score, Projectile* proj) {
-    if (proj->target->status[0].status == PYRO_RESIDUE) {
+static void apply_pyro(MonsterArray* array, Score* score, Projectile* proj, 
+                       Player* player) {
+    if (proj->target->residue == PYRO_RESIDUE) {
+        // Give 15% of base damage to monsters within 2 tiles
         Monster* tmp = proj->target;
+
         for (int i = 0; i < array->array_size; i++) {
             if (is_alive(&array->array[i]) &&
                 calc_distance(proj->pos, array->array[i].pos) < 2) {
+                
+                // Change target to hit 15% damage on other monsters
                 proj->target = &array->array[i];
-                take_damage(&(array->array[i]), score, 15 * hit_damage(proj) / 100);
-                // array->array[i].health -= (15 * hit_damage(proj) / 100);
+                take_damage(&(array->array[i]), score, hit_damage(proj) * 0.15);
+
+                if (!is_alive(&(array->array[i])) && 
+                    (tmp != &(array->array[i]))) {
+                int mana_drop = array->array[i].max_health * 0.1 *
+                                pow(1.3, player->mana_lvl);
+                player->mana =
+                    min(player->max_quantity, mana_drop + player->mana);
+            }
             }
         }
-        proj->target->status[0].status = NONE;
         proj->target = tmp;
-    } else if (proj->target->status[0].status == HYDRO_RESIDUE) {
-        apply_pyro_hydro(array, score, proj);
-    } else if (proj->target->status[0].status == DENDRO_RESIDUE) {
+
+    } else if (proj->target->residue == HYDRO_RESIDUE) {
+        apply_pyro_hydro(array, score, proj, player);
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == DENDRO_RESIDUE) {
         apply_pyro_dendro(proj, score);
-    } else if (proj->target->status[0].status == NONE) {
-        proj->target->status[0].status = PYRO_RESIDUE;
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == NONE) {
+        proj->target->residue = PYRO_RESIDUE;
     }
 }
 
-static void apply_dendro(MonsterArray* array, Score* score, Projectile* proj) {
-    if (proj->target->status[0].status == DENDRO_RESIDUE ||
+static void apply_dendro(MonsterArray* array, Score* score, Projectile* proj, 
+                         Player* player) {
+    if (proj->target->residue == DENDRO_RESIDUE && 
         proj->target->status[0].status == PARASIT) {
-        proj->target->status[0].status = PARASIT;
-        proj->target->status[0].clock = init_clock(0.5, 10);
-        proj->target->status[0].next_damage = 2.5 * hit_damage(proj) / 100;
-    } else if (proj->target->status[0].status == PYRO_RESIDUE) {
+        proj->target->status[0].clock.remaining_time = 10 * FRAMERATE;
+        proj->target->status[0].next_damage = hit_damage(proj) * 0.025;
+    } else if (proj->target->residue == DENDRO_RESIDUE) {
+        add_effect_monster(proj->target, 
+                           init_effect(PARASIT, hit_damage(proj) * 0.025));
+    } else if (proj->target->residue == PYRO_RESIDUE) {
         apply_pyro_dendro(proj, score);
-    } else if (proj->target->status[0].status == HYDRO_RESIDUE) {
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == HYDRO_RESIDUE) {
         apply_hydro_dendro(proj);
-    } else if (proj->target->status[0].status == NONE) {
-        proj->target->status[0].status = DENDRO_RESIDUE;
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == NONE) {
+        proj->target->residue = DENDRO_RESIDUE;
     }
 }
 
-static void apply_hydro(MonsterArray* array, Score* score, Projectile* proj) {
-    if (proj->target->status[0].status == HYDRO_RESIDUE ||
-        proj->target->status[0].status == SLOW) {
-        proj->target->status[0].status = SLOW;
-        proj->target->status[0].clock = init_clock(-1, 10);
-    } else if (proj->target->status[0].status == PYRO_RESIDUE) {
-        apply_pyro_hydro(array, score, proj);
-    } else if (proj->target->status[0].status == DENDRO_RESIDUE) {
+static void apply_hydro(MonsterArray* array, Score* score, Projectile* proj, 
+                        Player* player) {
+    if (proj->target->residue == HYDRO_RESIDUE) {
+        add_effect_monster(proj->target, init_effect(SLOW, 0));
+    } else if (proj->target->residue == PYRO_RESIDUE) {
+        apply_pyro_hydro(array, score, proj, player);
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == DENDRO_RESIDUE) {
         apply_hydro_dendro(proj);
-    } else if (proj->target->status[0].status == NONE) {
-        proj->target->status[0].status = HYDRO_RESIDUE;
+        proj->target->residue = NONE;
+    } else if (proj->target->residue == NONE) {
+        proj->target->residue = HYDRO_RESIDUE;
     }
 }
 
-void hit_target(Projectile* proj, Score* score, MonsterArray* array) {
-    // proj->target->health -= hit_damage(proj);
-    take_damage(proj->target, score, hit_damage(proj));
+void hit_target(Projectile* proj, Score* score, MonsterArray* array,
+                Player* player) {
     static apply_effect apply[] = {
         [PYRO] = apply_pyro,
         [DENDRO] = apply_dendro,
         [HYDRO] = apply_hydro,
     };
+
+    take_damage(proj->target, score, hit_damage(proj));
     if (proj->source.type != MIXTE) {
-        apply[proj->source.type](array, score, proj);
+        apply[proj->source.type](array, score, proj, player);
     }
 }
 

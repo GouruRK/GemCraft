@@ -3,7 +3,7 @@
 
 #include "utils/clock.h"
 
-#define STACKABLE_STATUS 2  // Number of status that can be stack on a monster
+#define STACKABLE_STATUS 2  // Only  2 status max : main status + spraying
 
 typedef enum {
     NONE,
@@ -20,14 +20,16 @@ typedef enum {
 
 typedef struct {
     int next_damage;  // Amount of damage taken by the effect
-    Status status;  // Applied status
+    Status status;
     Clock clock;
 } Effect;
 
 /**
- * @brief Initialize an effect to NONE and set timers to 0
+ * @brief Initialize effect's clock and damage depending on the given effect
  * 
+ * @param status
+ * @param damage used only if status is PARASIT
  */
-Effect init_effect();
+Effect init_effect(Status status, int damage);
 
 #endif
