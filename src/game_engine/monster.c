@@ -17,7 +17,7 @@
  */
 static void init_monster_health(Monster* monster, int wave_number) {
     int h = 100;
-    monster->max_health = (int)(h * powf(1.2, wave_number));
+    monster->max_health = (unsigned long long)(h * powf(1.2, wave_number));
     monster->health = monster->max_health;
 }
 

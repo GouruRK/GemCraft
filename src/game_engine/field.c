@@ -123,7 +123,7 @@ Error spawn_monster_field(Field* field, int wave_nb, TypeWave type_wave) {
  * @param field
  */
 static void ban_monster(Monster* monster, Player* player, const Field* field) {
-    int mana_loss =
+    long long mana_loss =
         (monster->max_health * 0.15) * pow(1.3, player->mana_lvl);
     player->mana = max(0, player->mana - mana_loss);
 

@@ -23,9 +23,13 @@ struct timespec diff_time(struct timespec start, struct timespec end) {
 
 color random_color() { return random_int(0, 359); }
 
-int max(int a, int b) { return (a > b) ? a : b; }
+long long max(long long a, long long b) {
+    return (a > b) ? a : b; 
+}
 
-int min(int a, int b) { return (a > b) ? b : a; }
+long long min(long long a, long long b) {
+    return (a > b) ? b : a;
+}
 
 int abs(int a) { return a < 0 ? -a : a; }
 

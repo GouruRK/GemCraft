@@ -75,6 +75,10 @@ Player init_player(void) {
 }
 
 Error upgrade_mana_pool(Player* player) {
+    if (player->mana_lvl == 60) {
+        return OK; // limit the mana level to 60 to avoid int overflow
+    }
+
     int cost = mana_require_for_pool(player->mana_lvl + 1);
     
     if (player->mana < cost) {

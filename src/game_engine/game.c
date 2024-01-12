@@ -5,14 +5,14 @@
 #include <stdio.h>
 
 #include "display/game_sectors.h"
-#include "game_engine/score.h"
 #include "game_engine/field.h"
 #include "game_engine/generation.h"
+#include "game_engine/monster.h"
 #include "game_engine/nest.h"
 #include "game_engine/player.h"
 #include "game_engine/projectile.h"
+#include "game_engine/score.h"
 #include "game_engine/tower.h"
-#include "game_engine/monster.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "utils/clock.h"
@@ -46,11 +46,13 @@ Error init_game(Game* game) {
  * @param player
  * @return Error
  */
-static Error update_monster(Monster* monster, Score* score, Field* field, Player* player) {
+static Error update_monster(Monster* monster, Score* score, Field* field,
+                            Player* player) {
     update_effect_monster(monster, score);
 
     if (!is_alive(monster)) {  // If the monster dies of effect
-        int mana_drop = monster->max_health * 0.1 * pow(1.3, player->mana_lvl);
+        long long mana_drop =
+            monster->max_health * 0.1 * pow(1.3, player->mana_lvl);
         player->mana = min(player->max_quantity, mana_drop + player->mana);
         return OK;
     }
@@ -103,8 +105,9 @@ static void update_projectiles(ProjectileArray* array, Score* score,
             hit_target(&(array->array[i]), score, monster_array, player);
             // if the projectile kill his target
             if (!is_alive(array->array[i].target)) {
-                int mana_drop = array->array[i].target->max_health * 0.1 *
-                                pow(1.3, player->mana_lvl);
+                long long mana_drop =
+                    array->array[i].target->max_health * 0.1 *
+                    pow(1.3, player->mana_lvl);
                 player->mana =
                     min(player->max_quantity, mana_drop + player->mana);
             }
@@ -148,11 +151,11 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
             Projectile proj =
                 init_projectile(cell_center(tower->pos), target, tower->gem);
             add_projectile_array(projectiles, proj);
-            tower->shoot_interval = init_clock(-1, 
-                                               0.5 - tower->gem.level / 100.0);
+            tower->shoot_interval =
+                init_clock(-1, 0.5 - tower->gem.level / 100.0);
         }
     }
-    
+
     decrease_clock(&tower->shoot_interval);
 }
 
@@ -167,8 +170,8 @@ Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         if (is_alive(&(game->field.monsters.array[i]))) {
-            update_monster(&(game->field.monsters.array[i]), &(game->score), &(game->field),
-                           &(game->player));
+            update_monster(&(game->field.monsters.array[i]), &(game->score),
+                           &(game->field), &(game->player));
         }
     }
 

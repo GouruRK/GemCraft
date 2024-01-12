@@ -8,7 +8,7 @@ Effect init_effect(Status status, int damage) {
     switch (status) {
         case PARASIT:
             effect.clock = init_clock(0.5, 10);
-            effect.next_damage = min(damage, 1);
+            effect.next_damage = max(damage, 1);
             break;
         case SLOW:
             effect.clock = init_clock(-1, 10);

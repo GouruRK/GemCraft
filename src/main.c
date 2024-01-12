@@ -19,6 +19,10 @@
 #include "user_event/tower_placement.h"
 #include "user_event/event.h"
 
+void free_memory(Game* game) {
+    free(game->field.projectiles.array);
+}
+
 int main(int argc, char* argv[]) {
     srand(time(NULL));
     struct timespec start_time, end_time, time_difference;
@@ -56,7 +60,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // do frees here
+    free_memory(&game);
 
     if (is_game_over(&game)) {
         display_score(&(game.score), &(game.sectors));

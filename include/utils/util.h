@@ -46,18 +46,18 @@ color random_color();
  * 
  * @param a 
  * @param b 
- * @return int 
+ * @return unsigned long long
  */
-int max(int a, int b);
+long long max(long long a, long long b);
 
 /**
  * @brief Return the min value between a and b
  * 
  * @param a 
  * @param b 
- * @return int 
+ * @return unsigned long long
  */
-int min(int a, int b);
+long long min(long long a, long long b);
 
 int abs(int a);
 

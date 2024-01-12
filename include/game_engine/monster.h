@@ -20,8 +20,8 @@ typedef enum {
 } TypeWave;
 
 typedef struct {
-    int health;
-    int max_health;
+    long long health;
+    long long max_health;
     int index_path;                   // Position in the path array in a field
     Status residue;                   // Elementary redidue when hit by pure gem
     Effect status[STACKABLE_STATUS];
