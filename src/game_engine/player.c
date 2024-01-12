@@ -4,6 +4,7 @@
 #include "game_engine/player.h"
 #include "utils/util.h"
 #include "utils/errors.h"
+#include <stdio.h>
 
 /**
  * @brief Retrurn the maximum amout of mana the gauge can store at its level
@@ -75,8 +76,8 @@ Player init_player(void) {
 }
 
 Error upgrade_mana_pool(Player* player) {
-    if (player->mana_lvl == 60) {
-        return OK; // limit the mana level to 60 to avoid int overflow
+    if (player->mana_lvl == 40) {
+        return OK; // limit the mana level to 40 to avoid int overflow
     }
 
     int cost = mana_require_for_pool(player->mana_lvl + 1);
