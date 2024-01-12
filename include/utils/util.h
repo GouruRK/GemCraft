@@ -6,7 +6,8 @@
 #define M_PI 3.14159265358979323846
 #define FLOAT_COMPARISON_MARGIN 0.05
 
-typedef unsigned int color;  // Color represented with an angle in degrees (0-359)
+typedef unsigned int color;  // Color represented with an angle in degrees
+                             // (0-359)
 typedef int frame;  // Count frame
 
 /**
@@ -58,8 +59,6 @@ long long max(long long a, long long b);
  * @return unsigned long long
  */
 long long min(long long a, long long b);
-
-int abs(int a);
 
 /**
  * @brief Convert degree to radiant

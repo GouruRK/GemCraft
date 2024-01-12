@@ -31,8 +31,6 @@ long long min(long long a, long long b) {
     return (a > b) ? b : a;
 }
 
-int abs(int a) { return a < 0 ? -a : a; }
-
 double degree_to_rad(int angle) {
     return angle * M_PI / 180;
 }

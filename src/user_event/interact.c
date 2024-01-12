@@ -29,6 +29,7 @@ Interaction init_interact(void) {
     interact.current_action = NO_ACTION;
     interact.gem_level = 0;
     interact.show_combine_cost = false;
+    interact.err.contains_message = false;
     return interact;
 } 
 

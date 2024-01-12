@@ -19,6 +19,11 @@
 #include "user_event/tower_placement.h"
 #include "user_event/event.h"
 
+/**
+ * @brief Free allocated memory for the game
+ * 
+ * @param game 
+ */
 void free_memory(Game* game) {
     free(game->field.projectiles.array);
 }
@@ -36,7 +41,8 @@ int main(int argc, char* argv[]) {
     // Without this instruction, exit button exit the program 
     MLV_execute_at_exit(exit_function, &terminated);
 
-    MLV_create_window("Tower Defense", "Tower Defense", game.sectors.window.width, game.sectors.window.height);
+    MLV_create_window("Tower Defense", "Tower Defense",
+                      game.sectors.window.width, game.sectors.window.height);
 
     while (!terminated && !is_game_over(&game)) {
         clock_gettime(CLOCK_MONOTONIC, &start_time);

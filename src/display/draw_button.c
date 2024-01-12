@@ -84,13 +84,14 @@ void draw_buttons(const GameSectors* sectors) {
     draw_button(sectors->add_button, "++");
     draw_button(sectors->sub_button, "--");
     draw_button(sectors->pause_button, "Pause");
+}
 
-    for (int y = 0; y < 8; y++) {
+void draw_button_outline(const GameSectors* sectors) {
+     for (int y = 0; y < 8; y++) {
         MLV_draw_line(sectors->panel.top_left.x,
                       sectors->upgrade_button.top_left.y + y*CELL_SIZE,
                       sectors->panel.bottom_right.x,
                       sectors->upgrade_button.top_left.y + y*CELL_SIZE,
                       MLV_COLOR_BLACK);
     }
-
 }

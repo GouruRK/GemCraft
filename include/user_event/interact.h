@@ -9,6 +9,7 @@
 #include "game_engine/player.h"
 #include "utils/position.h"
 #include "display/tooltip.h"
+#include "user_event/error_message.h"
 
 typedef enum {
     NO_ACTION,
@@ -33,6 +34,7 @@ typedef struct {
     Position object_pos;
     unsigned int gem_level;
     bool show_combine_cost;
+    ErrorMessage err;
 } Interaction;
 
 /**

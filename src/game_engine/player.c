@@ -5,10 +5,6 @@
 #include "utils/util.h"
 #include "utils/errors.h"
 
-int mana_require_for_pool(int level) {
-    return 500*pow(1.4, level);
-} 
-
 /**
  * @brief Retrurn the maximum amout of mana the gauge can store at its level
  * 
@@ -18,6 +14,10 @@ int mana_require_for_pool(int level) {
 static int max_mana(int level) {
     return 2000*pow(1.4, level);
 }
+
+int mana_require_for_pool(int level) {
+    return 500*pow(1.4, level);
+} 
 
 int mana_require_for_gem(int level) {
     return 100*(1 << level);  // 100 * 2^n

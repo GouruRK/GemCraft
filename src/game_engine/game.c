@@ -15,6 +15,7 @@
 #include "game_engine/tower.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
+#include "user_event/error_message.h"
 #include "utils/clock.h"
 #include "utils/errors.h"
 
@@ -166,6 +167,20 @@ static void update_towers(TowerArray* towers, MonsterArray* monsters,
     }
 }
 
+/**
+ * @brief Return the maximum gem level with the current amout of mana
+ * 
+ * @param game 
+ * @return
+ */
+static int search_max_gem_level_with_mana(Game* game) {
+    int level = 0;
+    while (game->player.mana >= mana_require_for_gem(level)) {
+        level++;
+    }
+    return level;
+}
+
 Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
@@ -182,6 +197,16 @@ Error update_game(Game* game) {
 
     update_projectiles(&(game->field.projectiles), &(game->score),
                        &(game->field.monsters), &(game->player));
+
+    if (game->cur_interact.err.contains_message) {
+        decrease_clock(&(game->cur_interact.err.clock));
+        if (!game->cur_interact.err.clock.remaining_time) {
+            game->cur_interact.err.contains_message = false;
+        }
+    }
+    
+    int max_level = search_max_gem_level_with_mana(game);
+    game->cur_interact.gem_level = min(max_level, game->cur_interact.gem_level);
 
     return OK;
 }

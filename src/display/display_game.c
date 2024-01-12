@@ -10,6 +10,7 @@
 #include "display/draw_inventory.h"
 #include "display/draw_mana_gauge.h"
 #include "display/tooltip.h"
+#include "display/display_error.h"
 #include "game_engine/field.h"
 #include "game_engine/game.h"
 #include "game_engine/monster.h"
@@ -30,7 +31,7 @@ static void draw_board(const Field field) {
         for (int x = 0; x < WIDTH; x++) {
             if (field.board[y][x] != TOWER) {
                 color = objects_color[field.board[y][x]];
-                MLV_draw_filled_rectangle(x * CELL_SIZE, y * CELL_SIZE,
+                MLV_draw_filled_rectangle(x*CELL_SIZE, y*CELL_SIZE,
                                           CELL_SIZE, CELL_SIZE, color);
             }
         }
@@ -38,13 +39,13 @@ static void draw_board(const Field field) {
 
     // horizontal
     for (int y = 0; y < HEIGHT; y++) {
-        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE + PANEL_WIDTH, y * CELL_SIZE,
-                      MLV_COLOR_BLACK);
+        MLV_draw_line(0, y*CELL_SIZE, WIDTH*CELL_SIZE + PANEL_WIDTH,
+                      y*CELL_SIZE, MLV_COLOR_BLACK);
     }
 
     // vertical
     for (int x = 0; x < WIDTH; x++) {
-        MLV_draw_line(x * CELL_SIZE, 0, x * CELL_SIZE, HEIGHT * CELL_SIZE,
+        MLV_draw_line(x*CELL_SIZE, 0, x*CELL_SIZE, HEIGHT*CELL_SIZE,
                       MLV_COLOR_BLACK);
     }
 }
@@ -157,6 +158,7 @@ void draw_game(const Game* game) {
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
     draw_buttons(&(game->sectors));
     draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
+    draw_button_outline(&(game->sectors));
 
     // Prototype
     if (game->cur_interact.current_action == PLACING_TOWER) {
@@ -177,6 +179,10 @@ void draw_game(const Game* game) {
         draw_projectile(&(game->field.projectiles.array[i]));
     }
     draw_gauge_numbers(game->player, game->sectors.gauge);
+
+    if (game->cur_interact.err.contains_message) {
+        display_error(&(game->cur_interact.err), game->sectors.window);
+    }
 
     MLV_update_window();
 }
