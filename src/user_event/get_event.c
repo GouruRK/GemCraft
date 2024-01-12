@@ -14,6 +14,7 @@ Event key_events[] = {
     ['p'] = CHANGE_GAME_STATUS,
     ['q'] = QUIT,
     ['t'] = SUMMON_TOWER,
+    ['u'] = UPGRADE_MANA_POOL,
     ['w'] = SUMMON_WAVE,
     [270] = ADD_GEM_LEVEL, // keypad +
     [269] = SUB_GEM_LEVEL, // keypad -
@@ -30,8 +31,8 @@ Event key_events[] = {
 static bool is_key_register(MLV_Keyboard_button key) {
     return key == '+' || key == '-' || key == 'g'
         || key == 'p' || key == 'q' || key == 't'
-        || key == 'w' || key == 270 || key == 269
-        || key == 61;
+        || key == 'w' || key == 'u' || key == 269
+        || key == 270 || key == 61;
 }
 
 /**

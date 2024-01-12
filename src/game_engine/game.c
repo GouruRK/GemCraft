@@ -165,6 +165,20 @@ static void update_towers(TowerArray* towers, MonsterArray* monsters,
     }
 }
 
+/**
+ * @brief Return the maximum gem level with the current amout of mana
+ * 
+ * @param game 
+ * @return
+ */
+static int search_max_gem_level_with_mana(Game* game) {
+    int level = 0;
+    while (game->player.mana >= mana_require_for_gem(level)) {
+        level++;
+    }
+    return level;
+}
+
 Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
@@ -188,6 +202,9 @@ Error update_game(Game* game) {
             game->cur_interact.err.contains_message = false;
         }
     }
+    
+    int max_level = search_max_gem_level_with_mana(game);
+    game->cur_interact.gem_level = min(max_level, game->cur_interact.gem_level);
 
     return OK;
 }
