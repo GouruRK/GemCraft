@@ -47,7 +47,8 @@ Error init_game(Game* game) {
  * @param player
  * @return Error
  */
-static Error update_monster(Monster* monster, Score* score, Field* field, Player* player) {
+static Error update_monster(Monster* monster, Score* score, Field* field,
+                            Player* player) {
     update_effect_monster(monster, score);
 
     if (!is_alive(monster)) {  // If the monster dies of effect
@@ -150,7 +151,7 @@ static void update_tower(Tower* tower, MonsterArray* monsters,
                 init_projectile(cell_center(tower->pos), target, tower->gem);
             add_projectile_array(projectiles, proj);
             tower->shoot_interval = init_clock(-1, 
-                                               0.5 - tower->gem.level / 100);
+                                               0.5 - tower->gem.level/100);
         }
     }
     
@@ -168,8 +169,8 @@ Error update_game(Game* game) {
     // Update the monsters
     for (int i = 0; i < game->field.monsters.array_size; i++) {
         if (is_alive(&(game->field.monsters.array[i]))) {
-            update_monster(&(game->field.monsters.array[i]), &(game->score), &(game->field),
-                           &(game->player));
+            update_monster(&(game->field.monsters.array[i]), &(game->score),
+                           &(game->field), &(game->player));
         }
     }
 

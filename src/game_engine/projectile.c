@@ -54,9 +54,11 @@ int has_reach_target(Projectile* proj) {
 }
 
 /* Functions to apply status to the target */
-typedef void (*apply_effect)(MonsterArray* array, Score* score, Projectile* proj);
+typedef void (*apply_effect)(MonsterArray* array, Score* score, 
+                             Projectile* proj);
 
-static void apply_pyro_hydro(MonsterArray* array, Score* score, Projectile* proj) {
+static void apply_pyro_hydro(MonsterArray* array, Score* score,
+                             Projectile* proj) {
     Monster* tmp = proj->target;
 
     proj->target->status[1].status = SPRAYING;
@@ -93,7 +95,7 @@ static void apply_pyro(MonsterArray* array, Score* score, Projectile* proj) {
             if (is_alive(&array->array[i]) &&
                 calc_distance(proj->pos, array->array[i].pos) < 2) {
                 proj->target = &array->array[i];
-                take_damage(&(array->array[i]), score, 15 * hit_damage(proj) / 100);
+                take_damage(&(array->array[i]), score, 15*hit_damage(proj)/100);
                 // array->array[i].health -= (15 * hit_damage(proj) / 100);
             }
         }

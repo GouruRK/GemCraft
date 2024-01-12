@@ -31,7 +31,7 @@ static void draw_board(const Field field) {
         for (int x = 0; x < WIDTH; x++) {
             if (field.board[y][x] != TOWER) {
                 color = objects_color[field.board[y][x]];
-                MLV_draw_filled_rectangle(x * CELL_SIZE, y * CELL_SIZE,
+                MLV_draw_filled_rectangle(x*CELL_SIZE, y*CELL_SIZE,
                                           CELL_SIZE, CELL_SIZE, color);
             }
         }
@@ -39,13 +39,13 @@ static void draw_board(const Field field) {
 
     // horizontal
     for (int y = 0; y < HEIGHT; y++) {
-        MLV_draw_line(0, y * CELL_SIZE, WIDTH * CELL_SIZE + PANEL_WIDTH, y * CELL_SIZE,
-                      MLV_COLOR_BLACK);
+        MLV_draw_line(0, y*CELL_SIZE, WIDTH*CELL_SIZE + PANEL_WIDTH,
+                      y*CELL_SIZE, MLV_COLOR_BLACK);
     }
 
     // vertical
     for (int x = 0; x < WIDTH; x++) {
-        MLV_draw_line(x * CELL_SIZE, 0, x * CELL_SIZE, HEIGHT * CELL_SIZE,
+        MLV_draw_line(x*CELL_SIZE, 0, x*CELL_SIZE, HEIGHT*CELL_SIZE,
                       MLV_COLOR_BLACK);
     }
 }

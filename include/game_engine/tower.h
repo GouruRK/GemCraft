@@ -25,7 +25,7 @@ typedef struct {
     int free_towers;
 } TowerArray;
 
-//-------------------------------Tower manipulation-------------------------------
+//-------------------------------Tower manipulation-----------------------------
 
 /**
  * @brief Create a tower object from a given position
@@ -62,7 +62,7 @@ Error remove_gem_from_tower(Tower* tower, Gem* gem);
  */
 void update_clock_tower(Tower* tower);
 
-//-------------------------------Tower Array related-------------------------------
+//-------------------------------Tower Array related----------------------------
 
 /**
  * @brief Get cost for the next tower 

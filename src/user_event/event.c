@@ -79,14 +79,18 @@ static Error drop_gem_on_inventory(Game* game) {
 
     if (game->player.inventory.array[inventory_index].empty) { 
         // if this inventory place is empty, juste place the gem 
-        store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem, inventory_index);
+        store_gem_at(&(game->player.inventory), game->cur_interact.selected_gem,
+                     inventory_index);
         reset_interaction(&(game->cur_interact));
     } else {
-        // if this inventory place isn't empty, mix the selected gem with the one currently store
+        // if this inventory place isn't empty, mix the selected gem with
+        //  the one currently store
         remove_gem_at(&(game->player.inventory), &gem, inventory_index);
-        err = combine_gem(&(game->player), game->cur_interact.selected_gem, gem, &res);
+        err = combine_gem(&(game->player), game->cur_interact.selected_gem, 
+                          gem, &res);
         if (err != OK) {
-            // if gems cannot be combined, store the stored gem in the inventory again
+            // if gems cannot be combined, store the stored gem 
+            // in the inventory again
             store_gem_at(&(game->player.inventory), gem, inventory_index);
             return err;
         } else {
@@ -106,7 +110,8 @@ static Error drop_gem_on_inventory(Game* game) {
 static Error drop_gem_on_field(Game* game) {
     int x, y;
     MLV_get_mouse_position(&x, &y);
-    Error err = load_gem(&(game->field), game->cur_interact.selected_gem, init_scaled_position(x, y)); 
+    Error err = load_gem(&(game->field), game->cur_interact.selected_gem,
+                         init_scaled_position(x, y)); 
     
     if (err == OK) {
         reset_interaction(&(game->cur_interact));
@@ -139,7 +144,8 @@ static Error summon_gem(Game* game) {
  * @param game 
  */
 static Error add_gem_level(Game* game) {
-    if (game->player.mana >= mana_require_for_gem(game->cur_interact.gem_level + 1)) {
+    int mana = mana_require_for_gem(game->cur_interact.gem_level + 1);
+    if (game->player.mana >= mana) {
         game->cur_interact.gem_level++;
         return OK;
     }
@@ -178,7 +184,8 @@ static Error summon_tower(Game* game) {
  * @param game 
  */
 static Error summon_wave(Game* game) {
-    int generate = add_wave_nest(&(game->field.nest), &(game->score), game->wave);
+    int generate = add_wave_nest(&(game->field.nest), &(game->score),
+                                 game->wave);
     if (game->wave > 0 && generate) {
         int t = game->time_until_next_wave.next_interval / 60;
         int mana_win = t * game->player.max_quantity / 100;
@@ -235,13 +242,15 @@ static Error display_tooltip(Game* game) {
     Position pos = init_position(x, y);
     if (is_pos_in_sector(game->sectors.inventory, pos)) {
         int inventory_index = from_coord_to_index(&(game->sectors), x, y);
-        if (!game->player.inventory.array[inventory_index].empty) {
+        Inventory inv = game->player.inventory;
+        if (!inv.array[inventory_index].empty) {
             set_interact_tooltip(&(game->cur_interact),
-                            init_gem_tooltip(game->player.inventory.array[inventory_index].gem, pos));
+                    init_gem_tooltip(inv.array[inventory_index].gem, pos));
         }
     } else if (is_pos_in_sector(game->sectors.field, pos)) {
         Tower* tower;
-        if (get_tower(&(game->field), &tower, init_scaled_position(x, y)) != OK) {
+        if (get_tower(&(game->field), &tower,
+                init_scaled_position(x, y)) != OK) {
             return OK;
         }
         set_interact_tooltip(&(game->cur_interact), 
@@ -398,8 +407,9 @@ bool process_event(Game* game) {
     Event event = get_event(game->cur_interact, &(game->sectors));
     if (event == QUIT) {
         return true;
-    } else if (event == CHANGE_GAME_STATUS) { // need to do this because when game is paused,
-                                              // buttons except the pause one no longer works 
+    } else if (event == CHANGE_GAME_STATUS) { // need to do this because when
+                                              // game is paused, buttons except
+                                              // the pause one no longer works 
         game->game_status = !(game->game_status);
     }  else if (game->game_status != PAUSE) {
         event_function f;
@@ -411,7 +421,8 @@ bool process_event(Game* game) {
         }
         
         if (game->cur_interact.current_action == PLACING_TOWER) {
-            update_tower_placement(game->sectors.panel, &(game->cur_interact.selected_tower));
+            update_tower_placement(game->sectors.panel, 
+                                   &(game->cur_interact.selected_tower));
         } else if (game->cur_interact.current_action == MOVING_GEM || 
                    game->cur_interact.current_action == SHOWING_COMBINE_COST) {
             update_gem_movement(&(game->sectors), &(game->cur_interact));
@@ -429,8 +440,8 @@ void wait_event(int* terminated) {
     // intel on mouse
     MLV_Mouse_button mouse_but;
     while (!(*terminated)) {
-        MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
-                              &state);
+        MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL,
+                                        NULL, &mouse_but, &state);
         if (event) {
             break;
         }

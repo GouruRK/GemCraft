@@ -61,8 +61,8 @@ int generate_gem(Player* player, int level, Gem* res);
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res);
 
 /**
- * @brief Upgrade mana pool level and max capacity. If the upgrading cost is to high 
- *        and player doesn't have enough mana, nothing changes
+ * @brief Upgrade mana pool level and max capacity. If the upgrading cost is
+ *        to high and player doesn't have enough mana, nothing changes
  * 
  * @param player 
  * @return

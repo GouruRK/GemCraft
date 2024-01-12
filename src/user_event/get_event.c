@@ -63,10 +63,6 @@ static Event get_mouse_event(Interaction interaction,
             return UPGRADE_MANA_POOL;
         }
         if (is_coord_in_sector(sectors->pause_button, x, y)) {
-            // Somehow a MVL_RELEASED is there right after cliking
-            // need to investigate ... 
-
-            // printf("pause: %s\n", state == MLV_PRESSED ? "pressed": "released");
             return CHANGE_GAME_STATUS;
         }
         if (is_coord_in_sector(sectors->wave_button, x, y)) return SUMMON_WAVE;
@@ -111,26 +107,36 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     // intel on mouse
     MLV_Mouse_button mouse_but;
 
-    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL, &mouse_but,
-                              &state);
+    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL,
+                                    &mouse_but, &state);
 
     if (event == MLV_NONE || state == MLV_RELEASED) {
         int x, y;
         MLV_get_mouse_position(&x, &y);
-        if (is_coord_in_sector(sectors->upgrade_button, x, y)) return SHOW_UPGRADE_COST;
-        if (is_coord_in_sector(sectors->gem_button, x, y)) return SHOW_GEM_COST;
-        if (is_coord_in_sector(sectors->tower_button, x, y)) return SHOW_TOWER_COST;
-        if (is_coord_in_sector(sectors->add_button, x, y)) return SHOW_GEM_COST_ADD;
-        if (is_coord_in_sector(sectors->sub_button, x, y)) return SHOW_GEM_COST_SUB;
+        if (is_coord_in_sector(sectors->upgrade_button, x, y)) {
+            return SHOW_UPGRADE_COST;
+        }
+        if (is_coord_in_sector(sectors->gem_button, x, y)) {
+            return SHOW_GEM_COST;
+        }
+        if (is_coord_in_sector(sectors->tower_button, x, y)) {
+            return SHOW_TOWER_COST;
+        }
+        if (is_coord_in_sector(sectors->add_button, x, y)) {
+            return SHOW_GEM_COST_ADD;
+        }
+        if (is_coord_in_sector(sectors->sub_button, x, y)) {
+            return SHOW_GEM_COST_SUB;
+        }
         if (is_coord_in_sector(sectors->inventory, x, y) 
-            && (interaction.current_action == MOVING_GEM)) return SHOW_COMBINE_COST;
+            && (interaction.current_action == MOVING_GEM)) {
+            return SHOW_COMBINE_COST;  
+        } 
         return NO_EVENT;
     }
 
     if (event == MLV_KEY && is_key_register(sym)) {
         return key_events[sym];
     }
-
-
     return get_mouse_event(interaction, sectors, mouse_but);
 }
