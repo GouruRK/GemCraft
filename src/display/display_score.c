@@ -5,18 +5,6 @@
 #include "game_engine/score.h"
 #include "display/game_sectors.h"
 
-/**
- * @brief Calculate the final score
- * 
- * @param score 
- * @return
- */
-static long compute_score(Score* score) {
-    return score->boss_wave*10  + score->fast_wave*5 + score->crowd_wave*3
-            + score->normal_wave + score->total_damage/10 
-            + score->monster_kills;
-}
-
 void display_score(Score* score, GameSectors* sectors) {
     MLV_draw_filled_rectangle(sectors->window.top_left.x,
                               sectors->window.top_left.y,

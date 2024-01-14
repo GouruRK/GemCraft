@@ -12,6 +12,14 @@ typedef struct {
 } Player;
 
 /**
+ * @brief Give to player the given amount of mana
+ * 
+ * @param player 
+ * @param mana 
+ */
+void add_mana(Player* player, int mana);
+
+/**
  * @brief Gives the amount of mana require to create a pure gem of 
  *        a given level 
  * 
@@ -59,6 +67,13 @@ int generate_gem(Player* player, int level, Gem* res);
  * @return 1 in case of success, else 0
  */
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res);
+
+/**
+ * @brief Upgrade manna pool level by one. No verification on cost is done
+ * 
+ * @param player 
+ */
+void upgrade_mana_pool_level(Player* player);
 
 /**
  * @brief Upgrade mana pool level and max capacity. If the upgrading cost is

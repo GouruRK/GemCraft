@@ -60,9 +60,14 @@ static void reposition(Sector window, Position* pos, int height) {
  */
 static void display_gem_information(Position pos, Gem gem, int y) {
     int w, h;
+    MLV_Color color = transform_color(gem.color);
+    if (gem.type == MIXTE) {
+        color = MLV_COLOR_GREY;
+    } 
+
     MLV_get_size_of_text("Gem of type ", &w, &h);
     MLV_draw_text(pos.x, pos.y + y, "Gem of type ", MLV_COLOR_WHITE);
-    MLV_draw_text(pos.x + w, pos.y + y, "%s", transform_color(gem.color),
+    MLV_draw_text(pos.x + w, pos.y + y, "%s", color,
                   gem_name_array[gem.type]);
 
     // Gem level

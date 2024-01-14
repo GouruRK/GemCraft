@@ -17,4 +17,12 @@ typedef struct {
  */
 Score init_score(void);
 
+/**
+ * @brief Calculate the final score
+ * 
+ * @param score 
+ * @return
+ */
+long compute_score(Score* score);
+
 #endif

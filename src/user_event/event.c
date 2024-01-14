@@ -8,6 +8,7 @@
 #include "user_event/get_event.h"
 #include "user_event/error_message.h"
 #include "user_event/events.h"
+#include "user_event/skill_tree.h"
 #include "game_engine/gem.h"
 #include "game_engine/game.h"
 #include "game_engine/player.h"
@@ -18,6 +19,7 @@
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
+#include "display/display_skill_tree.h"
 #include "utils/errors.h"
 
 void exit_function(void* data) {
@@ -197,8 +199,18 @@ static Error summon_wave(Game* game) {
         game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
         decrease_clock(&game->time_until_next_wave);
         game->wave++;
+
+        if (!(game->wave % WAVE_OFFSET)) {
+            game->game_status = SKILL;
+            if (!(game->tree.has_sectors)) {
+                init_sectors(&(game->tree), game->sectors.window);
+            }
+            replace_skill(&(game->tree), &(game->player), game->wave);
+        }
+        
         return OK;
     }
+
     return WAVE_IS_ALREADY_SPAWNING;
 }
 
@@ -370,6 +382,44 @@ static Error cancel_gem_movement(Game* game) {
     return OK;
 }
 
+static int get_skill_index(Event skill) {
+    static int skill_index_array[] = {
+        [CHOOSE_SKILL_A] = 0,
+        [CHOOSE_SKILL_B] = 1,
+        [CHOOSE_SKILL_C] = 2,
+    };
+    return skill_index_array[skill];
+}
+
+static void apply_skill(Game* game, Event skill) {
+    int index = get_skill_index(skill);
+    if (game->tree.skills[index] == GIVE_MANA) {
+        add_mana(&(game->player), game->tree.give[index]);
+    } else if (game->tree.skills[index] == FREE_TOWERS) {
+        add_free_towers(&(game->field.towers), game->tree.give[index]);
+    } else if (game->tree.skills[index] == FREE_UPGRADE) {
+        upgrade_mana_pool_level(&(game->player));
+    } else if (game->tree.skills[index] == KILL_MONSTER) {
+        int kills = 0;
+        for (int i = 0; i < game->field.monsters.array_size; i++) {
+            if (kills == game->tree.give[index]) {
+                break;
+            }
+            if (is_alive(&(game->field.monsters.array[i]))) {
+                game->field.monsters.array[i].health = 0;
+                kills++;
+            }
+        }
+    } else if (game->tree.skills[index] == GIVE_GEM) {
+        Gem gem = init_random_gem(game->tree.give[index]);
+        if (is_inventory_full(&(game->player.inventory))) {
+            return;
+        }
+        add_inventory(&(game->player.inventory), gem);
+    }
+    game->tree.last_used_index = index;
+} 
+
 // Link between events and functions to apply them
 event_function func[] = {
     [NO_EVENT] = reset_overwritable_events,
@@ -404,6 +454,18 @@ event_function func[] = {
  * @return 'true' to quit the game, else 'false'
  */
 bool process_event(Game* game) {
+    if (game->game_status == SKILL) {
+        Event event = get_skill_event(&(game->tree));
+        if (event == QUIT) {
+            return true;
+        }
+        if (event != NO_EVENT) {
+            apply_skill(game, event);
+            game->game_status = ONGOING;
+        }
+    }
+
+
     Event event = get_event(game->cur_interact, &(game->sectors));
     if (event == QUIT) {
         return true;

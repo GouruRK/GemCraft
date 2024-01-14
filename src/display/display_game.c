@@ -11,6 +11,7 @@
 #include "display/draw_mana_gauge.h"
 #include "display/tooltip.h"
 #include "display/display_error.h"
+#include "display/display_skill_tree.h"
 #include "game_engine/field.h"
 #include "game_engine/game.h"
 #include "game_engine/monster.h"
@@ -113,6 +114,7 @@ static void display_cost_of_element(const Game* game) {
     int cost;
     switch (game->cur_interact.current_action) {
         case SHOWING_UPGRADE_COST:
+            cost = mana_require_for_pool(game->player.mana_lvl + 1);
             if (game->player.mana_lvl < 40) {
                 cost = mana_require_for_pool(game->player.mana_lvl + 1);
             }
@@ -184,6 +186,10 @@ void draw_game(const Game* game) {
 
     if (game->cur_interact.err.contains_message) {
         display_error(&(game->cur_interact.err), game->sectors.window);
+    }
+
+    if (game->game_status == SKILL) {
+        display_skill_tree(game);
     }
 
     MLV_update_window();

@@ -46,6 +46,10 @@ static int combine_color(int a, int b, TypeGems type) {
     return max(a, b);
 }
 
+void add_mana(Player* player, int mana) {
+    player->mana = min(player->max_quantity, player->mana + mana);
+}
+
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res) {
     if ((player->mana < 100)) {
         return NOT_ENOUGHT_MANA;
@@ -75,9 +79,18 @@ Player init_player(void) {
     return player;
 }
 
+void upgrade_mana_pool_level(Player* player) {
+    if (player->mana_lvl == 40) {
+        return;
+    }
+
+    player->mana_lvl++;
+    player->max_quantity = max_mana(player->mana_lvl);
+}
+
 Error upgrade_mana_pool(Player* player) {
     if (player->mana_lvl == 40) {
-        return OK; // limit the mana level to 40 to avoid int overflow
+        return MAXIMUM_LEVEL_REACH; // limit the mana level to 40 to avoid int overflow
     }
 
     int cost = mana_require_for_pool(player->mana_lvl + 1);
@@ -87,8 +100,7 @@ Error upgrade_mana_pool(Player* player) {
     }
 
     player->mana -= cost;
-    player->mana_lvl++;
-    player->max_quantity = max_mana(player->mana_lvl);
+    upgrade_mana_pool_level(player);
     return OK;
 }
 

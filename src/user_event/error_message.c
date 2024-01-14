@@ -35,6 +35,9 @@ static void create_error_message(char* message, Event event, Error code) {
         case NOT_ENOUGHT_MANA:
             sprintf(message, "Not enough mana to %s", mana_error[event]);
             break;
+        case MAXIMUM_LEVEL_REACH:
+            sprintf(message, "You've reach the maximum level of the mana pool");
+            break;
         case INVENTORY_FULL:
             sprintf(message, "Cannot %s because inventory's full", 
                     inventory_error[event]);

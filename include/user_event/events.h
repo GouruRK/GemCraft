@@ -25,7 +25,10 @@ typedef enum {
     SHOW_TOWER_COST,
     SHOW_GEM_COST_ADD,
     SHOW_GEM_COST_SUB,
-    SHOW_COMBINE_COST
+    SHOW_COMBINE_COST,
+    CHOOSE_SKILL_A,
+    CHOOSE_SKILL_B,
+    CHOOSE_SKILL_C,
 } Event;
 
 #endif
