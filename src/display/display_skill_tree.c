@@ -18,10 +18,24 @@ char* text[] = {
     [GIVE_GEM] = "Give pure gem of level %d"
 };
 
+/**
+ * @brief Get space between each skill interface
+ * 
+ * @param window 
+ * @return
+ */
 static int get_space_between(Sector window) {
     return window.width / (SKILLS_PROPOSAL + 1);
 }
 
+/**
+ * @brief Get the sector for a certain skill at given offset
+ * 
+ * @param skill 
+ * @param window 
+ * @param x_offset 
+ * @return
+ */
 static Sector get_sector_for_skills(Skill skill, Sector window, int x_offset) {
     static int init = 0, w, h;
 
@@ -37,6 +51,12 @@ static Sector get_sector_for_skills(Skill skill, Sector window, int x_offset) {
                                      window.height/2 + h + PADDING_Y*2));
 }
 
+/**
+ * @brief Initialise clickable sectors
+ * 
+ * @param tree 
+ * @param window 
+ */
 void init_sectors(SkillTree* tree, Sector window) {
     int space_between = get_space_between(window);
 

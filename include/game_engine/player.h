@@ -11,6 +11,12 @@ typedef struct {
     Inventory inventory;
 } Player;
 
+/**
+ * @brief Give to player the given amount of mana
+ * 
+ * @param player 
+ * @param mana 
+ */
 void add_mana(Player* player, int mana);
 
 /**
@@ -62,6 +68,11 @@ int generate_gem(Player* player, int level, Gem* res);
  */
 Error combine_gem(Player* player, Gem a, Gem b, Gem* res);
 
+/**
+ * @brief Upgrade manna pool level by one. No verification on cost is done
+ * 
+ * @param player 
+ */
 void upgrade_mana_pool_level(Player* player);
 
 /**

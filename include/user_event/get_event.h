@@ -13,6 +13,12 @@
  */
 Event get_event(Interaction interaction, const GameSectors* sectors);
 
+/**
+ * @brief Get event while game status is on SKILLS
+ * 
+ * @param tree skills tree selector
+ * @return
+ */
 Event get_skill_event(SkillTree* tree);
 
 #endif

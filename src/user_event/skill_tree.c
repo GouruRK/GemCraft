@@ -4,22 +4,52 @@
 
 #include "utils/util.h"
 
+/**
+ * @brief Give the amount of mana to be given at a certain wave
+ * 
+ * @param wave 
+ * @return
+ */
 static inline int give_mana_value(int wave) {
     return wave*10;
 }
 
+/**
+ * @brief Give the number of monsters to kill at a certain wave
+ * 
+ * @param wave 
+ * @return
+ */
 static inline int give_monster_kill_value(int wave) {
     return max(1, wave / 6);
 }
 
+/**
+ * @brief Give the number of free towers to give at a certain wave
+ * 
+ * @param wave 
+ * @return
+ */
 static inline int give_free_towers_value(int wave) {
     return max(1, wave / 5);
 }
 
+/**
+ * @brief Do nothing
+ * 
+ * @param wave 
+ * @return
+ */
 static inline int give_upgrade(int wave) {
     return 0;
 }
 
+/**
+ * @brief Give the level of the pure gem to be created at a certain wave
+ * 
+ * @param wave 
+ * @return
+ */
 static inline int give_gem_level(int wave) {
     return max(1, wave / 3);
 }
@@ -34,6 +64,13 @@ static v_func value_function[] = {
     [GIVE_GEM] = give_gem_level
 }; 
 
+/**
+ * @brief Find a skill to replace the one at replace_index
+ * 
+ * @param tree 
+ * @param replace_index 
+ * @return
+ */
 static Skill new_random_skill(SkillTree* tree, int replace_index) {
     bool valid = false;
     Skill skill;
@@ -51,6 +88,11 @@ static Skill new_random_skill(SkillTree* tree, int replace_index) {
     return skill;
 }
 
+/**
+ * @brief Fill skills on a new SkillTree structure
+ * 
+ * @param tree 
+ */
 static void fill_skills(SkillTree* tree) {
     int index = 0;
     Skill skill;
@@ -69,6 +111,12 @@ static void fill_skills(SkillTree* tree) {
     }
 }
 
+/**
+ * @brief Fill initials values for each skills
+ * 
+ * @param tree 
+ * @param wave 
+ */
 static void fill_values(SkillTree* tree, int wave) {
     for (int i = 0; i < SKILLS_PROPOSAL; i++) {
        tree->give[i] = value_function[tree->skills[i]](wave);

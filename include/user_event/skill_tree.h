@@ -25,8 +25,21 @@ typedef struct {
     bool has_sectors;
 } SkillTree;
 
+/**
+ * @brief Initialise the skill tree structure
+ * 
+ * @param wave 
+ * @return
+ */
 SkillTree init_skill_tree(int wave);
 
+/**
+ * @brief Replace skill at given index
+ * 
+ * @param tree 
+ * @param index 
+ * @param wave 
+ */
 void replace_skill(SkillTree* tree, int index, int wave);
 
 #endif
