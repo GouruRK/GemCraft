@@ -141,3 +141,40 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     }
     return get_mouse_event(interaction, sectors, mouse_but);
 }
+
+Event skill_event[] = {
+    [0] = CHOOSE_SKILL_A,
+    [1] = CHOOSE_SKILL_B,
+    [2] = CHOOSE_SKILL_C,
+};
+
+Event get_skill_event(SkillTree* tree) {
+    // intel on keyboard
+    MLV_Keyboard_modifier mod;
+    MLV_Keyboard_button sym;
+    MLV_Button_state state;
+
+    // intel on mouse
+    MLV_Mouse_button mouse_but;
+
+    MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL,
+                                    &mouse_but, &state);
+
+    if ((event == MLV_NONE || state == MLV_RELEASED)) {
+        return NO_EVENT;
+    }
+
+    if (event == MLV_KEY && sym == 'q') {
+        return QUIT;
+    }
+    if (mouse_but == MLV_BUTTON_LEFT) {
+        int x, y;
+        MLV_get_mouse_position(&x, &y);
+        for (int i = 0; i < SKILLS_PROPOSAL; i++) {
+            if (is_coord_in_sector(tree->sectors[i], x, y)) {
+                return skill_event[i];
+            }
+        }
+    }
+    return NO_EVENT;
+}

@@ -38,6 +38,7 @@ Error init_game(Game* game) {
     game->cur_interact = init_interact();
     game->sectors = init_game_sectors();
     game->score = init_score();
+    game->tree = init_skill_tree(1);
     return OK;
 }
 
@@ -95,7 +96,6 @@ static void update_nest(Game* game) {
         game->wave++;
         if (!(game->wave % WAVE_OFFSET)) {
             game->game_status = SKILL;
-            game->tree = init_skill_tree(game->wave);
         }
     }
 

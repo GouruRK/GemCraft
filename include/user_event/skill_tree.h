@@ -5,8 +5,8 @@
 
 #include "utils/sector.h"
 
-#define WAVE_OFFSET 1
-#define NB_SKILLS 4
+#define WAVE_OFFSET 10
+#define NB_SKILLS 5
 #define SKILLS_PROPOSAL 3
 
 
@@ -15,6 +15,7 @@ typedef enum {
     FREE_TOWERS,
     KILL_MONSTER,
     FREE_UPGRADE,
+    GIVE_GEM,
 } Skill;
 
 typedef struct {
@@ -25,5 +26,7 @@ typedef struct {
 } SkillTree;
 
 SkillTree init_skill_tree(int wave);
+
+void replace_skill(SkillTree* tree, int index, int wave);
 
 #endif

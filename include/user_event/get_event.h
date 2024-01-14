@@ -13,4 +13,6 @@
  */
 Event get_event(Interaction interaction, const GameSectors* sectors);
 
+Event get_skill_event(SkillTree* tree);
+
 #endif

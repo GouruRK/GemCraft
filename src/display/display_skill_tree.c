@@ -14,7 +14,8 @@ char* text[] = {
     [GIVE_MANA] = "Give %d mana",
     [FREE_TOWERS] = "Give %d free towers",
     [KILL_MONSTER] = "Kill %d monsters",
-    [FREE_UPGRADE] = "Give free mana pool upgrade"
+    [FREE_UPGRADE] = "Give free mana pool upgrade",
+    [GIVE_GEM] = "Give pure gem of level %d"
 };
 
 static int get_space_between(Sector window) {
@@ -76,6 +77,11 @@ void display_skill_tree(const Game* game) {
         } else if (game->tree.skills[i] == KILL_MONSTER) {
             MLV_draw_text(x, y, "Kill %d monsters", MLV_COLOR_BLACK,
                           game->tree.give[i]);
+        } else if (game->tree.skills[i] == GIVE_GEM) {
+            x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2 - w/3;
+            MLV_draw_text(x, y, "Give pure gem of level %d", MLV_COLOR_BLACK,
+                          game->tree.give[i]);
+
         } else {
             x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2 - w/2;
             MLV_draw_text(x, y, "Give free mana pool upgrade", MLV_COLOR_BLACK,

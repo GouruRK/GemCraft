@@ -4,6 +4,53 @@
 
 #include "utils/util.h"
 
+static inline int give_mana_value(int wave) {
+    return wave*10;
+}
+
+static inline int give_monster_kill_value(int wave) {
+    return max(1, wave / 6);
+}
+
+static inline int give_free_towers_value(int wave) {
+    return max(1, wave / 5);
+}
+
+static inline int give_upgrade(int wave) {
+    return 0;
+}
+
+static inline int give_gem_level(int wave) {
+    return max(1, wave / 3);
+}
+
+typedef int(*v_func)(int);
+
+static v_func value_function[] = {
+    [GIVE_MANA] = give_mana_value,
+    [FREE_TOWERS] = give_free_towers_value,
+    [KILL_MONSTER] = give_monster_kill_value,
+    [FREE_UPGRADE] = give_upgrade,
+    [GIVE_GEM] = give_gem_level
+}; 
+
+static Skill new_random_skill(SkillTree* tree, int replace_index) {
+    bool valid = false;
+    Skill skill;
+    while (!valid) {
+        valid = true;
+        skill = random_int(0, NB_SKILLS - 1);
+        for (int i = 0; i < NB_SKILLS; i++) {
+            if (i != replace_index) {
+                if (skill == tree->skills[i]) {
+                    valid = false;
+                }
+            }
+        }
+    }
+    return skill;
+}
+
 static void fill_skills(SkillTree* tree) {
     int index = 0;
     Skill skill;
@@ -24,20 +71,7 @@ static void fill_skills(SkillTree* tree) {
 
 static void fill_values(SkillTree* tree, int wave) {
     for (int i = 0; i < SKILLS_PROPOSAL; i++) {
-        switch (tree->skills[i]) {
-            case GIVE_MANA:
-                tree->give[i] = wave * 100;
-                break;
-            case KILL_MONSTER:
-                tree->give[i] = wave % 10;
-                break;
-            case FREE_TOWERS:
-                tree->give[i] = wave / 5;
-                break;
-            default:
-                 tree->give[i] = 0;
-                break;
-        }
+       tree->give[i] = value_function[tree->skills[i]](wave);
     }
 }
 
@@ -49,4 +83,7 @@ SkillTree init_skill_tree(int wave) {
     return tree;
 }
 
-
+void replace_skill(SkillTree* tree, int index, int wave) {
+    tree->skills[index] = new_random_skill(tree, index);
+    tree->give[index] = value_function[tree->skills[index]](wave);
+}
