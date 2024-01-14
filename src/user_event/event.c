@@ -8,6 +8,7 @@
 #include "user_event/get_event.h"
 #include "user_event/error_message.h"
 #include "user_event/events.h"
+#include "user_event/skill_tree.h"
 #include "game_engine/gem.h"
 #include "game_engine/game.h"
 #include "game_engine/player.h"
@@ -18,6 +19,7 @@
 #include "display/display_game.h"
 #include "display/game_sectors.h"
 #include "display/display_const.h"
+#include "display/display_skill_tree.h"
 #include "utils/errors.h"
 
 void exit_function(void* data) {
@@ -197,8 +199,16 @@ static Error summon_wave(Game* game) {
         game->time_until_next_wave = init_clock(TIMER_WAVE, -1);
         decrease_clock(&game->time_until_next_wave);
         game->wave++;
+
+        if (!(game->wave % WAVE_OFFSET)) {
+            game->game_status = SKILL;
+            game->tree = init_skill_tree(game->wave);
+            init_sectors(&(game->tree), game->sectors.window);
+        }
+        
         return OK;
     }
+
     return WAVE_IS_ALREADY_SPAWNING;
 }
 

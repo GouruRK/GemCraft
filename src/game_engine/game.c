@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "display/game_sectors.h"
+#include "display/display_skill_tree.h"
 #include "game_engine/field.h"
 #include "game_engine/generation.h"
 #include "game_engine/monster.h"
@@ -16,6 +17,7 @@
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
 #include "user_event/error_message.h"
+#include "user_event/skill_tree.h"
 #include "utils/clock.h"
 #include "utils/errors.h"
 
@@ -91,6 +93,10 @@ static void update_nest(Game* game) {
     if (game->wave >= 1 && game->time_until_next_wave.next_interval == 0) {
         add_wave_nest(&(game->field.nest), &(game->score), game->wave);
         game->wave++;
+        if (!(game->wave % WAVE_OFFSET)) {
+            game->game_status = SKILL;
+            game->tree = init_skill_tree(game->wave);
+        }
     }
 
     decrease_clock(&game->time_until_next_wave);
@@ -207,6 +213,10 @@ Error update_game(Game* game) {
     
     int max_level = search_max_gem_level_with_mana(game);
     game->cur_interact.gem_level = min(max_level, game->cur_interact.gem_level);
+
+    if (game->game_status == SKILL && !game->tree.has_sectors) {
+        init_sectors(&(game->tree), game->sectors.window);
+    }
 
     return OK;
 }

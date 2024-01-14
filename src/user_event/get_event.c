@@ -111,7 +111,7 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
     MLV_Event event = MLV_get_event(&sym, &mod, NULL, NULL, NULL, NULL, NULL,
                                     &mouse_but, &state);
 
-    if (event == MLV_NONE || state == MLV_RELEASED) {
+    if ((event == MLV_NONE || state == MLV_RELEASED)) {
         int x, y;
         MLV_get_mouse_position(&x, &y);
         if (is_coord_in_sector(sectors->upgrade_button, x, y)) {

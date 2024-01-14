@@ -54,6 +54,8 @@ int main(int argc, char* argv[]) {
         if (game.game_status == ONGOING) {
             update_game(&game);
             draw_game(&game);
+        } else if (game.game_status == SKILL) {
+            draw_game(&game);
         }
 
         clock_gettime(CLOCK_MONOTONIC, &end_time);

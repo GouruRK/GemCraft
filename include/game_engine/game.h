@@ -9,6 +9,7 @@
 #include "game_engine/projectile.h"
 #include "game_engine/score.h"
 #include "user_event/interact.h"
+#include "user_event/skill_tree.h"
 #include "utils/errors.h"
 
 #define FRAMERATE 60
@@ -17,7 +18,8 @@
 typedef enum {
     ONGOING,
     PAUSE,
-    OVER
+    OVER,
+    SKILL
 } GameState;
 
 typedef struct {
@@ -30,6 +32,7 @@ typedef struct {
     GameSectors sectors;        // differencies window's section for inventory
                                 // and field
     Score score;
+    SkillTree tree;
 } Game;
 
 /**
