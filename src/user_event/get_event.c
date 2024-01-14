@@ -136,10 +136,14 @@ Event get_event(Interaction interaction, const GameSectors* sectors) {
         return NO_EVENT;
     }
 
-    if (event == MLV_KEY && is_key_register(sym)) {
-        return key_events[sym];
+    if (event == MLV_KEY) {
+        if (is_key_register(sym)) {
+            return key_events[sym];
+        }
+    } else {
+        return get_mouse_event(interaction, sectors, mouse_but);
     }
-    return get_mouse_event(interaction, sectors, mouse_but);
+    return NO_EVENT;
 }
 
 Event skill_event[] = {

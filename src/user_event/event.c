@@ -202,7 +202,10 @@ static Error summon_wave(Game* game) {
 
         if (!(game->wave % WAVE_OFFSET)) {
             game->game_status = SKILL;
-            init_sectors(&(game->tree), game->sectors.window);
+            if (!(game->tree.has_sectors)) {
+                init_sectors(&(game->tree), game->sectors.window);
+            }
+            replace_skill(&(game->tree), &(game->player), game->wave);
         }
         
         return OK;
@@ -414,7 +417,7 @@ static void apply_skill(Game* game, Event skill) {
         }
         add_inventory(&(game->player.inventory), gem);
     }
-    replace_skill(&(game->tree), index, game->wave);
+    game->tree.last_used_index = index;
 } 
 
 // Link between events and functions to apply them

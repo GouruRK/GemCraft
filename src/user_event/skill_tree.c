@@ -1,8 +1,10 @@
 #include "user_event/skill_tree.h"
 
 #include <stdbool.h>
+#include <math.h>
 
 #include "utils/util.h"
+#include "game_engine/player.h"
 
 /**
  * @brief Give the amount of mana to be given at a certain wave
@@ -10,8 +12,8 @@
  * @param wave 
  * @return
  */
-static inline int give_mana_value(int wave) {
-    return wave*10;
+static inline int give_mana_value(Player* player, int wave) {
+    return player->max_quantity/4;
 }
 
 /**
@@ -20,8 +22,8 @@ static inline int give_mana_value(int wave) {
  * @param wave 
  * @return
  */
-static inline int give_monster_kill_value(int wave) {
-    return max(1, wave / 6);
+static inline int give_monster_kill_value(Player* player, int wave) {
+    return max(1, wave/6);
 }
 
 /**
@@ -30,8 +32,8 @@ static inline int give_monster_kill_value(int wave) {
  * @param wave 
  * @return
  */
-static inline int give_free_towers_value(int wave) {
-    return max(1, wave / 5);
+static inline int give_free_towers_value(Player* player, int wave) {
+    return !wave ? 1: sqrt(wave*1.5);
 }
 
 /**
@@ -40,7 +42,7 @@ static inline int give_free_towers_value(int wave) {
  * @param wave 
  * @return
  */
-static inline int give_upgrade(int wave) {
+static inline int give_upgrade(Player* player, int wave) {
     return 0;
 }
 
@@ -50,11 +52,11 @@ static inline int give_upgrade(int wave) {
  * @param wave 
  * @return
  */
-static inline int give_gem_level(int wave) {
-    return max(1, wave / 3);
+static inline int give_gem_level(Player* player, int wave) {
+    return max(1, wave/4);
 }
 
-typedef int(*v_func)(int);
+typedef int(*v_func)(Player*, int);
 
 static v_func value_function[] = {
     [GIVE_MANA] = give_mana_value,
@@ -117,21 +119,26 @@ static void fill_skills(SkillTree* tree) {
  * @param tree 
  * @param wave 
  */
-static void fill_values(SkillTree* tree, int wave) {
+static void fill_values(SkillTree* tree, Player* player, int wave) {
     for (int i = 0; i < SKILLS_PROPOSAL; i++) {
-       tree->give[i] = value_function[tree->skills[i]](wave);
+       tree->give[i] = value_function[tree->skills[i]](player, wave);
     }
 }
 
-SkillTree init_skill_tree(int wave) {
+SkillTree init_skill_tree(Player* player, int wave) {
     SkillTree tree;
     fill_skills(&tree);
-    fill_values(&tree, wave);
+    fill_values(&tree, player, wave);
     tree.has_sectors = false;
+    tree.last_used_index = -1;
     return tree;
 }
 
-void replace_skill(SkillTree* tree, int index, int wave) {
+void replace_skill(SkillTree* tree, Player* player, int wave) {
+    int index = tree->last_used_index;
+    if (index == -1) {
+        return;
+    }
     tree->skills[index] = new_random_skill(tree, index);
-    tree->give[index] = value_function[tree->skills[index]](wave);
+    tree->give[index] = value_function[tree->skills[index]](player, wave);
 }

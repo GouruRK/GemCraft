@@ -4,8 +4,9 @@
 #include <stdbool.h>
 
 #include "utils/sector.h"
+#include "game_engine/player.h"
 
-#define WAVE_OFFSET 10
+#define WAVE_OFFSET 6
 #define NB_SKILLS 5
 #define SKILLS_PROPOSAL 3
 
@@ -19,10 +20,11 @@ typedef enum {
 } Skill;
 
 typedef struct {
+    bool has_sectors;
+    int last_used_index;
     Skill skills[SKILLS_PROPOSAL];
     int give[SKILLS_PROPOSAL];
     Sector sectors[SKILLS_PROPOSAL];
-    bool has_sectors;
 } SkillTree;
 
 /**
@@ -31,7 +33,7 @@ typedef struct {
  * @param wave 
  * @return
  */
-SkillTree init_skill_tree(int wave);
+SkillTree init_skill_tree(Player* player, int wave);
 
 /**
  * @brief Replace skill at given index
@@ -40,6 +42,6 @@ SkillTree init_skill_tree(int wave);
  * @param index 
  * @param wave 
  */
-void replace_skill(SkillTree* tree, int index, int wave);
+void replace_skill(SkillTree* tree, Player* player, int wave);
 
 #endif

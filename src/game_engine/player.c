@@ -79,7 +79,7 @@ Player init_player(void) {
 }
 
 void upgrade_mana_pool_level(Player* player) {
-    if (player->mana_lvl == 60) {
+    if (player->mana_lvl == 40) {
         return;
     }
 
@@ -88,8 +88,8 @@ void upgrade_mana_pool_level(Player* player) {
 }
 
 Error upgrade_mana_pool(Player* player) {
-    if (player->mana_lvl == 60) {
-        return OK; // limit the mana level to 60 to avoid int overflow
+    if (player->mana_lvl == 40) {
+        return OK; // limit the mana level to 40 to avoid int overflow
     }
 
     int cost = mana_require_for_pool(player->mana_lvl + 1);

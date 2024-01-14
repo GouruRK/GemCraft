@@ -115,6 +115,9 @@ static void display_cost_of_element(const Game* game) {
     switch (game->cur_interact.current_action) {
         case SHOWING_UPGRADE_COST:
             cost = mana_require_for_pool(game->player.mana_lvl + 1);
+            if (game->player.mana_lvl < 40) {
+                cost = mana_require_for_pool(game->player.mana_lvl + 1);
+            }
             break;
         case SHOWING_GEM_COST:    
             cost = mana_require_for_gem(game->cur_interact.gem_level);
