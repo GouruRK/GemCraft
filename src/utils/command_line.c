@@ -12,7 +12,8 @@ Error command_line(bool* help, int argc, char* argv[]) {
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0}
     };
-    while ((opt = getopt_long(argc, argv, "h", long_options, &opt_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "h", long_options, &opt_index))
+            != -1) {
         switch (opt) {
             case 'h':
                 *help = true;

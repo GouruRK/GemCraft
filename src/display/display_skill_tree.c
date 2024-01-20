@@ -60,8 +60,10 @@ static Sector get_sector_for_skills(Skill skill, Sector window, int x_offset) {
 void init_sectors(SkillTree* tree, Sector window) {
     int space_between = get_space_between(window);
 
+    int x = 0;
     for (int i = 0; i < SKILLS_PROPOSAL; i++) {
-        tree->sectors[i] = get_sector_for_skills(tree->skills[i], window, space_between + space_between*i);
+        x = space_between + space_between*i;
+        tree->sectors[i] = get_sector_for_skills(tree->skills[i], window, x);
     }
 
     tree->has_sectors = true;
@@ -85,8 +87,10 @@ void display_skill_tree(const Game* game) {
 
         MLV_get_size_of_text(text[game->tree.skills[i]], &w, &h);
 
-        x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2 - w/4 - PADDING_X/2;
-        y = game->tree.sectors[i].top_left.y + game->tree.sectors[i].height/2 - h/2;
+        x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2
+                                             - w/4 - PADDING_X/2;
+        y = game->tree.sectors[i].top_left.y + game->tree.sectors[i].height/2
+                                             - h/2;
 
         if (game->tree.skills[i] == GIVE_MANA) {
             MLV_draw_text(x, y, "Give %d mana", MLV_COLOR_BLACK,
@@ -98,12 +102,14 @@ void display_skill_tree(const Game* game) {
             MLV_draw_text(x, y, "Kill %d monsters", MLV_COLOR_BLACK,
                           game->tree.give[i]);
         } else if (game->tree.skills[i] == GIVE_GEM) {
-            x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2 - w/3;
+            x = game->tree.sectors[i].top_left.x + 
+                game->tree.sectors[i].width/2 - w/3;
             MLV_draw_text(x, y, "Give pure gem of level %d", MLV_COLOR_BLACK,
                           game->tree.give[i]);
 
         } else {
-            x = game->tree.sectors[i].top_left.x + game->tree.sectors[i].width/2 - w/2;
+            x = game->tree.sectors[i].top_left.x +
+                game->tree.sectors[i].width/2 - w/2;
             MLV_draw_text(x, y, "Give free mana pool upgrade", MLV_COLOR_BLACK,
                           game->tree.give[i]);   
         }

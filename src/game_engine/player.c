@@ -98,7 +98,8 @@ void upgrade_mana_pool_level(Player* player) {
 
 Error upgrade_mana_pool(Player* player) {
     if (player->mana_lvl == 40) {
-        return MAXIMUM_LEVEL_REACH; // limit the mana level to 40 to avoid int overflow
+        return MAXIMUM_LEVEL_REACH; // limit the mana level to 40 to avoid int
+                                    // overflow
     }
 
     int cost = mana_require_for_pool(player->mana_lvl + 1);
