@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include "display/display_game.h"
 #include "display/display_score.h"
@@ -14,6 +15,7 @@
 #include "game_engine/player.h"
 #include "utils/position.h"
 #include "utils/util.h"
+#include "utils/command_line.h"
 #include "game_engine/projectile.h"
 #include "user_event/interact.h"
 #include "user_event/tower_placement.h"
@@ -24,12 +26,29 @@
  * 
  * @param game 
  */
-void free_memory(Game* game) {
+static void free_memory(Game* game) {
     free(game->field.projectiles.array);
+}
+
+static void print_help(void) {
+    printf("Usage: GemCraft [OPTION...] \n"
+           "Play a Tower Defense game !\n\n"
+           "  -h, --help\t\tdisplay this help message and exit\n"
+           );
 }
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
+
+    bool help = false;
+    if (command_line(&help, argc, argv) != OK) {
+        return 1;
+    }
+    if (help) {
+        print_help();
+        return 0;
+    }
+
     struct timespec start_time, end_time, time_difference;
     double extra_time;
     Game game;

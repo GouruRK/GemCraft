@@ -20,7 +20,8 @@ typedef enum {
     INVALID_TILE = -15,
     NO_TOWER_FOUND = -16,
     WAVE_IS_ALREADY_SPAWNING = -17,
-    MAXIMUM_LEVEL_REACH = -18
+    MAXIMUM_LEVEL_REACH = -18,
+    UNKNOWN_ARGUMENT = -19
 } Error;
 
 #endif

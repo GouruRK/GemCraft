@@ -56,6 +56,14 @@ Player init_player(void);
 int generate_gem(Player* player, int level, Gem* res);
 
 /**
+ * @brief Return the maximum gem level with the current amout of mana
+ * 
+ * @param game 
+ * @return
+ */
+int search_max_gem_level_with_mana(Player* player);
+
+/**
  * @brief Combines two gems of same level and create a gem with a level + 1.
  *        Remove the mana require to combine them.
  *        Set the new gem in `res`.

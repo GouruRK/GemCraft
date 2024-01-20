@@ -162,6 +162,9 @@ static Error add_gem_level(Game* game) {
 static Error sub_gem_level(Game* game) {
     if (game->cur_interact.gem_level) {
         game->cur_interact.gem_level--;
+    } else {
+        game->cur_interact.gem_level = 
+            search_max_gem_level_with_mana(&(game->player));
     }
     return OK;
 }

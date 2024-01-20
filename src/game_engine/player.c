@@ -46,6 +46,14 @@ static int combine_color(int a, int b, TypeGems type) {
     return max(a, b);
 }
 
+int search_max_gem_level_with_mana(Player* player) {
+    int level = 0;
+    while (player->mana >= mana_require_for_gem(level)) {
+        level++;
+    }
+    return level ? level - 1: 0;
+}
+
 void add_mana(Player* player, int mana) {
     player->mana = min(player->max_quantity, player->mana + mana);
 }
