@@ -4,7 +4,7 @@
 
 long compute_score(Score* score) {
     return score->boss_wave*10 + score->fast_wave*5 + score->crowd_wave*3
-            + score->normal_wave + log10(score->total_damage) 
+            + score->normal_wave + fmax(log10(score->total_damage), 0) 
             + score->monster_kills;
 }
 
