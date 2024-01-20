@@ -9,6 +9,7 @@ EXEC = GemCraft
 
 SRC = src/
 BIN = bin/
+DOC = doc/doxygen/
 INCLUDES = $(BIN)display $(BIN)game_engine $(BIN)user_event $(BIN)utils
 
 # ----------- Files to compile -----------
@@ -26,9 +27,16 @@ $(BIN)%.o : $(SRC)%.c
 	@mkdir --parents $(INCLUDES)
 	$(CC) $(CFLAGS) -I./$(PFLAGS) -c $< -o $@
 
+# Doxygen
+
+doc: $(DOC)/doxygen
+
+$(DOC)/doxygen: 
+	@doxygen doxyfile
+
 # Cleaning
 
-clean : 
+clean: 
 	rm -fr $(BIN)*
 
 mrproper: clean
