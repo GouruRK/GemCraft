@@ -21,5 +21,5 @@ Error command_line(bool* help, int argc, char* argv[]) {
                 return UNKNOWN_ARGUMENT;
         }
     }
-    return 1;
+    return OK;
 }
