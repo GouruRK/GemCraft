@@ -1,3 +1,12 @@
+/**
+ * @file tooltip.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Display tooltip of the given object
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef TOOLTIP_H
 #define TOOLTIP_H
 

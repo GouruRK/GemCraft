@@ -1,3 +1,12 @@
+/**
+ * @file display_score.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Display final image and score after loosing
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DISPLAY_SCORE_H
 #define DISPLAY_SCORE_H
 

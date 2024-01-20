@@ -1,3 +1,13 @@
+/**
+ * @file player.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains player's data for mana, and functions to
+ *        use it. Create an interface between mana and gems
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef PLAYER_H
 #define PLAYER_H
 

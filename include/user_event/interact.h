@@ -1,3 +1,13 @@
+/**
+ * @file interact.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains all possible interaction with the mouse, such as tower in 
+ * the hand, gem in the hand...
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef INTERACT_H
 #define INTERACT_H
 

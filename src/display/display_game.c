@@ -2,7 +2,7 @@
 
 #include <MLV/MLV_all.h>
 
-#include "display/color.h"
+#include "utils/color.h"
 #include "display/display_const.h"
 #include "display/display_tower.h"
 #include "display/draw_button.h"
@@ -18,8 +18,14 @@
 #include "game_engine/projectile.h"
 #include "game_engine/tower.h"
 
-// Prototype
+
+/**
+ * @brief Draw game field
+ * 
+ * @param field 
+ */
 static void draw_board(const Field field) {
+    // Array of colors for the map
     MLV_Color objects_color[6] = {
         MLV_COLOR_BROWN4,  // Tower
         MLV_COLOR_RED,     // Nest
@@ -27,6 +33,7 @@ static void draw_board(const Field field) {
         MLV_COLOR_GREY,    // Empty
         MLV_COLOR_WHITE    // Path
     };
+
     MLV_Color color;
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
@@ -51,7 +58,11 @@ static void draw_board(const Field field) {
     }
 }
 
-// Prototype
+/**
+ * @brief Draw a monster
+ * 
+ * @param m 
+ */
 static void draw_monster(const Monster* m) {
     if (!is_alive(m)) {
         return;
@@ -73,7 +84,11 @@ static void draw_monster(const Monster* m) {
                            monster_color);
 }
 
-// Prototype
+/**
+ * @brief Draw a projectile
+ * 
+ * @param proj 
+ */
 static void draw_projectile(const Projectile* proj) {
     MLV_Color color = transform_color(proj->source.color);
     MLV_draw_filled_circle((int)(proj->pos.x * CELL_SIZE),
@@ -81,6 +96,12 @@ static void draw_projectile(const Projectile* proj) {
                            color);
 }
 
+/**
+ * @brief Draw the level of the next gem to be generated 
+ * 
+ * @param sector 
+ * @param level 
+ */
 static void draw_gem_level(Sector sector, unsigned int level) {
     int text_width, text_height;
     int x, y;
@@ -96,7 +117,14 @@ static void draw_gem_level(Sector sector, unsigned int level) {
     MLV_draw_text(x, y, "%d", MLV_COLOR_WHITE, level);
 }
 
-void display_cost(Sector gauge, Player player, long int cost) {
+/**
+ * @brief Display given cost on gauge
+ * 
+ * @param gauge 
+ * @param player 
+ * @param cost 
+ */
+static void display_cost(Sector gauge, Player player, long int cost) {
     if (cost > 0 && cost > player.mana) {
         int height = get_height(player.max_quantity, cost);
         MLV_draw_filled_rectangle(gauge.top_left.x, gauge.bottom_right.y - 1,
@@ -110,6 +138,10 @@ void display_cost(Sector gauge, Player player, long int cost) {
     }
 }
 
+/**
+ * @brief Display on gauge the cost of elements based on the last event
+ * 
+ */
 static void display_cost_of_element(const Game* game) {
     int cost;
     switch (game->cur_interact.current_action) {
@@ -143,7 +175,7 @@ static void display_cost_of_element(const Game* game) {
     }
 }
 
-// Prototype
+
 void draw_game(const Game* game) {
     draw_board(game->field);
 
@@ -152,11 +184,12 @@ void draw_game(const Game* game) {
         draw_monster(&(game->field.monsters.array[i]));
     }
 
-    // Prototype
+    // Draw towers
     for (int i = 0; i < game->field.towers.cur_len; i++) {
         draw_tower(game->field.towers.lst[i]);
     }
 
+    // Draw right panel
     draw_gauge(game->player, game->sectors.gauge);
     draw_inventory(game->player.inventory, game->sectors.inventory);
     draw_gem_level(game->sectors.gem_lvl, game->cur_interact.gem_level);
@@ -164,7 +197,7 @@ void draw_game(const Game* game) {
     draw_wave_progression(game, game->sectors.wave_button, game->sectors.gauge);
     draw_button_outline(&(game->sectors));
 
-    // Prototype
+    // Draw tower or gem that the player is moving
     if (game->cur_interact.current_action == PLACING_TOWER) {
         draw_tower(game->cur_interact.selected_tower);
     } else if (game->cur_interact.current_action == MOVING_GEM) {
@@ -178,16 +211,19 @@ void draw_game(const Game* game) {
     } else {
         display_cost_of_element(game);
     }
+    draw_gauge_numbers(game->player, game->sectors.gauge);
 
+    // Draw projectiles 
     for (int i = 0; i < game->field.projectiles.nb_elt; i++) {
         draw_projectile(&(game->field.projectiles.array[i]));
     }
-    draw_gauge_numbers(game->player, game->sectors.gauge);
 
+    // Display an error
     if (game->cur_interact.err.contains_message) {
         display_error(&(game->cur_interact.err), game->sectors.window);
     }
 
+    // Display skill tree
     if (game->game_status == SKILL) {
         display_skill_tree(game);
     }

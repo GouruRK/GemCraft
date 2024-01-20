@@ -1,3 +1,14 @@
+/**
+ * @file projectile.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Defines projectiles functions, how to move them and their
+ *        actions. Manipulates the projectile array. Create an interface
+ *        between mobs and gems
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 

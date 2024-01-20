@@ -4,9 +4,9 @@
 
 #include "game_engine/gem.h"
 #include "game_engine/tower.h"
-#include "display/color.h"
 #include "utils/position.h"
 #include "utils/sector.h"
+#include "utils/color.h"
 #include "display/display_const.h"
 
 char* gem_name_array[] = {

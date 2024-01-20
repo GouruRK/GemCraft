@@ -21,8 +21,6 @@ struct timespec diff_time(struct timespec start, struct timespec end) {
     return diff;
 }
 
-color random_color() { return random_int(0, 359); }
-
 long long max(long long a, long long b) {
     return (a > b) ? a : b; 
 }

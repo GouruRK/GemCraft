@@ -1,3 +1,12 @@
+/**
+ * @file effect.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains specification for effects and their application on mobs
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef EFFECT_H
 #define EFFECT_H
 

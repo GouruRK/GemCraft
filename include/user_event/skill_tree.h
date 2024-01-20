@@ -1,3 +1,12 @@
+/**
+ * @file skill_tree.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains skill tree structure
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef SKILL_TREE_H
 #define SKILL_TREE_H
 

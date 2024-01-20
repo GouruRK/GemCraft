@@ -1,3 +1,14 @@
+/**
+ * @file monster.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains functions to create monsters, and manipulate them
+ *        by moving them, wound them, and apply effects from gems and 
+ *        projectiles
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef MONSTER_H
 #define MONSTER_H
 
@@ -8,6 +19,7 @@
 #include "utils/errors.h"
 #include "utils/position.h"
 #include "utils/util.h"
+#include "utils/color.h"
 
 #define MAX_WAVE_SIZE 24
 #define MAX_MONSTERS 2000

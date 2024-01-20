@@ -1,3 +1,12 @@
+/**
+ * @file sector.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains structures to store information on the position of a button 
+ * on the screen
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef SECTOR_H
 #define SECTOR_H
 

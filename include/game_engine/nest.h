@@ -1,3 +1,13 @@
+/**
+ * @file nest.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Structure to represent the monster's nest.
+ *        Contains functions to spawn waves
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef NEST_H
 #define NEST_H
 

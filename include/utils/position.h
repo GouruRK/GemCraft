@@ -1,3 +1,12 @@
+/**
+ * @file position.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains position structure with float
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef POSITION_H
 #define POSITION_H
 

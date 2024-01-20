@@ -1,3 +1,12 @@
+/**
+ * @file errors.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains all possible errors that can occur during the program
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef ERRORS_H
 #define ERRORS_H
 

@@ -1,3 +1,12 @@
+/**
+ * @file score.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Define structure to compute the player's score
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef SCORE_H
 #define SCORE_H
 

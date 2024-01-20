@@ -1,3 +1,13 @@
+/**
+ * @file inventory.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains functions to create an inventory, and functions to
+ *        manipulates them
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef INVETORY_H
 #define INVETORY_H
 

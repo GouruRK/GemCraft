@@ -1,3 +1,12 @@
+/**
+ * @file draw_button.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Draw clickable buttons 
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DRAW_BUTTONS_H
 #define DRAW_BUTTONS_H
 

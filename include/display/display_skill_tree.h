@@ -1,3 +1,12 @@
+/**
+ * @file display_skill_tree.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Display skills to be picked by the player
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DISPLAY_SKILL_TREE_H
 #define DISPLAY_SKILL_TREE_H
 

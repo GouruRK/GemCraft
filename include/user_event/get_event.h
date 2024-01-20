@@ -1,3 +1,12 @@
+/**
+ * @file get_event.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains functions to get the current user event
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GET_EVENT_H
 #define GET_EVENT_H
 

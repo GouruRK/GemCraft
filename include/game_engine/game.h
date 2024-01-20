@@ -1,3 +1,12 @@
+/**
+ * @file game.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Main structure. Contains data from graphic and game engine
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GAME_H
 #define GAME_H
 

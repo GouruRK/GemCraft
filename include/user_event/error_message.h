@@ -1,3 +1,12 @@
+/**
+ * @file error_message.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains structure to handle on screen printing of messages 
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef ERROR_MESSAGE_H
 #define ERROR_MESSAGE_H
 

@@ -1,3 +1,12 @@
+/**
+ * @file game_sectors.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Define sectors for differtent parts of the game on screen
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GAME_SECTION_H
 #define GAME_SECTION_H
 

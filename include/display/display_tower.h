@@ -1,3 +1,12 @@
+/**
+ * @file display_tower.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains tower representation
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DISPLAY_TOWER_H
 #define DISPLAY_TOWER_H
 

@@ -1,3 +1,12 @@
+/**
+ * @file gem.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains gem structure and functions to create them
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GEM_H
 #define GEM_H
 

@@ -1,3 +1,13 @@
+/**
+ * @file util.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains all the utility as random number generator, conversion, math
+ * functions..
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -6,8 +16,6 @@
 #define M_PI 3.14159265358979323846
 #define FLOAT_COMPARISON_MARGIN 0.05
 
-typedef unsigned int color;  // Color represented with an angle in degrees
-                             // (0-359)
 typedef int frame;  // Count frame
 
 /**
@@ -34,13 +42,6 @@ int random_int(int min, int max);
  * @return struct timespec 
  */
 struct timespec diff_time(struct timespec start, struct timespec end);
-
-/**
- * @brief Generate a random color
- * 
- * @return color 
- */
-color random_color();
 
 /**
  * @brief Return the max value between a and b

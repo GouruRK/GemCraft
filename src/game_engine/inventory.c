@@ -5,7 +5,6 @@
 #include "game_engine/gem.h"
 #include "utils/errors.h"
 
-// Prototype - niveaux aléatoires
 #include "utils/util.h"
 
 GemNode init_gem_node(void) {

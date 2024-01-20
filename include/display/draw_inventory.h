@@ -1,3 +1,12 @@
+/**
+ * @file draw_inventory.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Draw inventory an its content
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DRAW_INVENTORY_H
 #define DRAW_INVENTORY_H
 

@@ -1,5 +1,9 @@
+#include "utils/color.h"
+
 #include <MLV/MLV_all.h>
 #include <math.h>
+
+#include "utils/util.h"
 
 MLV_Color transform_color(int angle) {
     static int lightness = 100, saturation = 100;
@@ -27,3 +31,5 @@ MLV_Color transform_color(int angle) {
 
     return MLV_rgba(r*lightness/100, g*lightness/100, b*lightness/100, 255);
 }
+
+color random_color() { return random_int(0, 359); }

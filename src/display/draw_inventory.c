@@ -6,8 +6,8 @@
 #include "game_engine/inventory.h"
 #include "game_engine/gem.h"
 #include "display/draw_gems.h"
-#include "display/color.h"
 #include "display/display_const.h"
+#include "utils/color.h"
 #include "utils/sector.h"
 #include "utils/position.h"
 

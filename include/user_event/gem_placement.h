@@ -1,3 +1,12 @@
+/**
+ * @file gem_placement.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains functions to update the gem movement if the user interact
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GEM_PLACEMENT_H
 #define GEM_PLACEMENT_H
 

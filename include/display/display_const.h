@@ -1,3 +1,12 @@
+/**
+ * @file display_const.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Defines constants for graphic interface
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DISPLAY_CONST_H
 #define DISPLAY_CONST_H
 

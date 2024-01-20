@@ -1,3 +1,12 @@
+/**
+ * @file events.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains all possible events the user can do
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef EVENTS_H
 #define EVENTS_H
 

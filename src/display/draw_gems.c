@@ -3,7 +3,7 @@
 #include <MLV/MLV_all.h>
 
 #include "utils/position.h"
-#include "display/color.h"
+#include "utils/color.h"
 #include "display/display_const.h"
 
 #define NB_HEXA_VRTX  6

@@ -1,3 +1,12 @@
+/**
+ * @file tower.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains structures to create tower and manipulate them their array.
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef TOWERS_H
 #define TOWERS_H
 

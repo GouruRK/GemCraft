@@ -8,10 +8,6 @@
 #include "utils/sector.h"
 #include "display/display_const.h"
 
-// TODO : save somehow computation of position depending the text
-// because a text position for a button is always the same
-// and don't need to be re-computed each time the function is called
-
 /**
  * @brief Draw a button in the given sector with text as its label
  *

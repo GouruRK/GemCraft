@@ -1,3 +1,13 @@
+/**
+ * @file field.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains data about the game field, monsters and towers
+ *        Create an iterface to interact between each structures
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef FIELD_H
 #define FIELD_H
 
@@ -15,7 +25,7 @@
 #define WIDTH 28
 #define HEIGHT 22
 
-#define MAX_LEN WIDTH*HEIGHT
+#define MAX_LEN (WIDTH*HEIGHT)
 
 typedef enum {
     TOWER,

@@ -1,3 +1,12 @@
+/**
+ * @file clock.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains clock structure, used to track time in game objects like
+ * nest or effects on enemies using integers instead of system clock
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef CLOCK_H
 #define CLOCK_H
 

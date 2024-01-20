@@ -1,3 +1,12 @@
+/**
+ * @file generation.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Create a random game field
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef GENERATION_H
 #define GENERATION_H
 

@@ -1,3 +1,12 @@
+/**
+ * @file tower_placement.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains function interact with towers
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef TOWER_PLACEMENT_H
 #define TOWER_PLACEMENT_H
 

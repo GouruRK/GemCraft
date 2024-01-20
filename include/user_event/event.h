@@ -1,3 +1,12 @@
+/**
+ * @file event.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Contains function that proceeds events
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef EVENT_H
 #define EVENT_H
 

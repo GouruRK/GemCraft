@@ -1,3 +1,12 @@
+/**
+ * @file draw_gems.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Draw representation for gems
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DRAW_GEMS_H
 
 #define DRAW_GEMS_H

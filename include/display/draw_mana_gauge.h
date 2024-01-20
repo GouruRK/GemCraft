@@ -1,3 +1,12 @@
+/**
+ * @file draw_mana_gauge.h
+ * @author Coserariu Alain & Kies Remy
+ * @brief Draw mana gauge, its content and the maximum amout of mana to be store
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #ifndef DRAW_MANA_GAUGE_H
 #define DRAW_MANA_GAUGE_H
 
