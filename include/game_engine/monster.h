@@ -57,7 +57,7 @@ Monster init_monster(Position pos_init, TypeWave type_wave, int wave_number,
  * @param score 
  * @param damage 
  */
-void take_damage(Monster* monster, Score* score, int damage);
+void take_damage(Monster* monster, Score* score, long long damage);
 
 /**
  * @brief Move a monster in toward his destination

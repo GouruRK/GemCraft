@@ -22,7 +22,7 @@ static void init_monster_health(Monster* monster, int wave_number) {
 }
 
 
-void take_damage(Monster* monster, Score* score, int damage) {
+void take_damage(Monster* monster, Score* score, long long damage) {
     monster->health -= damage;
     score->total_damage += damage;
     if (!is_alive(monster)) {

@@ -23,13 +23,14 @@ Projectile init_projectile(Position pos, Monster* target, Gem source) {
  * @brief Return the damage produce by a projectile on an enemy
  *
  * @param proj
- * @return int
+ * @return long long
  */
-static int hit_damage(const Projectile* proj) {
+static long long hit_damage(const Projectile* proj) {
     int d = 37;
     double diff_color =
         degree_to_rad(proj->source.color) - degree_to_rad(proj->target->color);
-    int damage = (d * (1 << proj->source.level) * (1 - cos(diff_color) / 2));
+    long long damage = 
+            (d * (1 << proj->source.level) * (1 - cos(diff_color) / 2));
 
     if (proj->source.type == MIXTE) {
         if (random_int(0, 10) == 0) damage *= 2;
