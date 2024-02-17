@@ -34,6 +34,9 @@ doc: $(DOC)/doxygen
 $(DOC)/doxygen: 
 	@doxygen doxyfile
 
+run: $(EXEC)
+	@./$(EXEC)
+
 # Cleaning
 
 clean: 
